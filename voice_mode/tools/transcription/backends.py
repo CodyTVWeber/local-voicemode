@@ -9,18 +9,6 @@ import httpx
 from .types import TranscriptionResult
 
 
-async def transcribe_with_openai(*args, **kwargs) -> TranscriptionResult:
-    """OpenAI backend removed — local-only mode."""
-    return TranscriptionResult(
-        text="",
-        language="",
-        segments=[],
-        backend="openai",
-        success=False,
-        error="OpenAI backend is disabled in local-only mode. Use whisper-cpp backend."
-    )
-
-
 async def transcribe_with_whisperx(
     audio_path: Path,
     word_timestamps: bool = True,

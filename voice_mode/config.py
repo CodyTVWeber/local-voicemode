@@ -569,7 +569,6 @@ STT_MODEL = os.getenv("VOICEMODE_STT_MODEL", "whisper-1")
 STT_MODELS = parse_comma_list("VOICEMODE_STT_MODELS", "")
 
 # STT prompt for vocabulary biasing (helps with specialized terminology)
-# See: https://platform.openai.com/docs/guides/speech-to-text#prompting
 STT_PROMPT = os.getenv("VOICEMODE_STT_PROMPT", "")
 
 # Voice preferences cache
@@ -687,7 +686,7 @@ SOUNDFONTS_ENABLED = env_bool("VOICEMODE_SOUNDFONTS_ENABLED", True)
 # ==================== AUDIO CONFIGURATION ====================
 
 # Audio parameters
-SAMPLE_RATE = 24000  # Standard TTS sample rate for both OpenAI and Kokoro
+SAMPLE_RATE = 24000  # Standard TTS sample rate
 CHANNELS = 1
 
 # ==================== SILENCE DETECTION CONFIGURATION ====================
@@ -843,14 +842,10 @@ def setup_logging() -> logging.Logger:
         debug_handler = logging.FileHandler(debug_log_file, mode='a')
         debug_handler.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
         
-        # Enable debug logging for httpx and openai
+        # Enable debug logging for httpx
         httpx_logger = logging.getLogger("httpx")
         httpx_logger.setLevel(logging.DEBUG)
         httpx_logger.addHandler(debug_handler)
-        
-        openai_logger = logging.getLogger("openai")
-        openai_logger.setLevel(logging.DEBUG)
-        openai_logger.addHandler(debug_handler)
         
         # Also add to main logger
         logger.addHandler(debug_handler)
@@ -887,7 +882,6 @@ def setup_logging() -> logging.Logger:
     # Suppress verbose binary data in HTTP logs
     if DEBUG:
         # Keep our debug logs but reduce HTTP client verbosity
-        logging.getLogger("openai._base_client").setLevel(logging.INFO)
         logging.getLogger("httpcore").setLevel(logging.INFO)
         logging.getLogger("httpx").setLevel(logging.INFO)
     
@@ -1189,7 +1183,7 @@ def disable_sounddevice_stderr_redirect():
 
 # ==================== HTTP CLIENT CONFIGURATION ====================
 
-# HTTP client configuration for OpenAI clients
+# HTTP client configuration for local clients
 HTTP_CLIENT_CONFIG = {
     'timeout': {
         'total': 30.0,
@@ -1228,7 +1222,7 @@ def get_provider_supported_formats(provider: str, operation: str = "tts") -> lis
     """Get list of audio formats supported by a provider.
     
     Args:
-        provider: Provider name (e.g., 'openai', 'kokoro', 'whisper-local')
+        provider: Provider name (e.g., 'kokoro', 'whisper-local')
         operation: 'tts' or 'stt'
     
     Returns:
@@ -1237,11 +1231,6 @@ def get_provider_supported_formats(provider: str, operation: str = "tts") -> lis
     # Provider format capabilities
     # Based on API documentation and testing
     provider_formats = {
-        # TTS providers
-        "openai": {
-            "tts": ["opus", "mp3", "aac", "flac", "wav", "pcm"],
-            "stt": ["mp3", "opus", "wav", "flac", "m4a", "webm"]
-        },
         "kokoro": {
             "tts": ["mp3", "opus", "flac", "wav", "pcm"],  # AAC is not currently supported
             "stt": []  # Kokoro is TTS only
@@ -1250,10 +1239,6 @@ def get_provider_supported_formats(provider: str, operation: str = "tts") -> lis
         "whisper-local": {
             "tts": [],  # Whisper is STT only
             "stt": ["wav", "mp3", "opus", "flac", "m4a"]
-        },
-        "openai-whisper": {
-            "tts": [],  # Whisper is STT only
-            "stt": ["mp3", "opus", "wav", "flac", "m4a", "webm"]
         }
     }
     

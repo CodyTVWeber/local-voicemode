@@ -86,7 +86,7 @@ def cleanup_on_shutdown():
     """Cleanup function called on shutdown"""
     from voice_mode.core import cleanup as cleanup_clients
     
-    # Cleanup OpenAI clients
+    # Cleanup local clients
     cleanup_clients()
     
     # Stop any services we started

@@ -68,7 +68,7 @@ from voice_mode.config import (
 import voice_mode.config
 from voice_mode.provider_discovery import provider_registry
 from voice_mode.core import (
-    get_openai_clients,
+    get_local_clients,
     text_to_speech,
     cleanup as cleanup_clients,
     save_debug_file,
@@ -350,8 +350,8 @@ def should_wait(text: str) -> bool:
 # Track last session end time for measuring AI thinking time
 last_session_end_time = None
 
-# Initialize OpenAI clients - using dummy key for local services
-openai_clients = get_openai_clients("dummy-key-for-local", None, None)
+# Initialize local clients - using dummy key for local services
+service_clients = get_local_clients("dummy-key-for-local", None, None)
 
 # Provider-specific clients are now created dynamically by the provider registry
 
@@ -735,7 +735,7 @@ async def speech_to_text(
 
 async def play_audio_feedback(
     text: str,
-    openai_clients: dict,
+    service_clients: dict,
     enabled: Optional[bool] = None,
     style: str = "whisper",
     feedback_type: Optional[str] = None,
@@ -748,7 +748,7 @@ async def play_audio_feedback(
 
     Args:
         text: Which chime to play (either "listening" or "finished")
-        openai_clients: OpenAI client instances (kept for compatibility, not used)
+        service_clients: Local client instances (kept for compatibility, not used)
         enabled: Override global audio feedback setting
         style: Kept for compatibility, not used
         feedback_type: Kept for compatibility, not used
@@ -1188,7 +1188,7 @@ async def converse(
     listen_duration_min: float = 2.0,
     timeout: float = 60.0,
     voice: Optional[str] = None,
-    tts_provider: Optional[Literal["openai", "kokoro"]] = None,
+    tts_provider: Optional[str] = None,
     tts_model: Optional[str] = None,
     tts_instructions: Optional[str] = None,
     chime_enabled: Optional[Union[bool, str]] = None,
@@ -1216,7 +1216,7 @@ Example: If user says "search for tasks created yesterday", check for and invoke
 </voice_skills_instructions>
 
 
-🔌 ENDPOINT: STT/TTS services must expose OpenAI-compatible endpoints:
+🔌 ENDPOINT: STT/TTS services must expose standard REST endpoints:
    /v1/audio/transcriptions and /v1/audio/speech
 
 📚 DOCUMENTATION: See MCP resources for detailed information:
@@ -1230,7 +1230,7 @@ KEY PARAMETERS:
 • message (required): The message to speak
 • wait_for_response (bool, default: true): Listen for response after speaking
 • voice (string): TTS voice name (auto-selected unless specified)
-• tts_provider ("openai"|"kokoro"): Provider selection (auto-selected unless specified)
+• tts_provider: Provider selection (auto-selected unless specified)
 • disable_silence_detection (bool, default: false): Disable auto-stop on silence
 • vad_aggressiveness (0-3, default: 3): Voice detection strictness (0=permissive, 3=strict)
 • speed (0.25-4.0): Speech rate (1.0=normal, 2.0=double speed)
@@ -1503,7 +1503,7 @@ consult the MCP resources listed above.
                             audio_file=os.path.basename(tts_metrics.get('audio_path')) if tts_metrics and tts_metrics.get('audio_path') else None,
                             model=tts_config.get('model') if tts_config else tts_model,
                             voice=tts_config.get('voice') if tts_config else voice,
-                            provider=tts_config.get('provider') if tts_config else (tts_provider if tts_provider else 'openai'),
+                            provider=tts_config.get('provider') if tts_config else (tts_provider if tts_provider else 'kokoro'),
                             provider_url=tts_config.get('base_url') if tts_config else None,
                             provider_type=tts_config.get('provider_type') if tts_config else None,
                             is_fallback=tts_config.get('is_fallback', False) if tts_config else False,
@@ -1524,24 +1524,11 @@ consult the MCP resources listed above.
                     # Check if we have detailed error information
                     if tts_config and tts_config.get('error_type') == 'all_providers_failed':
                         error_lines = ["Error: Could not speak message. TTS service connection failed:"]
-                        openai_error_shown = False
 
                         for attempt in tts_config.get('attempted_endpoints', []):
-                            # Check if we have parsed OpenAI error details
-                            if attempt.get('error_details') and not openai_error_shown and attempt.get('provider') == 'openai':
-                                error_details = attempt['error_details']
-                                error_lines.append("")
-                                error_lines.append(error_details.get('title', 'OpenAI Error'))
-                                error_lines.append(error_details.get('message', ''))
-                                if error_details.get('suggestion'):
-                                    error_lines.append(f"💡 {error_details['suggestion']}")
-                                if error_details.get('fallback'):
-                                    error_lines.append(f"ℹ️ {error_details['fallback']}")
-                                openai_error_shown = True
-                            else:
-                                # Show raw error for non-OpenAI or if we already showed OpenAI error
-                                endpoint_or_provider = attempt.get('endpoint', attempt.get('provider', 'unknown'))
-                                error_lines.append(f"  - {endpoint_or_provider}: {attempt['error']}")
+                            # Show raw error
+                            endpoint_or_provider = attempt.get('endpoint', attempt.get('provider', 'unknown'))
+                            error_lines.append(f"  - {endpoint_or_provider}: {attempt['error']}")
 
                         result = "\n".join(error_lines)
                     else:
@@ -1594,7 +1581,7 @@ consult the MCP resources listed above.
                 # Play "listening" feedback sound
                 await play_audio_feedback(
                     "listening",
-                    openai_clients,
+                    service_clients,
                     chime_enabled,
                     "whisper",
                     chime_leading_silence=chime_leading_silence,
@@ -1625,7 +1612,7 @@ consult the MCP resources listed above.
                 # Play "finished" feedback sound
                 await play_audio_feedback(
                     "finished",
-                    openai_clients,
+                    service_clients,
                     chime_enabled,
                     "whisper",
                     chime_leading_silence=chime_leading_silence,
@@ -1683,23 +1670,10 @@ consult the MCP resources listed above.
                             if stt_result["error_type"] == "connection_failed":
                                 # Build helpful error message
                                 error_lines = ["STT service connection failed:"]
-                                openai_error_shown = False
 
                                 for attempt in stt_result.get("attempted_endpoints", []):
-                                    # Check if we have parsed OpenAI error details
-                                    if attempt.get('error_details') and not openai_error_shown and attempt.get('provider') == 'openai':
-                                        error_details = attempt['error_details']
-                                        error_lines.append("")
-                                        error_lines.append(error_details.get('title', 'OpenAI Error'))
-                                        error_lines.append(error_details.get('message', ''))
-                                        if error_details.get('suggestion'):
-                                            error_lines.append(f"💡 {error_details['suggestion']}")
-                                        if error_details.get('fallback'):
-                                            error_lines.append(f"ℹ️ {error_details['fallback']}")
-                                        openai_error_shown = True
-                                    else:
-                                        # Show raw error for non-OpenAI or if we already showed OpenAI error
-                                        error_lines.append(f"  - {attempt['endpoint']}: {attempt['error']}")
+                                    # Show raw error
+                                    error_lines.append(f"  - {attempt['endpoint']}: {attempt['error']}")
 
                                 error_msg = "\n".join(error_lines)
                                 logger.error(error_msg)
@@ -1781,7 +1755,7 @@ consult the MCP resources listed above.
                         # Play "listening" feedback sound
                         await play_audio_feedback(
                             "listening",
-                            openai_clients,
+                            service_clients,
                             chime_enabled,
                             "whisper",
                             chime_leading_silence=chime_leading_silence,
@@ -1799,7 +1773,7 @@ consult the MCP resources listed above.
                         # Play "finished" feedback sound
                         await play_audio_feedback(
                             "finished",
-                            openai_clients,
+                            service_clients,
                             chime_enabled,
                             "whisper",
                             chime_leading_silence=chime_leading_silence,
@@ -1837,7 +1811,7 @@ consult the MCP resources listed above.
                         # Play "listening" feedback sound
                         await play_audio_feedback(
                             "listening",
-                            openai_clients,
+                            service_clients,
                             chime_enabled,
                             "whisper",
                             chime_leading_silence=chime_leading_silence,
@@ -1855,7 +1829,7 @@ consult the MCP resources listed above.
                         # Play "finished" feedback sound
                         await play_audio_feedback(
                             "finished",
-                            openai_clients,
+                            service_clients,
                             chime_enabled,
                             "whisper",
                             chime_leading_silence=chime_leading_silence,
@@ -1912,7 +1886,7 @@ consult the MCP resources listed above.
                     conversation_logger.log_stt(
                         text=response_text if response_text else "[no speech detected]",
                         model=stt_config.get('model', 'whisper-1'),
-                        provider=stt_config.get('provider', 'openai'),
+                        provider=stt_config.get('provider', 'whisper'),
                         provider_url=stt_config.get('base_url'),
                         provider_type=stt_config.get('provider_type'),
                         audio_format='mp3',

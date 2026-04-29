@@ -128,13 +128,13 @@ async def voice_status() -> str:
 
 @mcp.tool()
 async def list_tts_voices(provider: Optional[str] = None) -> str:
-    """List available TTS voices for different providers.
+    """List available TTS voices.
     
     Args:
-        provider: Optional provider name ('openai' or 'kokoro'). If not specified, lists all available voices.
+        provider: Optional provider name ('kokoro'). If not specified, lists all available voices.
     
     Returns:
-        A formatted list of available voices by provider.
+        A formatted list of available voices.
     """
     await startup_initialization()
     
@@ -145,40 +145,11 @@ async def list_tts_voices(provider: Optional[str] = None) -> str:
     # Determine which providers to check
     providers_to_check = []
     if provider:
-        if provider.lower() not in ['openai', 'kokoro']:
-            return f"Error: Unknown provider '{provider}'. Valid options: 'openai', 'kokoro'"
+        if provider.lower() not in ['kokoro']:
+            return f"Error: Unknown provider '{provider}'. Valid options: 'kokoro'"
         providers_to_check = [provider.lower()]
     else:
-        providers_to_check = ['openai', 'kokoro']
-    
-    # OpenAI voices
-    if 'openai' in providers_to_check:
-        results.append("\n📢 OpenAI Voices")
-        results.append("-" * 40)
-        
-        # Standard voices (work with all models)
-        results.append("\n**Standard Voices** (tts-1, tts-1-hd):")
-        standard_voices = ['alloy', 'echo', 'fable', 'onyx', 'nova', 'shimmer']
-        for voice in standard_voices:
-            results.append(f"  • {voice}")
-        
-        # Enhanced voices for gpt-4o-mini-tts
-        results.append("\n**Enhanced Voices** (gpt-4o-mini-tts):")
-        enhanced_voices = ['alloy', 'echo', 'shimmer']
-        for voice in enhanced_voices:
-            results.append(f"  • {voice} - supports emotional expression")
-        
-        results.append("\n**Voice Characteristics**:")
-        voice_descriptions = {
-            'alloy': 'Natural and conversational (default)',
-            'echo': 'Smooth and conversational', 
-            'fable': 'British accent, authoritative',
-            'onyx': 'Deep and authoritative',
-            'nova': 'Warm and friendly',
-            'shimmer': 'Expressive and engaging'
-        }
-        for voice, desc in voice_descriptions.items():
-            results.append(f"  • {voice}: {desc}")
+        providers_to_check = ['kokoro']
     
     # Kokoro voices
     if 'kokoro' in providers_to_check:

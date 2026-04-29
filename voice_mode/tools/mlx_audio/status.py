@@ -17,7 +17,7 @@ async def mlx_audio_status() -> Dict[str, Any]:
     """Check the status of the mlx-audio service.
 
     Hits ``/v1/models`` on the configured port (default 8890) to verify
-    the OpenAI-compatible endpoint is responding.
+    the standard REST endpoint is responding.
 
     Returns:
         Dict with service status, health, and endpoint details.

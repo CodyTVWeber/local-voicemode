@@ -121,7 +121,7 @@ def setup_coreml_venv(whisper_dir: Path, force: bool = False) -> Dict[str, Any]:
         packages = [
             "torch==2.5.0",  # Specific version mentioned in whisper.cpp for coremltools compatibility
             "coremltools>=7.0",
-            "openai-whisper",
+            "whisper",
             "ane_transformers"
         ]
         

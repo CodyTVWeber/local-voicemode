@@ -6,7 +6,6 @@ from typing import Optional, Union, BinaryIO, Dict, Any
 
 from .types import TranscriptionResult, TranscriptionBackend, OutputFormat
 from .backends import (
-    transcribe_with_openai,
     transcribe_with_whisperx,
     transcribe_with_whisper_cpp
 )
@@ -16,7 +15,7 @@ from .formats import convert_to_format
 async def transcribe_audio(
     audio_file: Union[str, Path, BinaryIO],
     word_timestamps: bool = False,
-    backend: TranscriptionBackend = TranscriptionBackend.OPENAI,
+    backend: TranscriptionBackend = TranscriptionBackend.WHISPER_CPP,
     output_format: OutputFormat = OutputFormat.JSON,
     language: Optional[str] = None,
     model: str = "whisper-1"
@@ -32,7 +31,7 @@ async def transcribe_audio(
         backend: Which transcription backend to use
         output_format: Output format for transcription
         language: Language code (e.g., 'en', 'es', 'fr')
-        model: Model to use (for OpenAI backend)
+        model: Model to use
         
     Returns:
         TranscriptionResult with transcription data
@@ -62,14 +61,7 @@ async def transcribe_audio(
     
     # Call appropriate backend
     try:
-        if backend == TranscriptionBackend.OPENAI:
-            result = await transcribe_with_openai(
-                audio_path,
-                word_timestamps=word_timestamps,
-                language=language,
-                model=model
-            )
-        elif backend == TranscriptionBackend.WHISPERX:
+        if backend == TranscriptionBackend.WHISPERX:
             result = await transcribe_with_whisperx(
                 audio_path,
                 word_timestamps=word_timestamps,
@@ -116,7 +108,7 @@ async def transcribe_audio(
 def transcribe_audio_sync(
     audio_file: Union[str, Path, BinaryIO],
     word_timestamps: bool = False,
-    backend: TranscriptionBackend = TranscriptionBackend.OPENAI,
+    backend: TranscriptionBackend = TranscriptionBackend.WHISPER_CPP,
     output_format: OutputFormat = OutputFormat.JSON,
     language: Optional[str] = None,
     model: str = "whisper-1"

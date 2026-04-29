@@ -35,7 +35,7 @@ def _pydub_format(fmt: str) -> str:
     """Map TTS response_format to the container format pydub/ffmpeg expects.
 
     Opus is always wrapped in an Ogg (or WebM) container -- ffmpeg has no
-    raw 'opus' demuxer. TTS providers (Kokoro, OpenAI) return Ogg/Opus when
+    raw 'opus' demuxer. TTS providers (Kokoro) return Ogg/Opus when
     response_format='opus', so we tell pydub format='ogg' for decoding.
     """
     return "ogg" if fmt == "opus" else fmt
@@ -234,7 +234,7 @@ class AudioStreamPlayer:
 
 async def stream_pcm_audio(
     text: str,
-    openai_client,
+    tts_client,
     request_params: dict,
     debug: bool = False,
     save_audio: bool = False,
@@ -243,7 +243,7 @@ async def stream_pcm_audio(
 ) -> Tuple[bool, StreamMetrics]:
     """Stream PCM audio with true HTTP streaming for minimal latency.
     
-    Uses the OpenAI SDK's streaming response with iter_bytes() for real-time playback.
+    Uses the SDK's streaming response with iter_bytes() for real-time playback.
     """
     metrics = StreamMetrics()
     start_time = time.perf_counter()
@@ -277,12 +277,12 @@ async def stream_pcm_audio(
         if event_logger:
             event_logger.log_event(event_logger.TTS_PLAYBACK_START)
         
-        # Don't add stream parameter - Kokoro defaults to true, OpenAI doesn't support it
+        # Don't add stream parameter - Kokoro defaults to true
         
         logger.info("Starting true HTTP streaming with iter_bytes()")
         
         # Use the streaming response API
-        async with openai_client.audio.speech.with_streaming_response.create(
+        async with tts_client.audio.speech.with_streaming_response.create(
             **request_params
         ) as response:
             chunk_count = 0
@@ -401,7 +401,7 @@ async def stream_pcm_audio(
 
 async def stream_tts_audio(
     text: str,
-    openai_client,
+    tts_client,
     request_params: dict,
     debug: bool = False,
     save_audio: bool = False,
@@ -412,7 +412,7 @@ async def stream_tts_audio(
     
     Args:
         text: Text to convert to speech
-        openai_client: OpenAI client instance
+        tts_client: TTS client instance
         request_params: Parameters for TTS request
         debug: Enable debug logging
         
@@ -427,7 +427,7 @@ async def stream_tts_audio(
     if format == 'pcm':
         return await stream_pcm_audio(
             text=text,
-            openai_client=openai_client,
+            tts_client=tts_client,
             request_params=request_params,
             debug=debug,
             save_audio=save_audio,
@@ -438,7 +438,7 @@ async def stream_tts_audio(
         # Use buffered streaming for formats that need decoding
         return await stream_with_buffering(
             text=text,
-            openai_client=openai_client,
+            tts_client=tts_client,
             request_params=request_params,
             debug=debug,
             save_audio=save_audio,
@@ -450,7 +450,7 @@ async def stream_tts_audio(
 # Fallback for complex formats - buffer and decode complete file
 async def stream_with_buffering(
     text: str,
-    openai_client,
+    tts_client,
     request_params: dict,
     sample_rate: int = 24000,  # TTS standard sample rate
     debug: bool = False,
@@ -485,10 +485,10 @@ async def stream_with_buffering(
         )
         stream.start()
         
-        # Don't add stream parameter - Kokoro defaults to true, OpenAI doesn't support it
+        # Don't add stream parameter - Kokoro defaults to true
         
         # Use the streaming response API for true HTTP streaming
-        async with openai_client.audio.speech.with_streaming_response.create(
+        async with tts_client.audio.speech.with_streaming_response.create(
             **request_params
         ) as response:
             first_chunk_time = None

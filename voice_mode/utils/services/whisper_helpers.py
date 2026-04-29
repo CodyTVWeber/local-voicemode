@@ -461,9 +461,9 @@ async def convert_to_coreml_legacy(
             elif "whisper" in combined_output:
                 error_details.update({
                     "error_category": "missing_whisper",
-                    "error": "OpenAI Whisper package not installed",
-                    "install_command": "uv pip install openai-whisper",
-                    "manual_install": "pip install openai-whisper",
+                    "error": "Whisper package not installed",
+                    "install_command": "uv pip install whisper",
+                    "manual_install": "pip install whisper",
                     "package_size": "~100MB"
                 })
             elif "ane_transformers" in combined_output:

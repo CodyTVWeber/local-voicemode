@@ -6,7 +6,6 @@ from enum import Enum
 
 class TranscriptionBackend(str, Enum):
     """Available transcription backends."""
-    OPENAI = "openai"
     WHISPERX = "whisperx"
     WHISPER_CPP = "whisper-cpp"
 

@@ -130,8 +130,8 @@ def save_debug_file(data: bytes, prefix: str, extension: str, debug_dir: Path, d
         return None
 
 
-def get_openai_clients(api_key: str, stt_base_url: Optional[str] = None, tts_base_url: Optional[str] = None) -> dict:
-    """Initialize OpenAI clients for STT and TTS with connection pooling"""
+def get_local_clients(_key: str, stt_base_url: Optional[str] = None, tts_base_url: Optional[str] = None) -> dict:
+    """Initialize local clients for STT and TTS with connection pooling"""
     # Configure timeouts and connection pooling
     http_client_config = {
         'timeout': httpx.Timeout(30.0, connect=5.0),
@@ -148,13 +148,13 @@ def get_openai_clients(api_key: str, stt_base_url: Optional[str] = None, tts_bas
 
     return {
         'stt': AsyncOpenAI(
-            api_key=api_key,
+            api_key=_key,
             base_url=stt_base_url,
             http_client=stt_http_client,
             max_retries=stt_max_retries
         ),
         'tts': AsyncOpenAI(
-            api_key=api_key,
+            api_key=_key,
             base_url=tts_base_url,
             http_client=tts_http_client,
             max_retries=tts_max_retries
@@ -164,7 +164,7 @@ def get_openai_clients(api_key: str, stt_base_url: Optional[str] = None, tts_bas
 
 async def text_to_speech(
     text: str,
-    openai_clients: dict,
+    service_clients: dict,
     tts_model: str,
     tts_voice: str,
     tts_base_url: str,
@@ -221,10 +221,8 @@ async def text_to_speech(
         )
         
         # Determine provider from base URL (simple heuristic)
-        if "openai" in tts_base_url:
-            provider = "openai"
-        else:
-            provider = "kokoro"
+        from .provider_discovery import detect_provider_type
+        provider = detect_provider_type(tts_base_url)
         
         logger.info(f"  • Detected Provider: {provider} (based on URL: {tts_base_url})")
         
@@ -256,7 +254,7 @@ async def text_to_speech(
         # mlx-audio requires `stream: true` in the request body to emit
         # chunks progressively; without it the server buffers the full
         # generation before responding, defeating streaming playback.
-        # Kokoro streams by default, OpenAI ignores the flag — so we only
+        # Kokoro streams by default — so we only
         # add it on the clone path (which always targets mlx-audio).
         # `streaming_interval` controls how much audio the server buffers
         # before flushing each chunk. The server default is 2.0s, which
@@ -297,7 +295,7 @@ async def text_to_speech(
             # Pass the client directly
             success, stream_metrics = await stream_tts_audio(
                 text=text,
-                openai_client=openai_clients[client_key],
+                tts_client=service_clients[client_key],
                 request_params=request_params,
                 debug=debug,
                 save_audio=save_audio,
@@ -326,7 +324,7 @@ async def text_to_speech(
         
         # Original buffered playback
         # Use context manager to ensure response is properly closed
-        async with openai_clients[client_key].audio.speech.with_streaming_response.create(
+        async with service_clients[client_key].audio.speech.with_streaming_response.create(
             **request_params
         ) as response:
             # Read the entire response content
@@ -777,14 +775,14 @@ async def play_system_audio(message_key: str, fallback_text: Optional[str] = Non
     return False
 
 
-async def cleanup(openai_clients: dict):
+async def cleanup(service_clients: dict):
     """Cleanup function to close HTTP clients and resources"""
     logger.info("Shutting down Voice Mode Server...")
     
-    # Close OpenAI HTTP clients
+    # Close HTTP clients
     try:
         # Close all clients (including provider-specific ones)
-        for client_name, client in openai_clients.items():
+        for client_name, client in service_clients.items():
             if hasattr(client, '_client'):
                 await client._client.aclose()
                 logger.debug(f"Closed {client_name} HTTP client")

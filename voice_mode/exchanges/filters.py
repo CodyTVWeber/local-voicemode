@@ -78,7 +78,7 @@ class ExchangeFilter:
         """Filter by provider.
         
         Args:
-            provider: Provider name (openai, kokoro, etc.)
+            provider: Provider name (kokoro, etc.)
             
         Returns:
             Self for chaining

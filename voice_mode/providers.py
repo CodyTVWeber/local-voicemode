@@ -93,10 +93,10 @@ async def get_tts_client_and_voice(
                 selected_voice = voice
                 selected_model = _select_model_for_endpoint(endpoint_info, model)
 
-                api_key = "dummy-key-for-local"
+                _key = "dummy-key-for-local"
                 # Disable retries for local endpoints - they either work or don't
                 max_retries = 0 if is_local_provider(url) else 2
-                client = AsyncOpenAI(api_key=api_key, base_url=url, max_retries=max_retries)
+                client = AsyncOpenAI(api_key=_key, base_url=url, max_retries=max_retries)
 
                 logger.info(f"  ✓ Selected endpoint: {url} ({endpoint_info.provider_type})")
                 logger.info(f"  ✓ Selected voice: {selected_voice}")
@@ -120,10 +120,10 @@ async def get_tts_client_and_voice(
                 selected_voice = preferred_voice
                 selected_model = _select_model_for_endpoint(endpoint_info, model)
 
-                api_key = "dummy-key-for-local"
+                _key = "dummy-key-for-local"
                 # Disable retries for local endpoints - they either work or don't
                 max_retries = 0 if is_local_provider(url) else 2
-                client = AsyncOpenAI(api_key=api_key, base_url=url, max_retries=max_retries)
+                client = AsyncOpenAI(api_key=_key, base_url=url, max_retries=max_retries)
 
                 logger.info(f"  ✓ Selected endpoint: {url} ({endpoint_info.provider_type})")
                 logger.info(f"  ✓ Selected voice: {selected_voice}")
@@ -142,10 +142,10 @@ async def get_tts_client_and_voice(
             selected_voice = endpoint_info.voices[0]
             selected_model = _select_model_for_endpoint(endpoint_info, model)
 
-            api_key = "dummy-key-for-local"
+            _key = "dummy-key-for-local"
             # Disable retries for local endpoints - they either work or don't
             max_retries = 0 if is_local_provider(url) else 2
-            client = AsyncOpenAI(api_key=api_key, base_url=url, max_retries=max_retries)
+            client = AsyncOpenAI(api_key=_key, base_url=url, max_retries=max_retries)
 
             logger.info(f"  ✓ Selected endpoint: {url} ({endpoint_info.provider_type})")
             logger.info(f"  ✓ Selected voice: {selected_voice}")
@@ -203,11 +203,11 @@ async def get_stt_client(
     endpoint_info = endpoints[0]
     selected_model = _select_stt_model_for_endpoint(endpoint_info, model)
     
-    api_key = "dummy-key-for-local"
+    _key = "dummy-key-for-local"
     # Disable retries for local endpoints - they either work or don't
     max_retries = 0 if is_local_provider(endpoint_info.base_url) else 2
     client = AsyncOpenAI(
-        api_key=api_key,
+        api_key=_key,
         base_url=endpoint_info.base_url,
         max_retries=max_retries
     )
@@ -253,18 +253,10 @@ def _select_stt_model_for_endpoint(endpoint_info: EndpointInfo, requested_model:
     """Select the STT model name to send to an endpoint.
 
     Resolution order:
-      1. provider_type == "openai" -> always "whisper-1" (OpenAI's only STT model id)
-      2. caller-passed requested_model wins
-      3. positional STT_MODELS entry matching this endpoint's index in STT_BASE_URLS
-      4. global STT_MODEL fallback
-
-    Note: the OpenAI override keys off endpoint_info.provider_type. If an
-    OpenAI-compatible endpoint ever sets provider_type="openai" this branch
-    would be too broad -- revisit when VM-1106-style provider detection lands.
+      1. caller-passed requested_model wins
+      2. positional STT_MODELS entry matching this endpoint's index in STT_BASE_URLS
+      3. global STT_MODEL fallback
     """
-    if endpoint_info.provider_type == "openai":
-        return "whisper-1"
-
     if requested_model is not None:
         return requested_model
 
@@ -294,7 +286,7 @@ async def is_provider_available(provider_id: str, timeout: float = 2.0) -> bool:
         return False
     
     # Check in appropriate registry
-    service_type = "tts" if provider_id in ["kokoro", "openai"] else "stt"
+    service_type = "tts" if provider_id == "kokoro" else "stt"
     endpoint_info = provider_registry.registry[service_type].get(base_url)
 
     # Without health checks, we just return if the endpoint is configured

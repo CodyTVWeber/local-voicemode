@@ -374,29 +374,17 @@ def check_kokoro_service() -> ServiceInfo:
         )
 
 
-def check_openai_api() -> Dict[str, Any]:
-    """OpenAI API not used in local-only mode."""
-    return {
-        "status": "disabled",
-        "api_key_set": False,
-    }
-
-
-def get_active_providers(whisper: ServiceInfo, kokoro: ServiceInfo, openai: Dict[str, Any]) -> Dict[str, str]:
+def get_active_providers(whisper: ServiceInfo, kokoro: ServiceInfo) -> Dict[str, str]:
     """Determine active TTS and STT providers."""
     # Determine active TTS
     tts_active = "none"
     if kokoro.status == ServiceStatus.RUNNING or kokoro.status == ServiceStatus.FORWARDED:
         tts_active = "kokoro"
-    elif openai["status"] == "available":
-        tts_active = "openai"
 
     # Determine active STT
     stt_active = "none"
     if whisper.status == ServiceStatus.RUNNING or whisper.status == ServiceStatus.FORWARDED:
         stt_active = "whisper"
-    elif openai["status"] == "available":
-        stt_active = "openai"
 
     return {
         "tts": tts_active,
@@ -425,10 +413,9 @@ def collect_status_data() -> Dict[str, Any]:
     # Check services
     whisper = check_whisper_service()
     kokoro = check_kokoro_service()
-    openai = check_openai_api()
 
     # Get active providers
-    active = get_active_providers(whisper, kokoro, openai)
+    active = get_active_providers(whisper, kokoro)
 
     # Check dependencies
     ffmpeg = check_ffmpeg()
@@ -456,11 +443,6 @@ def collect_status_data() -> Dict[str, Any]:
                     "uptime": kokoro.details.get("uptime") if kokoro.details else None,
                     "auto_start": kokoro.auto_start,
                     "health": kokoro.health
-                },
-                "openai": {
-                    "status": openai["status"],
-                    "api_key_set": openai["api_key_set"],
-                    "model": openai["tts_model"]
                 }
             }
         },
@@ -477,10 +459,6 @@ def collect_status_data() -> Dict[str, Any]:
                     "uptime": whisper.details.get("uptime") if whisper.details else None,
                     "auto_start": whisper.auto_start,
                     "health": whisper.health
-                },
-                "openai": {
-                    "status": openai["status"],
-                    "api_key_set": openai["api_key_set"]
                 }
             }
         },
@@ -571,16 +549,6 @@ def format_terminal_output(data: Dict[str, Any], use_colors: bool = True) -> str
     lines.append(f"  Auto-start: {'enabled' if kokoro.get('auto_start') else 'disabled'}")
     lines.append("")
 
-    # OpenAI API
-    openai = data["tts"]["providers"]["openai"]
-    lines.append("── OpenAI API " + "─" * 31)
-    sym = status_symbol(openai["status"])
-    status_text = "Available (API key set)" if openai["api_key_set"] else "Not configured"
-    lines.append(f"  Status:     {sym} {status_text}")
-    if openai["api_key_set"]:
-        lines.append(f"  TTS Model:  {openai['model']}")
-    lines.append("")
-
     # Active Providers
     lines.append("── Active Providers " + "─" * 25)
     tts_active = data["tts"]["active"]
@@ -644,14 +612,6 @@ def format_markdown_output(data: Dict[str, Any]) -> str:
         kokoro_details.append(f"Voice: {kokoro['voice']}")
     lines.append(f"| Kokoro | TTS | {'✓' if kokoro['status'] in ['running', 'forwarded'] else '✗'} {kokoro['status'].replace('_', ' ').title()} | {', '.join(kokoro_details) if kokoro_details else '-'} |")
 
-    # OpenAI TTS
-    openai = data["tts"]["providers"]["openai"]
-    openai_details = []
-    if openai["api_key_set"]:
-        openai_details.append("API key set")
-        openai_details.append(f"Model: {openai['model']}")
-    lines.append(f"| OpenAI | TTS | {'✓' if openai['status'] == 'available' else '✗'} {openai['status'].replace('_', ' ').title()} | {', '.join(openai_details) if openai_details else '-'} |")
-
     # Whisper
     whisper = data["stt"]["providers"]["whisper"]
     whisper_details = []
@@ -663,10 +623,6 @@ def format_markdown_output(data: Dict[str, Any]) -> str:
             model_info += " (CoreML)"
         whisper_details.append(f"Model: {model_info}")
     lines.append(f"| Whisper | STT | {'✓' if whisper['status'] in ['running', 'forwarded'] else '✗'} {whisper['status'].replace('_', ' ').title()} | {', '.join(whisper_details) if whisper_details else '-'} |")
-
-    # OpenAI STT
-    openai_stt = data["stt"]["providers"]["openai"]
-    lines.append(f"| OpenAI | STT | {'✓' if openai_stt['status'] == 'available' else '✗'} {openai_stt['status'].replace('_', ' ').title()} | {'API key set' if openai_stt['api_key_set'] else '-'} |")
 
     lines.append("")
     lines.append(f"Active: TTS={data['tts']['active'].title()}, STT={data['stt']['active'].title()}" +
@@ -709,7 +665,6 @@ def status(output_format: Optional[str], no_color: bool):
 
     Displays the complete state of VoiceMode including:
     - Service status (Whisper STT, Kokoro TTS)
-    - OpenAI API availability
     - Active providers
     - System dependencies
     - Configuration

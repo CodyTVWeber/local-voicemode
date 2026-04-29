@@ -1,6 +1,6 @@
 """Installation tool for the mlx-audio service (Apple Silicon).
 
-mlx-audio is a single Python server that exposes OpenAI-compatible
+mlx-audio is a single Python server that exposes standard REST
 ``/v1/audio/transcriptions`` and ``/v1/audio/speech`` endpoints, backed
 by MLX models for Whisper STT, Kokoro TTS, and Qwen3-TTS clone-voice.
 
@@ -15,7 +15,7 @@ The install pipeline is:
 2. ``uv tool install mlx-audio --with <extras>`` -- the extras list is
    hardcoded in :data:`MLX_AUDIO_EXTRAS` and is the minimum surface
    needed to make the upstream server.py serve Kokoro TTS, Qwen3-TTS
-   clone-voice, and Whisper STT under the OpenAI-compatible API.
+   clone-voice, and Whisper STT under the standard REST API.
 3. Apply the bundled ``mlx_audio_server.patch`` to the freshly-installed
    ``server.py`` (idempotent; sentinel-checked).
 4. Render the launchd plist calling ``~/.local/bin/mlx_audio.server``

@@ -79,7 +79,7 @@ async def simple_tts_failover(
         )
 
         # Create clients dict for text_to_speech
-        openai_clients = {'tts': client}
+        service_clients = {'tts': client}
 
         # Try TTS with this endpoint
         # Wrap in try/catch to get actual exception details
@@ -92,7 +92,7 @@ async def simple_tts_failover(
 
             success, metrics = await text_to_speech(
                 text=text,
-                openai_clients=openai_clients,
+                service_clients=service_clients,
                 tts_model=selected_model,
                 tts_voice=selected_voice,
                 tts_base_url=base_url,
@@ -208,7 +208,7 @@ async def simple_stt_failover(
                 max_retries=0
             )
 
-            # Resolve the per-endpoint STT model: OpenAI override -> caller-passed
+            # Resolve the per-endpoint STT model: caller-passed
             # -> positional STT_MODELS -> global STT_MODEL.
             endpoint_info = EndpointInfo(
                 base_url=base_url,
@@ -231,14 +231,12 @@ async def simple_stt_failover(
 
             # Handle language parameter based on provider
             # - whisper.cpp: needs "auto" explicitly (default is "en")
-            # - OpenAI API: omit for auto-detect (doesn't accept "auto")
             if WHISPER_LANGUAGE and WHISPER_LANGUAGE != "auto":
                 # Explicit language set - pass to all providers
                 transcription_kwargs["language"] = WHISPER_LANGUAGE
             elif is_local_provider(base_url):
                 # Local whisper.cpp with auto mode - must pass "auto" explicitly
                 transcription_kwargs["language"] = "auto"
-            # For OpenAI with "auto" - don't pass parameter (auto-detect by default)
 
             transcription = await client.audio.transcriptions.create(**transcription_kwargs)
             request_time_ms = (time.perf_counter() - request_start) * 1000
