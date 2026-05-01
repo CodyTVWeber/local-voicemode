@@ -1,4 +1,4 @@
-# Voicemode Conversation Patterns
+# Yakk Conversation Patterns
 
 ## Parallel Operations Pattern (RECOMMENDED)
 
@@ -178,7 +178,7 @@ converse("Done!", skip_tts=True, wait_for_response=False)
 
 ### Follow user preference (default)
 ```python
-converse("Hello")  # Uses VOICEMODE_SKIP_TTS setting
+converse("Hello")  # Uses YAKK_SKIP_TTS setting
 ```
 
 ## Multi-step Conversation Pattern
@@ -235,6 +235,6 @@ converse("I found multiple files with that name. Which one did you mean?")
 ```
 
 ## See Also
-- `voicemode-quickstart` - Basic usage examples
-- `voicemode-parameters` - Full parameter reference
-- `voicemode-troubleshooting` - Common issues
+- `yakk-quickstart` - Basic usage examples
+- `yakk-parameters` - Full parameter reference
+- `yakk-troubleshooting` - Common issues

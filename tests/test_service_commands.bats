@@ -223,7 +223,7 @@ setup() {
     fi
     
     # Should contain bash completion function
-    if [[ "$output" != *"_voicemode_completion"* ]]; then
+    if [[ "$output" != *"_yakk_completion"* ]]; then
         echo "Completions didn't generate bash function:"
         echo "$output"
         return 1
@@ -244,7 +244,7 @@ setup() {
     fi
     
     # Should contain zsh completion function
-    if [[ "$output" != *"#compdef voicemode"* ]]; then
+    if [[ "$output" != *"#compdef yakk"* ]]; then
         echo "Completions didn't generate zsh function:"
         echo "$output"
         return 1
@@ -265,7 +265,7 @@ setup() {
     fi
     
     # Should contain fish completion function
-    if [[ "$output" != *"__fish_voicemode_complete"* ]]; then
+    if [[ "$output" != *"__fish_yakk_complete"* ]]; then
         echo "Completions didn't generate fish function:"
         echo "$output"
         return 1

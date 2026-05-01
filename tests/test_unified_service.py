@@ -142,7 +142,7 @@ class TestUnifiedServiceTool:
         """Test enabling service on macOS"""
         with patch('platform.system', return_value='Darwin'), \
              patch('voice_mode.tools.service.load_service_template', return_value="template content") as mock_template, \
-             patch('voice_mode.tools.service.find_whisper_server', return_value="/Users/test/.voicemode/services/whisper/build/bin/whisper-server"), \
+             patch('voice_mode.tools.service.find_whisper_server', return_value="/Users/test/.yakk/services/whisper/build/bin/whisper-server"), \
              patch('voice_mode.tools.service.find_whisper_model', return_value="/path/to/model.bin"), \
              patch('pathlib.Path.exists', return_value=True), \
              patch('pathlib.Path.mkdir'), \
@@ -156,13 +156,13 @@ class TestUnifiedServiceTool:
 <plist version="1.0">
 <dict>
     <key>Label</key>
-    <string>com.voicemode.whisper</string>
+    <string>com.yakk.whisper</string>
     <key>ProgramArguments</key>
     <array>
         <string>{START_SCRIPT}</string>
     </array>
     <key>StandardOutPath</key>
-    <string>{HOME}/.voicemode/logs/whisper/whisper.out.log</string>
+    <string>{HOME}/.yakk/logs/whisper/whisper.out.log</string>
 </dict>
 </plist>"""
             
@@ -246,12 +246,12 @@ class TestUnifiedServiceTool:
         with patch('platform.system', return_value='Linux'), \
              patch('subprocess.run') as mock_run:
             
-            journal_output = "Jan 15 10:00:00 systemd[1]: Started voicemode-kokoro.service"
+            journal_output = "Jan 15 10:00:00 systemd[1]: Started yakk-kokoro.service"
             mock_run.return_value = MagicMock(returncode=0, stdout=journal_output)
             
             result = await service("kokoro", "logs", lines=20)
             assert "Last 20 journal entries" in result
-            assert "Started voicemode-kokoro.service" in result
+            assert "Started yakk-kokoro.service" in result
     
     @pytest.mark.asyncio
     async def test_view_logs_fallback_to_files(self):
@@ -287,7 +287,7 @@ class TestUnifiedServiceTool:
 
         with patch('platform.system', return_value='Darwin'), \
              patch('voice_mode.tools.service.load_service_template', return_value=mock_template_content), \
-             patch('voice_mode.tools.service.find_whisper_server', return_value="/Users/test/.voicemode/services/whisper/build/bin/whisper-server"), \
+             patch('voice_mode.tools.service.find_whisper_server', return_value="/Users/test/.yakk/services/whisper/build/bin/whisper-server"), \
              patch('voice_mode.tools.service.find_whisper_model', return_value="/path/to/model.bin"), \
              patch('pathlib.Path.exists', return_value=True), \
              patch('pathlib.Path.mkdir'), \

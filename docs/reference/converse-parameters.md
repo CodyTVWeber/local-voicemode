@@ -1,4 +1,4 @@
-# Voicemode Parameters Reference
+# Yakk Parameters Reference
 
 ## Core Parameters
 
@@ -137,7 +137,7 @@ Time to add before audio chime starts.
 
 **Use case:** Bluetooth devices that need audio buffer (e.g., 1.0 seconds)
 
-**Default:** Uses VOICEMODE_CHIME_LEADING_SILENCE env var (0.1s)
+**Default:** Uses YAKK_CHIME_LEADING_SILENCE env var (0.1s)
 
 ### chime_trailing_silence
 **Type:** number (seconds, optional)
@@ -145,7 +145,7 @@ Time to add after audio chime ends.
 
 **Use case:** Prevent chime cutoff (e.g., 0.5 seconds)
 
-**Default:** Uses VOICEMODE_CHIME_TRAILING_SILENCE env var (0.2s)
+**Default:** Uses YAKK_CHIME_TRAILING_SILENCE env var (0.2s)
 
 ## Audio Format & Feedback
 
@@ -155,7 +155,7 @@ Override audio format.
 
 **Options:** pcm, mp3, wav, flac, aac, opus
 
-**Default:** Uses VOICEMODE_TTS_AUDIO_FORMAT env var
+**Default:** Uses YAKK_TTS_AUDIO_FORMAT env var
 
 ## Audio Saving & Debugging
 
@@ -163,24 +163,24 @@ Audio files can be saved for debugging, manual transcription recovery, or archiv
 
 ### Configuration
 
-Set in `~/.voicemode/voicemode.env`:
+Set in `~/.yakk/yakk.env`:
 
 ```bash
 # Save all audio files (STT recordings and TTS output)
-VOICEMODE_SAVE_ALL=true
+YAKK_SAVE_ALL=true
 
 # Or enable individually
-VOICEMODE_SAVE_AUDIO=true         # STT recordings only
-VOICEMODE_SAVE_TRANSCRIPTIONS=true # Transcription JSON files
+YAKK_SAVE_AUDIO=true         # STT recordings only
+YAKK_SAVE_TRANSCRIPTIONS=true # Transcription JSON files
 
 # Automatically enabled in debug mode
-VOICEMODE_DEBUG=true
+YAKK_DEBUG=true
 ```
 
 ### Saved File Locations
 
 ```
-~/.voicemode/audio/
+~/.yakk/audio/
 ├── latest-STT.wav          # Symlink to most recent STT recording
 ├── latest-TTS.mp3          # Symlink to most recent TTS output
 ├── 2026-02-09_14-15-23_STT_conv-abc123.wav
@@ -192,16 +192,16 @@ VOICEMODE_DEBUG=true
 If STT fails but audio was recorded, manually transcribe:
 
 ```bash
-whisper-cli ~/.voicemode/audio/latest-STT.wav
+whisper-cli ~/.yakk/audio/latest-STT.wav
 ```
 
-See [STT Recovery](../../.claude/skills/voicemode/SKILL.md#stt-recovery---manual-transcription) and [Troubleshooting - No Speech Detected](../../troubleshooting/index.md#1-no-speech-detected) for details.
+See [STT Recovery](../../.claude/skills/yakk/SKILL.md#stt-recovery---manual-transcription) and [Troubleshooting - No Speech Detected](../../troubleshooting/index.md#1-no-speech-detected) for details.
 
 ### chime_enabled
 **Type:** boolean | string (optional)
 Enable or disable audio feedback chimes.
 
-**Default:** Uses VOICEMODE_CHIME_ENABLED env var
+**Default:** Uses YAKK_CHIME_ENABLED env var
 
 ### skip_tts
 **Type:** boolean (optional)
@@ -210,7 +210,7 @@ Skip text-to-speech, show text only.
 **Values:**
 - `true` - Skip TTS, faster response, text-only
 - `false` - Always use TTS
-- `null` (default) - Follow VOICEMODE_SKIP_TTS env var
+- `null` (default) - Follow YAKK_SKIP_TTS env var
 
 **Use cases:**
 - Rapid development iterations

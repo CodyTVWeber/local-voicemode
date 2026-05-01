@@ -1,15 +1,15 @@
 # voice-mode-install
 
-A standalone installer package for VoiceMode that handles system dependency detection and installation.
+A standalone installer package for Yakk that handles system dependency detection and installation.
 
 ## Overview
 
-`voice-mode-install` simplifies the VoiceMode installation process by:
+`voice-mode-install` simplifies the Yakk installation process by:
 
 1. **Detecting your platform** - Identifies your OS, distribution, and architecture
 2. **Checking dependencies** - Scans for required system packages
 3. **Installing packages** - Uses your system's package manager (apt, dnf, brew)
-4. **Installing VoiceMode** - Runs `uv tool install voice-mode`
+4. **Installing Yakk** - Runs `uv tool install voice-mode`
 5. **Hardware recommendations** - Suggests optimal configuration for your system
 6. **Logging everything** - Saves installation logs for troubleshooting
 
@@ -50,17 +50,17 @@ uvx voice-mode-install --non-interactive
 ### Phase 1 (Included)
 
 ✅ **Dry-run Mode** - Preview what will be installed
-✅ **Installation Logging** - Detailed logs saved to `~/.voicemode/install.log`
+✅ **Installation Logging** - Detailed logs saved to `~/.yakk/install.log`
 ✅ **Shell Completion** - Auto-configures tab completion for bash/zsh
 ✅ **Health Check** - Verifies installation after completion
-✅ **Version Pinning** - Install specific VoiceMode versions
+✅ **Version Pinning** - Install specific Yakk versions
 ✅ **Hardware Detection** - Recommends optimal setup for your system
 ✅ **Homebrew Auto-Install** - Offers to install Homebrew on macOS if missing
 
 ### Phase 2 (Future)
 
 ⏱️ Config Validation - Check for conflicting settings
-⏱️ Uninstall Support - Clean removal of VoiceMode
+⏱️ Uninstall Support - Clean removal of Yakk
 
 ## How It Works
 
@@ -71,12 +71,12 @@ uvx voice-mode-install --non-interactive
    - macOS: `brew install` (installs Homebrew first if needed)
    - Ubuntu/Debian: `sudo apt install`
    - Fedora: `sudo dnf install`
-5. **VoiceMode Installation** - Runs `uv tool install voice-mode[==version]`
+5. **Yakk Installation** - Runs `uv tool install voice-mode[==version]`
 6. **Post-Install** - Configures shell completion and verifies installation
 
 ## Installation Logs
 
-Logs are saved to `~/.voicemode/install.log` in JSONL format:
+Logs are saved to `~/.yakk/install.log` in JSONL format:
 
 ```json
 {"timestamp": "2025-10-12T10:30:00", "type": "start", "message": "Installation started"}
@@ -87,7 +87,7 @@ Logs are saved to `~/.voicemode/install.log` in JSONL format:
 
 ## Troubleshooting
 
-### VoiceMode command not found after installation
+### Yakk command not found after installation
 
 Restart your shell or run:
 ```bash
@@ -110,7 +110,7 @@ uvx voice-mode-install
 
 ### Installation hangs or fails
 
-1. Check the log file: `~/.voicemode/install.log`
+1. Check the log file: `~/.yakk/install.log`
 2. Try a dry run: `uvx voice-mode-install --dry-run`
 3. Report issues with log file attached
 
@@ -136,7 +136,7 @@ voice-mode-install --dry-run
 ```
 installer/
 ├── pyproject.toml          # Package definition
-├── voicemode_install/
+├── yakk_install/
 │   ├── __init__.py        # Version and exports
 │   ├── cli.py             # Main CLI entry point
 │   ├── system.py          # Platform detection
@@ -159,8 +159,8 @@ See `DECISIONS.md` in the task directory for detailed rationale behind:
 
 ## Contributing
 
-This installer is part of the [VoiceMode](https://github.com/mbailey/voicemode) project.
+This installer is part of the [Yakk](https://github.com/mbailey/yakk) project.
 
 ## License
 
-MIT License - Same as VoiceMode
+MIT License - Same as Yakk

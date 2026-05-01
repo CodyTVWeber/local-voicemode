@@ -1,6 +1,6 @@
 # Call Routing
 
-Voice conversation routing patterns for multi-agent VoiceMode systems.
+Voice conversation routing patterns for multi-agent Yakk systems.
 
 ## Overview
 
@@ -28,10 +28,10 @@ Call routing enables sophisticated voice conversation management across multiple
 
 ```python
 # 1. Announce
-voicemode:converse("Transferring you to the project agent.", wait_for_response=False)
+yakk:converse("Transferring you to the project agent.", wait_for_response=False)
 
 # 2. Spawn with voice instructions (mechanism depends on your setup)
-spawn_agent(path="/path", prompt="Load voicemode skill, use converse to greet user")
+spawn_agent(path="/path", prompt="Load yakk skill, use converse to greet user")
 
 # 3. Go quiet - let new agent take over
 ```
@@ -40,7 +40,7 @@ spawn_agent(path="/path", prompt="Load voicemode skill, use converse to greet us
 
 ```python
 # 1. Announce return
-voicemode:converse("Transferring you back to the assistant.", wait_for_response=False)
+yakk:converse("Transferring you back to the assistant.", wait_for_response=False)
 
 # 2. Stop conversing and exit
 ```

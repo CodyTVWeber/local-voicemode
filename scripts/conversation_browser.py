@@ -35,7 +35,7 @@ from voice_mode.core import get_audio_path
 app = Flask(__name__)
 
 # Configuration
-BASE_DIR = Path(os.getenv("VOICEMODE_BASE_DIR", str(Path.home() / ".voicemode")))
+BASE_DIR = Path(os.getenv("YAKK_BASE_DIR", str(Path.home() / ".yakk")))
 TRANSCRIPTIONS_DIR = BASE_DIR / "transcriptions"
 AUDIO_DIR = BASE_DIR / "audio"
 LOGS_DIR = BASE_DIR / "logs"

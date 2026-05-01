@@ -16,7 +16,7 @@ from dataclasses import dataclass, asdict, field
 import logging
 import atexit
 
-logger = logging.getLogger("voicemode.event-logger")
+logger = logging.getLogger("yakk.event-logger")
 
 
 @dataclass
@@ -83,7 +83,7 @@ class EventLogger:
         Initialize the event logger.
         
         Args:
-            log_dir: Directory for log files (default: ~/voicemode_logs)
+            log_dir: Directory for log files (default: ~/yakk_logs)
             enabled: Whether event logging is enabled
         """
         self.enabled = enabled
@@ -91,7 +91,7 @@ class EventLogger:
             logger.info("Event logging disabled")
             return
             
-        self.log_dir = log_dir or Path.home() / "voicemode_logs"
+        self.log_dir = log_dir or Path.home() / "yakk_logs"
         self.log_dir.mkdir(exist_ok=True)
         
         # Current log file (rotated daily)
@@ -256,7 +256,7 @@ class EventLogger:
         today = datetime.now().date()
         if self.current_date != today:
             self.current_date = today
-            log_filename = f"voicemode_events_{today.isoformat()}.jsonl"
+            log_filename = f"yakk_events_{today.isoformat()}.jsonl"
             self.log_file = self.log_dir / log_filename
             logger.info(f"Rotating log file to: {self.log_file}")
         

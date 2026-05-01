@@ -1,27 +1,27 @@
 # Whisper Speech-to-Text Setup
 
-Whisper is a local speech recognition service that converts audio to text for VoiceMode using OpenAI's Whisper model. It provides offline STT capabilities with various model sizes to balance speed and accuracy.
+Whisper is a local speech recognition service that converts audio to text for Yakk using OpenAI's Whisper model. It provides offline STT capabilities with various model sizes to balance speed and accuracy.
 
 ## Quick Start
 
 ```bash
 # Install whisper service with default base model (includes Core ML on Apple Silicon!)
-voicemode whisper service install
+yakk whisper service install
 
 # Install with a different model
-voicemode whisper service install --model large-v3
+yakk whisper service install --model large-v3
 
 # List available models and their status
-voicemode whisper model --all
+yakk whisper model --all
 
 # Switch to a different model (auto-installs if needed)
-voicemode whisper model large-v2
+yakk whisper model large-v2
 
 # Start the service
-voicemode whisper service start
+yakk whisper service start
 ```
 
-**Apple Silicon Bonus:** On M1/M2/M3/M4 Macs, VoiceMode automatically downloads pre-built Core ML models for 2-3x faster performance. No Xcode or Python dependencies required!
+**Apple Silicon Bonus:** On M1/M2/M3/M4 Macs, Yakk automatically downloads pre-built Core ML models for 2-3x faster performance. No Xcode or Python dependencies required!
 
 Default endpoint: `http://127.0.0.1:2022/v1`
 
@@ -29,14 +29,14 @@ Default endpoint: `http://127.0.0.1:2022/v1`
 
 ### Automatic Installation (Recommended)
 
-VoiceMode includes an installation tool that sets up Whisper.cpp automatically:
+Yakk includes an installation tool that sets up Whisper.cpp automatically:
 
 ```bash
 # Install with default base model (142MB) - good balance of speed and accuracy
-voicemode whisper service install
+yakk whisper service install
 
 # Install with a specific model
-voicemode whisper service install --model small
+yakk whisper service install --model small
 ```
 
 This will:
@@ -54,8 +54,8 @@ This will:
 brew install whisper.cpp
 
 # Download model
-mkdir -p ~/.voicemode/models/whisper
-cd ~/.voicemode/models/whisper
+mkdir -p ~/.yakk/models/whisper
+cd ~/.yakk/models/whisper
 curl -LO https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-large-v2.bin
 ```
 
@@ -67,8 +67,8 @@ cd whisper.cpp
 make
 
 # Download model
-mkdir -p ~/.voicemode/models/whisper
-cd ~/.voicemode/models/whisper
+mkdir -p ~/.yakk/models/whisper
+cd ~/.yakk/models/whisper
 wget https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-large-v2.bin
 ```
 
@@ -86,7 +86,7 @@ wget https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-large-v2.bin
 
 ## Core ML Acceleration (Apple Silicon)
 
-On Apple Silicon Macs (M1/M2/M3/M4), VoiceMode automatically downloads pre-built Core ML models from Hugging Face for 2-3x faster transcription:
+On Apple Silicon Macs (M1/M2/M3/M4), Yakk automatically downloads pre-built Core ML models from Hugging Face for 2-3x faster transcription:
 
 - **Automatic:** Core ML models download alongside regular models
 - **No Dependencies:** No PyTorch, Xcode, or coremltools needed
@@ -118,19 +118,19 @@ Core ML models are included automatically when available. The installation proce
 
 ```bash
 # List all models with installation status
-voicemode whisper model --all
+yakk whisper model --all
 
 # Show current active model
-voicemode whisper model
+yakk whisper model
 
 # Switch to a model (auto-installs if not present)
-voicemode whisper model small.en
+yakk whisper model small.en
 
 # Switch model without auto-installing (fails if model not installed)
-voicemode whisper model medium --no-install
+yakk whisper model medium --no-install
 
 # Switch model without restarting service
-voicemode whisper model large-v2 --no-restart
+yakk whisper model large-v2 --no-restart
 ```
 
 Note: After changing the active model with `--no-restart`, restart the whisper service manually for changes to take effect.
@@ -139,17 +139,17 @@ Note: After changing the active model with `--no-restart`, restart the whisper s
 
 ### Environment Variables
 
-Configure in `~/.voicemode/voicemode.env`:
+Configure in `~/.yakk/yakk.env`:
 
 ```bash
-VOICEMODE_WHISPER_MODEL=large-v2
-VOICEMODE_WHISPER_PORT=2022
-VOICEMODE_WHISPER_THREADS=          # Auto-detected if not set
-VOICEMODE_WHISPER_LANGUAGE=auto
-VOICEMODE_WHISPER_MODEL_PATH=~/.voicemode/models/whisper
+YAKK_WHISPER_MODEL=large-v2
+YAKK_WHISPER_PORT=2022
+YAKK_WHISPER_THREADS=          # Auto-detected if not set
+YAKK_WHISPER_LANGUAGE=auto
+YAKK_WHISPER_MODEL_PATH=~/.yakk/models/whisper
 ```
 
-**Thread Configuration**: By default, VoiceMode auto-detects the number of CPU cores and configures threads accordingly. You can override this by setting `VOICEMODE_WHISPER_THREADS` to a specific number.
+**Thread Configuration**: By default, Yakk auto-detects the number of CPU cores and configures threads accordingly. You can override this by setting `YAKK_WHISPER_THREADS` to a specific number.
 
 ### Running the Server
 
@@ -170,14 +170,14 @@ whisper-server \
 Key options:
 - `--model`: Path to model file
 - `--host`: Server host (default: 127.0.0.1)
-- `--port`: Server port (VoiceMode expects 2022)
+- `--port`: Server port (Yakk expects 2022)
 - `--inference-path`: OpenAI-compatible endpoint path
-- `--threads`: Number of threads for processing (auto-detected by VoiceMode)
+- `--threads`: Number of threads for processing (auto-detected by Yakk)
 - `--processors`: Number of parallel processors
-- `--convert`: Convert audio to required format automatically (required for VoiceMode)
+- `--convert`: Convert audio to required format automatically (required for Yakk)
 - `--print-progress`: Show transcription progress
 
-**Note**: When using VoiceMode's managed service, threads are auto-detected based on your CPU cores. The `--convert` flag is required for VoiceMode to work correctly with various audio formats.
+**Note**: When using Yakk's managed service, threads are auto-detected based on your CPU cores. The `--convert` flag is required for Yakk to work correctly with various audio formats.
 
 ### Service Management
 
@@ -185,12 +185,12 @@ Key options:
 
 ```bash
 # Start/stop service
-launchctl load ~/Library/LaunchAgents/com.voicemode.whisper.plist
-launchctl unload ~/Library/LaunchAgents/com.voicemode.whisper.plist
+launchctl load ~/Library/LaunchAgents/com.yakk.whisper.plist
+launchctl unload ~/Library/LaunchAgents/com.yakk.whisper.plist
 
 # Enable/disable at startup
-launchctl load -w ~/Library/LaunchAgents/com.voicemode.whisper.plist
-launchctl unload -w ~/Library/LaunchAgents/com.voicemode.whisper.plist
+launchctl load -w ~/Library/LaunchAgents/com.yakk.whisper.plist
+launchctl unload -w ~/Library/LaunchAgents/com.yakk.whisper.plist
 
 # Check status
 launchctl list | grep whisper
@@ -234,9 +234,9 @@ The installation tool automatically detects and enables:
 - **NVIDIA GPU**: CUDA acceleration
 - **CPU**: Optimized CPU builds
 
-## Integration with VoiceMode
+## Integration with Yakk
 
-VoiceMode automatically detects Whisper when available:
+Yakk automatically detects Whisper when available:
 
 1. **First**: Checks for Whisper.cpp on `http://127.0.0.1:2022/v1`
 2. **Fallback**: Uses OpenAI API (requires `OPENAI_API_KEY`)
@@ -251,7 +251,7 @@ export STT_BASE_URL=http://127.0.0.1:2022/v1
 
 Or in MCP configuration:
 ```json
-"voicemode": {
+"yakk": {
   ...
   "env": {
     "STT_BASE_URL": "http://127.0.0.1:2022/v1"
@@ -289,26 +289,26 @@ export TTS_VOICE=af_sky                       # Kokoro voice
 ### Model Installation Issues
 - Verify adequate disk space (models range from 39MB to 3GB)
 - Check network connectivity to Hugging Face
-- Delete corrupted model files from `~/.voicemode/models/whisper/` and re-run the model command
+- Delete corrupted model files from `~/.yakk/models/whisper/` and re-run the model command
 
 ## Performance Monitoring
 
 ```bash
 # Check service status
-voicemode whisper service status
+yakk whisper service status
 
 # Monitor real-time processing
-tail -f ~/.voicemode/services/whisper/logs/performance.log
+tail -f ~/.yakk/services/whisper/logs/performance.log
 
 # List available models
-voicemode whisper model --all
+yakk whisper model --all
 ```
 
 ## File Locations
 
-- **Models**: `~/.voicemode/models/whisper/` or `~/.voicemode/services/whisper/models/`
-- **Service Config**: `~/.voicemode/services/whisper/config.json`
-- **Model Preferences**: `~/.voicemode/whisper-models.txt`
-- **Logs**: `~/.voicemode/services/whisper/logs/`
-- **LaunchAgent** (macOS): `~/Library/LaunchAgents/com.voicemode.whisper.plist`
+- **Models**: `~/.yakk/models/whisper/` or `~/.yakk/services/whisper/models/`
+- **Service Config**: `~/.yakk/services/whisper/config.json`
+- **Model Preferences**: `~/.yakk/whisper-models.txt`
+- **Logs**: `~/.yakk/services/whisper/logs/`
+- **LaunchAgent** (macOS): `~/Library/LaunchAgents/com.yakk.whisper.plist`
 - **Systemd Service** (Linux): `~/.config/systemd/user/whisper.service`

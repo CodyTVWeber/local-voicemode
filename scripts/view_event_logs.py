@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-View and analyze VoiceMode event logs.
+View and analyze Yakk event logs.
 
 This script provides various ways to visualize the JSONL event logs:
 - Session summaries with timing metrics
@@ -316,8 +316,8 @@ def print_statistics(all_sessions: Dict[str, List[Dict[str, Any]]]):
 
 
 def main():
-    parser = argparse.ArgumentParser(description='View and analyze VoiceMode event logs')
-    parser.add_argument('log_file', nargs='?', help='Log file to analyze (default: latest in ~/voicemode_logs)')
+    parser = argparse.ArgumentParser(description='View and analyze Yakk event logs')
+    parser.add_argument('log_file', nargs='?', help='Log file to analyze (default: latest in ~/yakk_logs)')
     parser.add_argument('--sessions', '-s', action='store_true', help='Show session summaries')
     parser.add_argument('--timeline', '-t', action='store_true', help='Show timeline view')
     parser.add_argument('--statistics', '-S', action='store_true', help='Show aggregate statistics')
@@ -330,8 +330,8 @@ def main():
     if args.log_file:
         log_file = Path(args.log_file)
     else:
-        # Default to latest log in ~/voicemode_logs
-        log_dir = Path.home() / "voicemode_logs"
+        # Default to latest log in ~/yakk_logs
+        log_dir = Path.home() / "yakk_logs"
         if not log_dir.exists():
             print(f"Log directory not found: {log_dir}")
             sys.exit(1)

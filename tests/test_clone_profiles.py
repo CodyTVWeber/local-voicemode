@@ -21,8 +21,8 @@ from voice_mode.tools.clone.profiles import (
 
 
 @pytest.fixture
-def tmp_voicemode(tmp_path, monkeypatch):
-    """Set up a temporary ~/.voicemode directory for testing."""
+def tmp_yakk(tmp_path, monkeypatch):
+    """Set up a temporary ~/.yakk directory for testing."""
     voices_json = tmp_path / "voices.json"
     voices_dir = tmp_path / "voices"
     voices_dir.mkdir()
@@ -54,27 +54,27 @@ def sample_audio(tmp_path):
 
 
 @pytest.fixture
-def populated_voices(tmp_voicemode):
+def populated_voices(tmp_yakk):
     """Pre-populate voices.json with test data."""
     data = {
         "voices": {
             "alice": {
-                "ref_audio": str(tmp_voicemode["voices_dir"] / "alice.wav"),
+                "ref_audio": str(tmp_yakk["voices_dir"] / "alice.wav"),
                 "ref_text": "Hello, I am Alice.",
                 "description": "Test voice Alice",
             },
             "bob": {
-                "ref_audio": str(tmp_voicemode["voices_dir"] / "bob.wav"),
+                "ref_audio": str(tmp_yakk["voices_dir"] / "bob.wav"),
                 "ref_text": "Hello, I am Bob.",
                 "description": "Test voice Bob",
             },
         }
     }
-    tmp_voicemode["voices_json"].write_text(json.dumps(data, indent=2))
+    tmp_yakk["voices_json"].write_text(json.dumps(data, indent=2))
 
     # Create dummy audio files
     for name in ["alice", "bob"]:
-        audio = tmp_voicemode["voices_dir"] / f"{name}.wav"
+        audio = tmp_yakk["voices_dir"] / f"{name}.wav"
         audio.write_bytes(b"RIFF" + b"\x00" * 100)
 
     return data
@@ -83,23 +83,23 @@ def populated_voices(tmp_voicemode):
 class TestLoadVoicesJson:
     """Test _load_voices_json helper."""
 
-    def test_missing_file_returns_empty(self, tmp_voicemode):
+    def test_missing_file_returns_empty(self, tmp_yakk):
         result = _load_voices_json()
         assert result == {"voices": {}}
 
-    def test_loads_valid_json(self, tmp_voicemode, populated_voices):
+    def test_loads_valid_json(self, tmp_yakk, populated_voices):
         result = _load_voices_json()
         assert "alice" in result["voices"]
         assert "bob" in result["voices"]
         assert len(result["voices"]) == 2
 
-    def test_invalid_json_returns_empty(self, tmp_voicemode):
-        tmp_voicemode["voices_json"].write_text("not valid json{{{")
+    def test_invalid_json_returns_empty(self, tmp_yakk):
+        tmp_yakk["voices_json"].write_text("not valid json{{{")
         result = _load_voices_json()
         assert result == {"voices": {}}
 
-    def test_missing_voices_key(self, tmp_voicemode):
-        tmp_voicemode["voices_json"].write_text(json.dumps({"other": "data"}))
+    def test_missing_voices_key(self, tmp_yakk):
+        tmp_yakk["voices_json"].write_text(json.dumps({"other": "data"}))
         result = _load_voices_json()
         assert result == {"other": "data", "voices": {}}
 
@@ -107,10 +107,10 @@ class TestLoadVoicesJson:
 class TestSaveVoicesJson:
     """Test _save_voices_json helper."""
 
-    def test_saves_valid_json(self, tmp_voicemode):
+    def test_saves_valid_json(self, tmp_yakk):
         data = {"voices": {"test": {"ref_audio": "/tmp/test.wav", "ref_text": "hi"}}}
         _save_voices_json(data)
-        loaded = json.loads(tmp_voicemode["voices_json"].read_text())
+        loaded = json.loads(tmp_yakk["voices_json"].read_text())
         assert loaded["voices"]["test"]["ref_text"] == "hi"
 
     def test_creates_parent_directory(self, tmp_path, monkeypatch):
@@ -119,9 +119,9 @@ class TestSaveVoicesJson:
         _save_voices_json({"voices": {}})
         assert nested.exists()
 
-    def test_file_ends_with_newline(self, tmp_voicemode):
+    def test_file_ends_with_newline(self, tmp_yakk):
         _save_voices_json({"voices": {}})
-        content = tmp_voicemode["voices_json"].read_text()
+        content = tmp_yakk["voices_json"].read_text()
         assert content.endswith("\n")
 
 
@@ -129,7 +129,7 @@ class TestCloneAdd:
     """Test clone_add -- adding a new voice profile."""
 
     @pytest.mark.asyncio
-    async def test_add_with_explicit_ref_text(self, tmp_voicemode, sample_audio):
+    async def test_add_with_explicit_ref_text(self, tmp_yakk, sample_audio):
         result = await clone_add(
             name="testvoice",
             audio_file=str(sample_audio),
@@ -142,16 +142,16 @@ class TestCloneAdd:
         assert result["description"] == "A test voice"
 
         # Verify audio was copied
-        dest = tmp_voicemode["voices_dir"] / "testvoice.wav"
+        dest = tmp_yakk["voices_dir"] / "testvoice.wav"
         assert dest.exists()
 
         # Verify voices.json was updated
-        data = json.loads(tmp_voicemode["voices_json"].read_text())
+        data = json.loads(tmp_yakk["voices_json"].read_text())
         assert "testvoice" in data["voices"]
         assert data["voices"]["testvoice"]["ref_text"] == "This is the transcript."
 
     @pytest.mark.asyncio
-    async def test_add_with_auto_transcribe(self, tmp_voicemode, sample_audio):
+    async def test_add_with_auto_transcribe(self, tmp_yakk, sample_audio):
         mock_text = "Auto transcribed text from Whisper."
         with patch(
             "voice_mode.tools.clone.profiles._transcribe_audio",
@@ -166,7 +166,7 @@ class TestCloneAdd:
         assert result["ref_text"] == mock_text
 
     @pytest.mark.asyncio
-    async def test_add_duplicate_rejected(self, tmp_voicemode, populated_voices, sample_audio):
+    async def test_add_duplicate_rejected(self, tmp_yakk, populated_voices, sample_audio):
         result = await clone_add(
             name="alice",
             audio_file=str(sample_audio),
@@ -176,7 +176,7 @@ class TestCloneAdd:
         assert "already exists" in result["error"]
 
     @pytest.mark.asyncio
-    async def test_add_missing_audio_file(self, tmp_voicemode):
+    async def test_add_missing_audio_file(self, tmp_yakk):
         result = await clone_add(
             name="ghost",
             audio_file="/nonexistent/audio.wav",
@@ -186,7 +186,7 @@ class TestCloneAdd:
         assert "not found" in result["error"]
 
     @pytest.mark.asyncio
-    async def test_add_empty_name_rejected(self, tmp_voicemode, sample_audio):
+    async def test_add_empty_name_rejected(self, tmp_yakk, sample_audio):
         result = await clone_add(
             name="",
             audio_file=str(sample_audio),
@@ -196,7 +196,7 @@ class TestCloneAdd:
         assert "empty" in result["error"]
 
     @pytest.mark.asyncio
-    async def test_add_normalizes_name_to_lowercase(self, tmp_voicemode, sample_audio):
+    async def test_add_normalizes_name_to_lowercase(self, tmp_yakk, sample_audio):
         result = await clone_add(
             name="MyVoice",
             audio_file=str(sample_audio),
@@ -206,7 +206,7 @@ class TestCloneAdd:
         assert result["name"] == "myvoice"
 
     @pytest.mark.asyncio
-    async def test_add_whisper_connection_error_cleans_up(self, tmp_voicemode, sample_audio):
+    async def test_add_whisper_connection_error_cleans_up(self, tmp_yakk, sample_audio):
         with patch(
             "voice_mode.tools.clone.profiles._transcribe_audio",
             side_effect=ConnectionError("Cannot reach Whisper"),
@@ -219,11 +219,11 @@ class TestCloneAdd:
         assert "Whisper" in result["error"]
 
         # Audio file should have been cleaned up
-        dest = tmp_voicemode["voices_dir"] / "failvoice.wav"
+        dest = tmp_yakk["voices_dir"] / "failvoice.wav"
         assert not dest.exists()
 
     @pytest.mark.asyncio
-    async def test_add_with_model_and_base_url(self, tmp_voicemode, sample_audio):
+    async def test_add_with_model_and_base_url(self, tmp_yakk, sample_audio):
         result = await clone_add(
             name="custom",
             audio_file=str(sample_audio),
@@ -232,19 +232,19 @@ class TestCloneAdd:
             base_url="http://localhost:9999/v1",
         )
         assert result["success"] is True
-        data = json.loads(tmp_voicemode["voices_json"].read_text())
+        data = json.loads(tmp_yakk["voices_json"].read_text())
         assert data["voices"]["custom"]["model"] == "custom-model"
         assert data["voices"]["custom"]["base_url"] == "http://localhost:9999/v1"
 
     @pytest.mark.asyncio
-    async def test_add_without_optional_model_fields(self, tmp_voicemode, sample_audio):
+    async def test_add_without_optional_model_fields(self, tmp_yakk, sample_audio):
         result = await clone_add(
             name="minimal",
             audio_file=str(sample_audio),
             ref_text="test",
         )
         assert result["success"] is True
-        data = json.loads(tmp_voicemode["voices_json"].read_text())
+        data = json.loads(tmp_yakk["voices_json"].read_text())
         # model and base_url should not be present when not explicitly set
         assert "model" not in data["voices"]["minimal"]
         assert "base_url" not in data["voices"]["minimal"]
@@ -254,14 +254,14 @@ class TestCloneList:
     """Test clone_list -- listing voice profiles."""
 
     @pytest.mark.asyncio
-    async def test_list_empty(self, tmp_voicemode):
+    async def test_list_empty(self, tmp_yakk):
         result = await clone_list()
         assert result["success"] is True
         assert result["count"] == 0
         assert result["voices"] == []
 
     @pytest.mark.asyncio
-    async def test_list_populated(self, tmp_voicemode, populated_voices):
+    async def test_list_populated(self, tmp_yakk, populated_voices):
         result = await clone_list()
         assert result["success"] is True
         assert result["count"] == 2
@@ -270,19 +270,19 @@ class TestCloneList:
         assert "bob" in names
 
     @pytest.mark.asyncio
-    async def test_list_sorted_alphabetically(self, tmp_voicemode, populated_voices):
+    async def test_list_sorted_alphabetically(self, tmp_yakk, populated_voices):
         result = await clone_list()
         names = [v["name"] for v in result["voices"]]
         assert names == sorted(names)
 
     @pytest.mark.asyncio
-    async def test_list_includes_description(self, tmp_voicemode, populated_voices):
+    async def test_list_includes_description(self, tmp_yakk, populated_voices):
         result = await clone_list()
         alice = next(v for v in result["voices"] if v["name"] == "alice")
         assert alice["description"] == "Test voice Alice"
 
     @pytest.mark.asyncio
-    async def test_list_missing_file(self, tmp_voicemode):
+    async def test_list_missing_file(self, tmp_yakk):
         # voices.json does not exist -- should return empty list, not error
         result = await clone_list()
         assert result["success"] is True
@@ -293,19 +293,19 @@ class TestCloneRemove:
     """Test clone_remove -- removing voice profiles."""
 
     @pytest.mark.asyncio
-    async def test_remove_existing_profile(self, tmp_voicemode, populated_voices):
+    async def test_remove_existing_profile(self, tmp_yakk, populated_voices):
         result = await clone_remove("alice")
         assert result["success"] is True
         assert result["name"] == "alice"
 
         # Verify removed from voices.json
-        data = json.loads(tmp_voicemode["voices_json"].read_text())
+        data = json.loads(tmp_yakk["voices_json"].read_text())
         assert "alice" not in data["voices"]
         assert "bob" in data["voices"]  # Other profiles untouched
 
     @pytest.mark.asyncio
-    async def test_remove_deletes_audio_file(self, tmp_voicemode, populated_voices):
-        audio_path = tmp_voicemode["voices_dir"] / "alice.wav"
+    async def test_remove_deletes_audio_file(self, tmp_yakk, populated_voices):
+        audio_path = tmp_yakk["voices_dir"] / "alice.wav"
         assert audio_path.exists()
 
         result = await clone_remove("alice", remove_audio=True)
@@ -314,8 +314,8 @@ class TestCloneRemove:
         assert not audio_path.exists()
 
     @pytest.mark.asyncio
-    async def test_remove_keeps_audio_when_requested(self, tmp_voicemode, populated_voices):
-        audio_path = tmp_voicemode["voices_dir"] / "alice.wav"
+    async def test_remove_keeps_audio_when_requested(self, tmp_yakk, populated_voices):
+        audio_path = tmp_yakk["voices_dir"] / "alice.wav"
         assert audio_path.exists()
 
         result = await clone_remove("alice", remove_audio=False)
@@ -324,34 +324,34 @@ class TestCloneRemove:
         assert audio_path.exists()
 
     @pytest.mark.asyncio
-    async def test_remove_nonexistent_profile(self, tmp_voicemode, populated_voices):
+    async def test_remove_nonexistent_profile(self, tmp_yakk, populated_voices):
         result = await clone_remove("nonexistent")
         assert result["success"] is False
         assert "not found" in result["error"]
 
     @pytest.mark.asyncio
-    async def test_remove_empty_name_rejected(self, tmp_voicemode):
+    async def test_remove_empty_name_rejected(self, tmp_yakk):
         result = await clone_remove("")
         assert result["success"] is False
         assert "empty" in result["error"]
 
     @pytest.mark.asyncio
-    async def test_remove_normalizes_name(self, tmp_voicemode, populated_voices):
+    async def test_remove_normalizes_name(self, tmp_yakk, populated_voices):
         result = await clone_remove("  Alice  ")
         assert result["success"] is True
         assert result["name"] == "alice"
 
     @pytest.mark.asyncio
-    async def test_remove_audio_string_param(self, tmp_voicemode, populated_voices):
+    async def test_remove_audio_string_param(self, tmp_yakk, populated_voices):
         """Test that remove_audio accepts string 'false'."""
-        audio_path = tmp_voicemode["voices_dir"] / "bob.wav"
+        audio_path = tmp_yakk["voices_dir"] / "bob.wav"
         result = await clone_remove("bob", remove_audio="false")
         assert result["success"] is True
         assert result["audio_removed"] is False
         assert audio_path.exists()
 
     @pytest.mark.asyncio
-    async def test_remove_missing_audio_file_succeeds(self, tmp_voicemode):
+    async def test_remove_missing_audio_file_succeeds(self, tmp_yakk):
         """Removing a profile whose audio file is already gone should succeed."""
         data = {
             "voices": {
@@ -362,7 +362,7 @@ class TestCloneRemove:
                 }
             }
         }
-        tmp_voicemode["voices_json"].write_text(json.dumps(data))
+        tmp_yakk["voices_json"].write_text(json.dumps(data))
 
         result = await clone_remove("ghost", remove_audio=True)
         assert result["success"] is True

@@ -17,7 +17,7 @@ def test_get_service_config_vars():
     """Test getting configuration variables for service templates.
 
     Note: In v1.3.0, templates were simplified to only need HOME and START_SCRIPT.
-    Config like ports and models is now handled by start scripts via voicemode.env.
+    Config like ports and models is now handled by start scripts via yakk.env.
     """
     # Test whisper config - now only has HOME and START_SCRIPT
     whisper_vars = get_service_config_vars("whisper")

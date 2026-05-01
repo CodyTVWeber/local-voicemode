@@ -24,7 +24,7 @@ class ExchangeReader:
         """Initialize reader with base directory.
         
         Args:
-            base_dir: Base directory for logs. Defaults to ~/.voicemode
+            base_dir: Base directory for logs. Defaults to ~/.yakk
         """
         self.base_dir = Path(base_dir) if base_dir else Path(BASE_DIR)
         self.logs_dir = self.base_dir / "logs" / "conversations"

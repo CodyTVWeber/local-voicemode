@@ -1,12 +1,12 @@
 {
-  "description": "VoiceMode Notification hook - audio feedback on notifications",
+  "description": "Yakk Notification hook - audio feedback on notifications",
   "hooks": {
     "Notification": [
       {
         "hooks": [
           {
             "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/.claude/scripts/voicemode-hook-receiver || true"
+            "command": "${CLAUDE_PLUGIN_ROOT}/.claude/scripts/yakk-hook-receiver || true"
           }
         ]
       }

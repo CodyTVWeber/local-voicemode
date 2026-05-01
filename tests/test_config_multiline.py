@@ -10,17 +10,17 @@ def test_config_multiline_quoted_values():
     """Test that config loader handles multiline quoted values."""
     # Create a temporary config file with multiline value
     with tempfile.NamedTemporaryFile(mode='w', suffix='.env', delete=False) as f:
-        f.write("""VOICEMODE_VOICES=af_nicole
-VOICEMODE_PRONOUNCE='TTS bag carrier
+        f.write("""YAKK_VOICES=af_nicole
+YAKK_PRONOUNCE='TTS bag carrier
 TTS bottle drink'
-VOICEMODE_DEBUG=false
+YAKK_DEBUG=false
 """)
         config_file = f.name
 
     try:
         # Clear any existing env vars
         for key in list(os.environ.keys()):
-            if key.startswith('VOICEMODE_'):
+            if key.startswith('YAKK_'):
                 del os.environ[key]
 
         # Manually load the config file (simulating the loader)
@@ -70,12 +70,12 @@ VOICEMODE_DEBUG=false
                 i += 1
 
         # Verify single-line value
-        assert os.environ['VOICEMODE_VOICES'] == 'af_nicole'
-        assert os.environ['VOICEMODE_DEBUG'] == 'false'
+        assert os.environ['YAKK_VOICES'] == 'af_nicole'
+        assert os.environ['YAKK_DEBUG'] == 'false'
 
         # Verify multiline value was properly loaded
-        assert 'VOICEMODE_PRONOUNCE' in os.environ
-        pronounce_value = os.environ['VOICEMODE_PRONOUNCE']
+        assert 'YAKK_PRONOUNCE' in os.environ
+        pronounce_value = os.environ['YAKK_PRONOUNCE']
         assert 'TTS bag carrier' in pronounce_value
         assert 'TTS bottle drink' in pronounce_value
         assert '\n' in pronounce_value  # Should contain newline
@@ -93,22 +93,22 @@ VOICEMODE_DEBUG=false
         # Clean up
         os.unlink(config_file)
         for key in list(os.environ.keys()):
-            if key.startswith('VOICEMODE_'):
+            if key.startswith('YAKK_'):
                 del os.environ[key]
 
 
 def test_config_single_line_quoted_values():
     """Test that config loader handles single-line quoted values."""
     with tempfile.NamedTemporaryFile(mode='w', suffix='.env', delete=False) as f:
-        f.write("""VOICEMODE_PRONOUNCE='TTS bag carrier'
-VOICEMODE_TEST="STT foo bar"
+        f.write("""YAKK_PRONOUNCE='TTS bag carrier'
+YAKK_TEST="STT foo bar"
 """)
         config_file = f.name
 
     try:
         # Clear any existing env vars
         for key in list(os.environ.keys()):
-            if key.startswith('VOICEMODE_'):
+            if key.startswith('YAKK_'):
                 del os.environ[key]
 
         # Manually load the config file
@@ -151,11 +151,11 @@ VOICEMODE_TEST="STT foo bar"
                 i += 1
 
         # Verify quotes were stripped from single-line values
-        assert os.environ['VOICEMODE_PRONOUNCE'] == 'TTS bag carrier'
-        assert os.environ['VOICEMODE_TEST'] == 'STT foo bar'
+        assert os.environ['YAKK_PRONOUNCE'] == 'TTS bag carrier'
+        assert os.environ['YAKK_TEST'] == 'STT foo bar'
 
     finally:
         os.unlink(config_file)
         for key in list(os.environ.keys()):
-            if key.startswith('VOICEMODE_'):
+            if key.startswith('YAKK_'):
                 del os.environ[key]

@@ -99,7 +99,7 @@ def get_model_directory() -> Path:
     
     # If config path doesn't exist, check service installation
     if not model_dir.exists():
-        service_models = Path.home() / ".voicemode" / "services" / "whisper" / "models"
+        service_models = Path.home() / ".yakk" / "services" / "whisper" / "models"
         if service_models.exists():
             return service_models
     
@@ -212,14 +212,14 @@ def set_active_model(model_name: str) -> None:
     Args:
         model_name: Name of the model to set as active
 
-    Updates the voicemode.env configuration file for persistence.
-    Preserves multiline values (like VOICEMODE_PRONOUNCE) correctly.
+    Updates the yakk.env configuration file for persistence.
+    Preserves multiline values (like YAKK_PRONOUNCE) correctly.
     """
     from pathlib import Path
     import re
 
     # Configuration file path
-    config_path = Path.home() / ".voicemode" / "voicemode.env"
+    config_path = Path.home() / ".yakk" / "yakk.env"
 
     # Ensure directory exists
     config_path.parent.mkdir(parents=True, exist_ok=True)
@@ -244,11 +244,11 @@ def set_active_model(model_name: str) -> None:
                         multiline_quote = None
                     continue
 
-                # Check for VOICEMODE_WHISPER_MODEL line to update
+                # Check for YAKK_WHISPER_MODEL line to update
                 if stripped and not stripped.startswith('#'):
-                    match = re.match(r'^VOICEMODE_WHISPER_MODEL=', stripped)
+                    match = re.match(r'^YAKK_WHISPER_MODEL=', stripped)
                     if match:
-                        lines.append(f"VOICEMODE_WHISPER_MODEL={model_name}\n")
+                        lines.append(f"YAKK_WHISPER_MODEL={model_name}\n")
                         found_model_setting = True
                         continue
 
@@ -265,12 +265,12 @@ def set_active_model(model_name: str) -> None:
 
                 lines.append(line)
 
-    # Add VOICEMODE_WHISPER_MODEL if it wasn't in the file
+    # Add YAKK_WHISPER_MODEL if it wasn't in the file
     if not found_model_setting:
         if lines and lines[-1].strip() != '':
             lines.append('\n')
         lines.append("# Whisper Configuration\n")
-        lines.append(f"VOICEMODE_WHISPER_MODEL={model_name}\n")
+        lines.append(f"YAKK_WHISPER_MODEL={model_name}\n")
 
     # Write the updated configuration
     with open(config_path, 'w') as f:
@@ -346,7 +346,7 @@ def benchmark_whisper_model(model_name: str, sample_file: Optional[str] = None) 
         }
     
     # Find whisper-cli binary
-    whisper_bin = Path.home() / ".voicemode" / "services" / "whisper" / "build" / "bin" / "whisper-cli"
+    whisper_bin = Path.home() / ".yakk" / "services" / "whisper" / "build" / "bin" / "whisper-cli"
     if not whisper_bin.exists():
         return {
             "success": False,
@@ -355,7 +355,7 @@ def benchmark_whisper_model(model_name: str, sample_file: Optional[str] = None) 
     
     # Use sample file or default JFK sample
     if sample_file is None:
-        sample_file = Path.home() / ".voicemode" / "services" / "whisper" / "samples" / "jfk.wav"
+        sample_file = Path.home() / ".yakk" / "services" / "whisper" / "samples" / "jfk.wav"
         if not sample_file.exists():
             return {
                 "success": False,

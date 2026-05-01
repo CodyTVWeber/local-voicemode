@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<!-- com.voicemode.serve.plist v1.0.0 -->
+<!-- com.yakk.serve.plist v1.0.0 -->
 <!-- Last updated: 2026-01-21 -->
-<!-- Simplified: start script handles config via voicemode.env -->
+<!-- Simplified: start script handles config via yakk.env -->
 <plist version="1.0">
 <dict>
     <key>Label</key>
-    <string>com.voicemode.serve</string>
+    <string>com.yakk.serve</string>
     <key>ProgramArguments</key>
     <array>
         <string>{START_SCRIPT}</string>
@@ -16,9 +16,9 @@
     <key>KeepAlive</key>
     <true/>
     <key>StandardOutPath</key>
-    <string>{HOME}/.voicemode/logs/serve/serve.out.log</string>
+    <string>{HOME}/.yakk/logs/serve/serve.out.log</string>
     <key>StandardErrorPath</key>
-    <string>{HOME}/.voicemode/logs/serve/serve.err.log</string>
+    <string>{HOME}/.yakk/logs/serve/serve.err.log</string>
     <key>EnvironmentVariables</key>
     <dict>
         <key>PATH</key>

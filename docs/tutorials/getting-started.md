@@ -1,38 +1,38 @@
-# Getting Started with VoiceMode
+# Getting Started with Yakk
 
-VoiceMode brings voice conversations to AI coding assistants. It works as both an MCP server for Claude Code and as a standalone CLI tool.
+Yakk brings voice conversations to AI coding assistants. It works as both an MCP server for Claude Code and as a standalone CLI tool.
 
-## What is VoiceMode?
+## What is Yakk?
 
-VoiceMode provides:
+Yakk provides:
 
 - **MCP Server**: Adds voice tools to Claude Code - no installation needed
-- **CLI Tool**: Use VoiceMode's tools directly from your terminal
+- **CLI Tool**: Use Yakk's tools directly from your terminal
 - **Local Services**: Optional privacy-focused speech processing
 
 ## Quick Start: Using with Claude Code
 
-The fastest way to get started is using VoiceMode with Claude Code.
+The fastest way to get started is using Yakk with Claude Code.
 
 ### Installation
 
-Install UV package manager (if not already installed), then run the VoiceMode installer:
+Install UV package manager (if not already installed), then run the Yakk installer:
 
 ```bash
 # Install UV package manager (if not already installed)
 curl -LsSf https://astral.sh/uv/install.sh | sh
 
-# Install VoiceMode and configure services
+# Install Yakk and configure services
 uvx voice-mode-install
 
 # Add to Claude Code MCP
-claude mcp add --scope user voicemode -- uvx --refresh voice-mode
+claude mcp add --scope user yakk -- uvx --refresh voice-mode
 ```
 
 The installer will:
 
 - Install missing system dependencies (FFmpeg, PortAudio, etc.)
-- Set up your environment for VoiceMode
+- Set up your environment for Yakk
 - Offer to install local voice services (Whisper STT and Kokoro TTS)
 
 **Alternative UV installation methods:**
@@ -54,22 +54,22 @@ Or add it to your shell configuration file (`~/.bashrc`, `~/.zshrc`, etc.)
 ### 3. Verify Installation
 
 ```bash
-# Check that VoiceMode is connected
+# Check that Yakk is connected
 claude mcp list
 ```
 
-You should see `voicemode` in the list of connected servers.
+You should see `yakk` in the list of connected servers.
 
 ### 4. Configure Permissions (Optional)
 
-By default, Claude Code prompts for permission each time VoiceMode tools are used. To enable automatic approval, add to `~/.claude/settings.json`:
+By default, Claude Code prompts for permission each time Yakk tools are used. To enable automatic approval, add to `~/.claude/settings.json`:
 
 ```json
 {
   "permissions": {
     "allow": [
-      "mcp__voicemode__converse",
-      "mcp__voicemode__service"
+      "mcp__yakk__converse",
+      "mcp__yakk__service"
     ]
   }
 }
@@ -88,7 +88,7 @@ Speak when you hear the chime, and Claude will respond with voice!
 
 ## Alternative: Using as a CLI Tool
 
-If you want to use VoiceMode from the command line:
+If you want to use Yakk from the command line:
 
 ### Installation
 
@@ -97,8 +97,8 @@ If you want to use VoiceMode from the command line:
 uv tool install voice-mode
 
 # Or install from source in editable mode
-git clone https://github.com/mbailey/voicemode
-cd voicemode
+git clone https://github.com/mbailey/yakk
+cd yakk
 uv tool install -e .
 ```
 
@@ -109,7 +109,7 @@ uv tool install -e .
 export OPENAI_API_KEY="sk-your-api-key-here"
 
 # Start a voice conversation
-voicemode converse
+yakk converse
 ```
 
 ## Setting Up Local Services (Optional)
@@ -120,18 +120,18 @@ For complete privacy, you can run voice services locally instead of using OpenAI
 
 ```bash
 # Install local services
-voicemode service install whisper   # Speech-to-text
-voicemode service install kokoro    # Text-to-speech
+yakk service install whisper   # Speech-to-text
+yakk service install kokoro    # Text-to-speech
 
 # Start services
-voicemode service start whisper
-voicemode service start kokoro
+yakk service start whisper
+yakk service start kokoro
 
 # Check status of all services
-voicemode service status
+yakk service status
 ```
 
-VoiceMode will automatically detect and use these local services when available.
+Yakk will automatically detect and use these local services when available.
 
 ### Enable Auto-Start (Recommended)
 
@@ -139,8 +139,8 @@ To have services start automatically at login:
 
 ```bash
 # Enable services to start at boot/login
-voicemode service enable whisper
-voicemode service enable kokoro
+yakk service enable whisper
+yakk service enable kokoro
 ```
 
 On macOS, this creates launchd agents. On Linux, it creates systemd user services.
@@ -174,27 +174,27 @@ Learn more: [Whisper Setup Guide](../guides/whisper-setup.md) | [Kokoro Setup Gu
 
 ## Configuration
 
-VoiceMode works out of the box with sensible defaults. To customize:
+Yakk works out of the box with sensible defaults. To customize:
 
 ### Select Your Voice
 
 ```bash
 # OpenAI voices
-export VOICEMODE_VOICES="nova,shimmer"
+export YAKK_VOICES="nova,shimmer"
 
 # Or Kokoro voices (if using local TTS)
-export VOICEMODE_VOICES="af_sky,am_adam"
+export YAKK_VOICES="af_sky,am_adam"
 ```
 
 Available OpenAI voices: alloy, echo, fable, onyx, nova, shimmer
 
 ### Project-Specific Settings
 
-Create `.voicemode.env` in your project:
+Create `.yakk.env` in your project:
 
 ```bash
-export VOICEMODE_VOICES="af_nova,nova"
-export VOICEMODE_TTS_SPEED=1.2
+export YAKK_VOICES="af_nova,nova"
+export YAKK_TTS_SPEED=1.2
 ```
 
 Learn more: [Configuration Guide](../guides/configuration.md)
@@ -221,41 +221,41 @@ Learn more: [Configuration Guide](../guides/configuration.md)
 
 ```bash
 # List audio devices
-voicemode diag devices
+yakk diag devices
 
 # Test TTS and STT
-voicemode converse
+yakk converse
 ```
 
 ### Service Issues?
 
 ```bash
 # Check service status
-voicemode service status           # All services
-voicemode service status whisper   # Specific service
+yakk service status           # All services
+yakk service status whisper   # Specific service
 
 # View logs
-voicemode service logs whisper -n 50
-voicemode service logs kokoro -n 50
+yakk service logs whisper -n 50
+yakk service logs kokoro -n 50
 
 # Check if service is responding
-voicemode service health whisper
-voicemode service health kokoro
+yakk service health whisper
+yakk service health kokoro
 ```
 
-## Running VoiceMode as a Service (Advanced)
+## Running Yakk as a Service (Advanced)
 
-For remote access or persistent operation, run VoiceMode as a background service:
+For remote access or persistent operation, run Yakk as a background service:
 
 ```bash
-# Start the VoiceMode HTTP server
-voicemode service start voicemode
+# Start the Yakk HTTP server
+yakk service start yakk
 
 # Enable auto-start at boot/login
-voicemode service enable voicemode
+yakk service enable yakk
 
 # Check all services
-voicemode service status
+yakk service status
 ```
 
 The HTTP server enables remote access from other machines on your network or via secure tunnels.
@@ -264,14 +264,14 @@ For security best practices when running remotely, see the [Configuration Guide]
 
 ## Next Steps
 
-- **[Configuration Guide](../guides/configuration.md)** - Customize VoiceMode
-- **[Development Setup](development-setup.md)** - Contribute to VoiceMode
+- **[Configuration Guide](../guides/configuration.md)** - Customize Yakk
+- **[Development Setup](development-setup.md)** - Contribute to Yakk
 - **[Service Guides](../guides/)** - Set up Whisper, Kokoro, or LiveKit
 - **[CLI Reference](../reference/cli.md)** - All available commands
 
 ## Getting Help
 
-- **GitHub Issues**: [github.com/mbailey/voicemode/issues](https://github.com/mbailey/voicemode/issues)
+- **GitHub Issues**: [github.com/mbailey/yakk/issues](https://github.com/mbailey/yakk/issues)
 - **Discord**: Join our community for support
 
 Welcome to voice-enabled AI coding! 🎙️

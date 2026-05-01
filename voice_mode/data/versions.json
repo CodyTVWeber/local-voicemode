@@ -44,11 +44,11 @@
       "date": "2025-12-01",
       "changes": [
         "Major simplification: templates now only need HOME and START_SCRIPT",
-        "Start scripts now source voicemode.env for all config (ports, models)",
+        "Start scripts now source yakk.env for all config (ports, models)",
         "Single source of truth: create_service_file() in service.py",
         "Removed inline service file generation from install.py",
         "Added ~/.local/bin to PATH in all templates for uv compatibility",
-        "Standardized log paths to ~/.voicemode/logs/<service>/",
+        "Standardized log paths to ~/.yakk/logs/<service>/",
         "Removed WorkingDirectory from templates (start scripts handle it)"
       ]
     }

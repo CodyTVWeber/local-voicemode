@@ -1,37 +1,37 @@
 #!/usr/bin/env bash
 set -o nounset -o pipefail -o errexit
 #
-# voicemode-hook-receiver - Fast standalone hook receiver for Claude Code
+# yakk-hook-receiver - Fast standalone hook receiver for Claude Code
 #
-# This is a high-performance alternative to 'voicemode claude hooks receiver'
+# This is a high-performance alternative to 'yakk claude hooks receiver'
 # that avoids Python startup overhead (~700ms -> ~20ms).
 #
 # Usage:
 #   # Called by Claude Code hooks (reads JSON from stdin)
-#   echo '{"tool_name":"Task","hook_event_name":"PreToolUse","tool_input":{"subagent_type":"mama-bear"}}' | voicemode-hook-receiver
+#   echo '{"tool_name":"Task","hook_event_name":"PreToolUse","tool_input":{"subagent_type":"mama-bear"}}' | yakk-hook-receiver
 #
 #   # Testing with debug output
-#   VOICEMODE_HOOK_DEBUG=1 voicemode-hook-receiver --tool-name Task --event PreToolUse --subagent-type mama-bear
+#   YAKK_HOOK_DEBUG=1 yakk-hook-receiver --tool-name Task --event PreToolUse --subagent-type mama-bear
 #
 # Configuration:
-#   ~/.voicemode/soundfonts-disabled - Sentinel file; if present, soundfonts are disabled
-#     (managed by: voicemode soundfonts on/off)
-#   VOICEMODE_SOUNDFONTS_ENABLED - Sound fonts enabled by default, set to 'false' to disable
-#   VOICEMODE_HOOK_DEBUG - Set to '1' for debug output
+#   ~/.yakk/soundfonts-disabled - Sentinel file; if present, soundfonts are disabled
+#     (managed by: yakk soundfonts on/off)
+#   YAKK_SOUNDFONTS_ENABLED - Sound fonts enabled by default, set to 'false' to disable
+#   YAKK_HOOK_DEBUG - Set to '1' for debug output
 #
 # Sound file lookup order:
-#   1. ~/.voicemode/soundfonts/current/{event}/{tool}/subagent/{subagent}.{mp3,wav}
-#   2. ~/.voicemode/soundfonts/current/{event}/{tool}/default.{mp3,wav}
-#   3. ~/.voicemode/soundfonts/current/{event}/default.{mp3,wav}
-#   4. ~/.voicemode/soundfonts/current/fallback.{mp3,wav}
+#   1. ~/.yakk/soundfonts/current/{event}/{tool}/subagent/{subagent}.{mp3,wav}
+#   2. ~/.yakk/soundfonts/current/{event}/{tool}/default.{mp3,wav}
+#   3. ~/.yakk/soundfonts/current/{event}/default.{mp3,wav}
+#   4. ~/.yakk/soundfonts/current/fallback.{mp3,wav}
 
 usage() {
   cat <<'EOF'
-Usage: voicemode-hook-receiver [OPTIONS]
+Usage: yakk-hook-receiver [OPTIONS]
 
 Fast standalone hook receiver for Claude Code.
 
-This is a high-performance alternative to 'voicemode claude hooks receiver'
+This is a high-performance alternative to 'yakk claude hooks receiver'
 that avoids Python startup overhead (~700ms -> ~20ms).
 
 Options:
@@ -42,8 +42,8 @@ Options:
     -h, --help             Show this help message and exit
 
 Environment:
-    VOICEMODE_SOUNDFONTS_ENABLED   Sound fonts enabled by default, set to 'false' to disable
-    VOICEMODE_HOOK_DEBUG           Set to '1' for debug output
+    YAKK_SOUNDFONTS_ENABLED   Sound fonts enabled by default, set to 'false' to disable
+    YAKK_HOOK_DEBUG           Set to '1' for debug output
 
 When called by Claude Code, JSON is read from stdin.
 EOF
@@ -60,13 +60,13 @@ for arg in "$@"; do
 done
 
 # Quick exit if soundfonts are disabled via sentinel file (circuit breaker)
-if [ -f "$HOME/.voicemode/soundfonts-disabled" ]; then
-  [[ -n "${VOICEMODE_HOOK_DEBUG:-}" ]] && echo "[DEBUG] Soundfonts disabled via sentinel file (~/.voicemode/soundfonts-disabled)" >&2
+if [ -f "$HOME/.yakk/soundfonts-disabled" ]; then
+  [[ -n "${YAKK_HOOK_DEBUG:-}" ]] && echo "[DEBUG] Soundfonts disabled via sentinel file (~/.yakk/soundfonts-disabled)" >&2
   exit 0
 fi
 
-DEBUG="${VOICEMODE_HOOK_DEBUG:-}"
-SOUNDFONTS_BASE="$HOME/.voicemode/soundfonts/current"
+DEBUG="${YAKK_HOOK_DEBUG:-}"
+SOUNDFONTS_BASE="$HOME/.yakk/soundfonts/current"
 
 debug() {
   [[ -n "$DEBUG" ]] && echo "[DEBUG] $*" >&2 || true
@@ -134,20 +134,20 @@ EVENT="${EVENT:-PreToolUse}"
 
 debug "Processing: event=$EVENT, tool=$TOOL_NAME, subagent=$SUBAGENT_TYPE"
 
-# Skip sounds for voicemode converse tool - voice conversations provide their own audio feedback
+# Skip sounds for yakk converse tool - voice conversations provide their own audio feedback
 # Covers all known converse tool name variants:
-#   mcp__plugin_voicemode_voicemode__converse  (plugin-namespaced, primary distribution)
-#   mcp__voicemode__converse                    (legacy/direct MCP)
-#   mcp__claude_ai_VoiceMode_Connect__converse  (VoiceMode Connect)
-if [[ "$TOOL_NAME" == *voicemode*converse* ]]; then
-  debug "Skipping sound for voicemode converse tool"
+#   mcp__plugin_yakk_yakk__converse  (plugin-namespaced, primary distribution)
+#   mcp__yakk__converse                    (legacy/direct MCP)
+#   mcp__claude_ai_Yakk_Connect__converse  (Yakk Connect)
+if [[ "$TOOL_NAME" == *yakk*converse* ]]; then
+  debug "Skipping sound for yakk converse tool"
   exit 0
 fi
 
 # Check if soundfonts are enabled
 # First check env var, then check config file
 soundfonts_enabled() {
-  local enabled="${VOICEMODE_SOUNDFONTS_ENABLED:-}"
+  local enabled="${YAKK_SOUNDFONTS_ENABLED:-}"
 
   # If env var is set, use it
   if [[ -n "$enabled" ]]; then
@@ -155,10 +155,10 @@ soundfonts_enabled() {
     return
   fi
 
-  # Check voicemode.env config file
-  local config_file="$HOME/.voicemode/voicemode.env"
+  # Check yakk.env config file
+  local config_file="$HOME/.yakk/yakk.env"
   if [[ -f "$config_file" ]]; then
-    enabled=$(grep -E '^VOICEMODE_SOUNDFONTS_ENABLED=' "$config_file" 2>/dev/null | cut -d= -f2 | tr -d '"' | tr -d "'" || echo "")
+    enabled=$(grep -E '^YAKK_SOUNDFONTS_ENABLED=' "$config_file" 2>/dev/null | cut -d= -f2 | tr -d '"' | tr -d "'" || echo "")
     if [[ -n "$enabled" ]]; then
       [[ "$enabled" == "true" || "$enabled" == "1" || "$enabled" == "yes" || "$enabled" == "on" ]]
       return
@@ -170,14 +170,14 @@ soundfonts_enabled() {
 }
 
 if ! soundfonts_enabled; then
-  debug "Sound fonts are disabled (VOICEMODE_SOUNDFONTS_ENABLED=false)"
+  debug "Sound fonts are disabled (YAKK_SOUNDFONTS_ENABLED=false)"
   exit 0
 fi
 
 # Check if a voice conversation is active (conch lock file)
 # If active, skip sound playback to avoid disrupting voice recording
 converse_active() {
-  local conch_file="$HOME/.voicemode/conch"
+  local conch_file="$HOME/.yakk/conch"
 
   # No lock file = no active conversation
   [[ ! -f "$conch_file" ]] && return 1
@@ -311,11 +311,11 @@ select_variant() {
 #   7. fallback.{mp3,wav}                                      - Global fallback
 #
 # Examples:
-#   PostToolUse/mcp/voicemode/converse/01.mp3       - Voice tool variant 1
-#   PostToolUse/mcp/voicemode/converse/default.mp3  - Voice tool default
+#   PostToolUse/mcp/yakk/converse/01.mp3       - Voice tool variant 1
+#   PostToolUse/mcp/yakk/converse/default.mp3  - Voice tool default
 #   PreToolUse/bash/02.mp3                          - Bash variant 2
 #   PreToolUse/task/subagent/mama-bear.mp3          - Specific agent
-#   PreToolUse/mcp/voicemode/converse/MUTE.txt      - Mute converse PreToolUse sounds
+#   PreToolUse/mcp/yakk/converse/MUTE.txt      - Mute converse PreToolUse sounds
 find_sound_file() {
   local sound_file
 
@@ -416,7 +416,7 @@ debug "Found sound file: $SOUND_FILE"
 
 # Skip filler phrases when wait_for_response=false (no listening after speaking)
 # Filler phrases only make sense when Claude is waiting for user input
-if [[ "$EVENT" == "PostToolUse" && "$tool_lower" == "mcp__voicemode__converse" ]]; then
+if [[ "$EVENT" == "PostToolUse" && "$tool_lower" == "mcp__yakk__converse" ]]; then
   # Check if wait_for_response was false in tool_input
   if [[ -n "$JSON_INPUT" ]] && command -v jq &>/dev/null; then
     # Extract wait_for_response - check if field exists first, then convert to string
@@ -430,18 +430,18 @@ if [[ "$EVENT" == "PostToolUse" && "$tool_lower" == "mcp__voicemode__converse" ]
 fi
 
 # Rate limiting for PostToolUse converse events (optional, disabled by default)
-# Set VOICEMODE_CONVERSE_RATE_LIMIT=true to enable
+# Set YAKK_CONVERSE_RATE_LIMIT=true to enable
 # This prevents rapid-fire filler phrases when Claude batches tool calls
-if [[ "$EVENT" == "PostToolUse" && "$tool_lower" == "mcp__voicemode__converse" ]]; then
-  RATE_LIMIT_ENABLED="${VOICEMODE_CONVERSE_RATE_LIMIT:-false}"
+if [[ "$EVENT" == "PostToolUse" && "$tool_lower" == "mcp__yakk__converse" ]]; then
+  RATE_LIMIT_ENABLED="${YAKK_CONVERSE_RATE_LIMIT:-false}"
   if [[ "$RATE_LIMIT_ENABLED" == "true" || "$RATE_LIMIT_ENABLED" == "1" ]]; then
-    RATE_LIMIT_SECONDS="${VOICEMODE_CONVERSE_RATE_LIMIT_SECONDS:-2}"
-    LOG_FILE="$HOME/.voicemode/logs/hook-receiver.log"
+    RATE_LIMIT_SECONDS="${YAKK_CONVERSE_RATE_LIMIT_SECONDS:-2}"
+    LOG_FILE="$HOME/.yakk/logs/hook-receiver.log"
 
     # Check if we played a converse filler recently
     if [[ -f "$LOG_FILE" ]]; then
       # Get the last PostToolUse converse timestamp
-      last_converse=$(grep "PostToolUse mcp__voicemode__converse" "$LOG_FILE" | tail -1 | cut -d' ' -f1-2)
+      last_converse=$(grep "PostToolUse mcp__yakk__converse" "$LOG_FILE" | tail -1 | cut -d' ' -f1-2)
       if [[ -n "$last_converse" ]]; then
         # Convert timestamp to epoch (cross-platform: macOS and Linux)
         if date -j -f "%Y-%m-%d %H:%M:%S" "$last_converse" "+%s" &>/dev/null; then
@@ -464,7 +464,7 @@ if [[ "$EVENT" == "PostToolUse" && "$tool_lower" == "mcp__voicemode__converse" ]
 fi
 
 # Log hook execution (always, for debugging)
-LOG_FILE="$HOME/.voicemode/logs/hook-receiver.log"
+LOG_FILE="$HOME/.yakk/logs/hook-receiver.log"
 mkdir -p "$(dirname "$LOG_FILE")"
 timestamp=$(date "+%Y-%m-%d %H:%M:%S")
 echo "$timestamp $EVENT $TOOL_NAME -> $SOUND_FILE" >>"$LOG_FILE"

@@ -1,5 +1,5 @@
-# VoiceMode System Dependencies
-# Organized by: voicemode → component → OS/distribution → package list
+# Yakk System Dependencies
+# Organized by: yakk → component → OS/distribution → package list
 #
 # ## SUMMARY
 #
@@ -9,7 +9,7 @@
 # - Used by install script and for `uv tool install voice-mode`
 # - Provides consistent binary location at ~/.local/bin
 #
-# ### Core (VoiceMode base)
+# ### Core (Yakk base)
 # **Required (runtime):**
 # - macOS: portaudio, ffmpeg
 # - Ubuntu/Debian: libportaudio2, ffmpeg
@@ -52,7 +52,7 @@
 # ## DETAIL
 #
 # Structure:
-#   voicemode:
+#   yakk:
 #     component:  # core, whisper, kokoro, livekit
 #       description: What this component does
 #       os_or_distro:
@@ -63,9 +63,9 @@
 #             min_version: optional minimum version
 #             check_command: optional command to verify installation
 
-voicemode:
+yakk:
   installation:
-    description: Tools required for installing VoiceMode
+    description: Tools required for installing Yakk
 
     common:  # All platforms
       packages:
@@ -77,7 +77,7 @@ voicemode:
           note: Provides consistent installation and binary location (~/.local/bin)
 
   core:
-    description: VoiceMode core audio and Python dependencies
+    description: Yakk core audio and Python dependencies
 
     debian:  # Ubuntu, Debian
       packages:

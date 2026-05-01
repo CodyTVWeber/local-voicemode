@@ -22,7 +22,7 @@ def get_whisper_version_info() -> Dict[str, Any]:
     }
     
     # Find whisper-cli binary
-    whisper_dir = Path.home() / ".voicemode" / "services" / "whisper"
+    whisper_dir = Path.home() / ".yakk" / "services" / "whisper"
     whisper_cli = whisper_dir / "build" / "bin" / "whisper-cli"
     
     # Fallback to legacy location
@@ -133,6 +133,6 @@ def check_coreml_model_exists(model_name: str) -> bool:
     Returns:
         True if Core ML model exists, False otherwise
     """
-    whisper_dir = Path.home() / ".voicemode" / "services" / "whisper"
+    whisper_dir = Path.home() / ".yakk" / "services" / "whisper"
     coreml_model = whisper_dir / "models" / f"ggml-{model_name}-encoder.mlmodelc"
     return coreml_model.exists()

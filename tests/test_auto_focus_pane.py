@@ -143,27 +143,27 @@ class TestAutoFocusPaneConfig:
 
     def test_default_is_false(self):
         import os
-        os.environ.pop("VOICEMODE_AUTO_FOCUS_PANE", None)
+        os.environ.pop("YAKK_AUTO_FOCUS_PANE", None)
         from voice_mode.config import env_bool
-        assert env_bool("VOICEMODE_AUTO_FOCUS_PANE", False) is False
+        assert env_bool("YAKK_AUTO_FOCUS_PANE", False) is False
 
     def test_enabled_when_set_true(self):
-        with patch.dict("os.environ", {"VOICEMODE_AUTO_FOCUS_PANE": "true"}):
+        with patch.dict("os.environ", {"YAKK_AUTO_FOCUS_PANE": "true"}):
             from voice_mode.config import env_bool
-            assert env_bool("VOICEMODE_AUTO_FOCUS_PANE", False) is True
+            assert env_bool("YAKK_AUTO_FOCUS_PANE", False) is True
 
     def test_enabled_with_various_truthy_values(self):
         from voice_mode.config import env_bool
         for value in ("true", "1", "yes", "on", "TRUE", "True"):
-            with patch.dict("os.environ", {"VOICEMODE_AUTO_FOCUS_PANE": value}):
-                assert env_bool("VOICEMODE_AUTO_FOCUS_PANE", False) is True, (
+            with patch.dict("os.environ", {"YAKK_AUTO_FOCUS_PANE": value}):
+                assert env_bool("YAKK_AUTO_FOCUS_PANE", False) is True, (
                     f"Expected True for value '{value}'"
                 )
 
     def test_disabled_with_falsy_values(self):
         from voice_mode.config import env_bool
         for value in ("false", "0", "no", "off", ""):
-            with patch.dict("os.environ", {"VOICEMODE_AUTO_FOCUS_PANE": value}):
-                assert env_bool("VOICEMODE_AUTO_FOCUS_PANE", False) is False, (
+            with patch.dict("os.environ", {"YAKK_AUTO_FOCUS_PANE": value}):
+                assert env_bool("YAKK_AUTO_FOCUS_PANE", False) is False, (
                     f"Expected False for value '{value}'"
                 )

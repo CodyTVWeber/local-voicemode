@@ -4,7 +4,7 @@ Covers VM-1100 acceptance criterion: the `model` field of the outbound
 client.audio.transcriptions.create(...) request must be the per-endpoint
 resolved model, not a hardcoded literal.
 
-  - mlx-audio endpoint (8890) -> global VOICEMODE_STT_MODEL
+  - mlx-audio endpoint (8890) -> global YAKK_STT_MODEL
   - OpenAI endpoint -> always 'whisper-1' (provider_type override)
   - whisper.cpp endpoint (2022) -> global STT_MODEL (passed but ignored
     by whisper.cpp at the wire; the value must still appear in kwargs)
@@ -57,7 +57,7 @@ class TestSttFailoverWireModel:
 
     @pytest.mark.asyncio
     async def test_mlx_audio_endpoint_uses_global_stt_model(self):
-        """An mlx-audio endpoint with VOICEMODE_STT_MODEL set should send
+        """An mlx-audio endpoint with YAKK_STT_MODEL set should send
         that model in the outbound request body."""
         kwargs = await _capture_kwargs_for_url(
             base_url="http://127.0.0.1:8890/v1",
@@ -68,7 +68,7 @@ class TestSttFailoverWireModel:
     @pytest.mark.asyncio
     async def test_openai_endpoint_overrides_to_whisper_1(self):
         """An OpenAI endpoint always sends model='whisper-1', regardless of
-        what VOICEMODE_STT_MODEL is configured to."""
+        what YAKK_STT_MODEL is configured to."""
         kwargs = await _capture_kwargs_for_url(
             base_url="https://api.openai.com/v1",
             stt_model="mlx-community/whisper-large-v3-turbo",

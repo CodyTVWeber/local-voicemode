@@ -1,7 +1,7 @@
-"""Manual smoke test: full STT failover chain with VOICEMODE_STT_MODEL set.
+"""Manual smoke test: full STT failover chain with YAKK_STT_MODEL set.
 
 Implements the manual smoke described in VM-1100 test-004. Instead of
-requiring an interactive `voicemode converse` session, this script drives
+requiring an interactive `yakk converse` session, this script drives
 ``simple_stt_failover()`` directly against running services and asserts which
 endpoint succeeds for each scenario in the failover chain.
 
@@ -15,7 +15,7 @@ Scenarios:
 Prerequisites:
     - mlx-audio listening on http://127.0.0.1:8890/v1
     - whisper.cpp listening on http://127.0.0.1:2022/v1
-    - A WAV sample at WAV_PATH (defaults to a recent one in ~/.voicemode/audio/).
+    - A WAV sample at WAV_PATH (defaults to a recent one in ~/.yakk/audio/).
 
 Run:
     cd worktree && uv run python -m tests.manual.test_stt_failover_chain
@@ -27,7 +27,7 @@ import sys
 from pathlib import Path
 from unittest.mock import AsyncMock, patch
 
-WAV_PATH = Path.home() / ".voicemode" / "audio" / "no_speech_20260427_013641.wav"
+WAV_PATH = Path.home() / ".yakk" / "audio" / "no_speech_20260427_013641.wav"
 
 OPENAI_URL = "https://api.openai.com/v1"
 MLX_AUDIO_URL = "http://127.0.0.1:8890/v1"
@@ -39,8 +39,8 @@ STT_MODEL = "mlx-community/whisper-large-v3-turbo"
 
 
 def _set_env_for_chain(stt_base_urls: str) -> None:
-    os.environ["VOICEMODE_STT_MODEL"] = STT_MODEL
-    os.environ["VOICEMODE_STT_BASE_URLS"] = stt_base_urls
+    os.environ["YAKK_STT_MODEL"] = STT_MODEL
+    os.environ["YAKK_STT_BASE_URLS"] = stt_base_urls
 
 
 def _reload_config_into(*modules):
@@ -142,7 +142,7 @@ async def main():
         sys.exit(2)
 
     print(f"Audio sample: {WAV_PATH} ({WAV_PATH.stat().st_size / 1024:.1f} KB)")
-    print(f"VOICEMODE_STT_MODEL = {STT_MODEL}")
+    print(f"YAKK_STT_MODEL = {STT_MODEL}")
 
     await scenario_a_full_chain()
     await scenario_b_mlx_down()

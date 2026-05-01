@@ -11,17 +11,17 @@ mpv-dj mfp 51    # Episode 51 (Mücha)
 ```
 
 The command:
-1. Checks for local cached audio in `~/.voicemode/music-for-programming/`
+1. Checks for local cached audio in `~/.yakk/music-for-programming/`
 2. If not cached, looks up the episode URL from the RSS feed via `mfp-rss-helper`
 3. Streams from the URL (e.g., `https://datashat.net/music_for_programming_49-julien_mier.mp3`)
 4. Loads chapter metadata for track-level navigation
 
 ## File Structure
 
-All MFP files live in `~/.voicemode/music-for-programming/`:
+All MFP files live in `~/.yakk/music-for-programming/`:
 
 ```
-~/.voicemode/music-for-programming/
+~/.yakk/music-for-programming/
 ├── rss.xml                                     # Cached RSS feed (auto-updated)
 ├── music_for_programming_49-julien_mier.mp3    # Audio (downloaded or cached)
 ├── music_for_programming_49-julien_mier.cue    # CUE sheet (for local playback)
@@ -60,7 +60,7 @@ The `mfp-rss-helper` script fetches episode URLs from the official MFP RSS feed 
 ### How It Works
 
 1. **First run**: Fetches RSS feed from `musicforprogramming.net/rss.xml`
-2. **Caches to**: `~/.voicemode/music-for-programming/rss.xml`
+2. **Caches to**: `~/.yakk/music-for-programming/rss.xml`
 3. **Subsequent runs**: Tries fresh fetch, falls back to cache if offline
 4. **Episode lookup**: Parses RSS to find correct URL for any episode number
 
@@ -90,7 +90,7 @@ mfp-rss-helper refresh             # Updates rss.xml from network
 ### Cache Location
 
 ```
-~/.voicemode/music-for-programming/rss.xml
+~/.yakk/music-for-programming/rss.xml
 ```
 
 The cache is automatically created and updated. Delete it to force a fresh fetch on next use.
@@ -138,23 +138,23 @@ See [chapters.md](chapters.md) for the chapter file format details.
 
 ### Chapter Distribution
 
-VoiceMode provides chapter files through a three-tier lookup system that ensures you have access to chapter metadata even for episodes not bundled with your installed version.
+Yakk provides chapter files through a three-tier lookup system that ensures you have access to chapter metadata even for episodes not bundled with your installed version.
 
 **Lookup order (local → package → GitHub):**
 
-1. **Local cache** (`~/.voicemode/music-for-programming/`) - fastest, checked first
-2. **Bundled package** - chapter files included in VoiceMode, copied to cache on-demand
+1. **Local cache** (`~/.yakk/music-for-programming/`) - fastest, checked first
+2. **Bundled package** - chapter files included in Yakk, copied to cache on-demand
 3. **GitHub repository** - fallback for newly added chapters not yet in your installed version
 
 **How it works:**
-1. When you run `voicemode dj mfp play 49`, the system checks for chapter files in the local cache
+1. When you run `yakk dj mfp play 49`, the system checks for chapter files in the local cache
 2. If not found locally, chapter files are copied from the bundled package to the cache
 3. If not in the package, chapters are fetched from GitHub (requires network, 5-second timeout)
 4. Fetched files are cached locally for future use
 5. User modifications to chapter files are preserved during updates (backed up with `.user` extension)
 
 **Benefits of GitHub fallback:**
-- Access chapter files added after your VoiceMode version was released
+- Access chapter files added after your Yakk version was released
 - Community contributions available immediately without upgrading
 - Graceful degradation: playback continues without chapters if unavailable
 
@@ -167,10 +167,10 @@ Use the `sync` command to manage chapter files:
 
 ```bash
 # Sync all chapter files from package
-voicemode dj mfp sync
+yakk dj mfp sync
 
 # Force overwrite (backs up user modifications to .user)
-voicemode dj mfp sync --force
+yakk dj mfp sync --force
 ```
 
 **Sync behavior:**
@@ -186,7 +186,7 @@ Added: music_for_programming_49-julien_mier.ffmeta
 Unchanged: music_for_programming_51-mücha.ffmeta
 
 Chapter sync complete
-Cache directory: /Users/you/.voicemode/music-for-programming
+Cache directory: /Users/you/.yakk/music-for-programming
 ```
 
 **Checksum-based sync**: The sync compares SHA256 checksums between package and local files to detect changes accurately. Local checksums are stored in `.chapters.sha256` (hidden file).
@@ -195,7 +195,7 @@ Cache directory: /Users/you/.voicemode/music-for-programming
 
 Community contributions to improve chapter accuracy are welcome! To contribute:
 
-1. **Fork the VoiceMode repository** on GitHub
+1. **Fork the Yakk repository** on GitHub
 2. **Create or improve chapter files** in `voice_mode/data/mfp/`
 3. **Update the checksums** by regenerating `chapters.sha256`:
    ```bash
@@ -209,7 +209,7 @@ Community contributions to improve chapter accuracy are welcome! To contribute:
 **Quality guidelines:**
 - Timestamps should be accurate to within a few seconds
 - Track titles should match the official MFP tracklist
-- Test playback with `voicemode dj mfp play <episode>` and verify navigation works
+- Test playback with `yakk dj mfp play <episode>` and verify navigation works
 
 ## Listing Episodes
 
@@ -298,7 +298,7 @@ mpv-dj mfp list --all | awk -F'\t' '$4=="local"' | wc -l
 - Request episodes by number: `mpv-dj mfp 49`
 - List episodes with chapters: `mpv-dj mfp list`
 - List all episodes: `mpv-dj mfp list --all`
-- Search tracks: `grep "Boards of Canada" ~/.voicemode/music-for-programming/*.cue`
+- Search tracks: `grep "Boards of Canada" ~/.yakk/music-for-programming/*.cue`
 
 ### Planned
 - **History tracking**: What episodes have been played

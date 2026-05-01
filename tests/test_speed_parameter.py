@@ -183,7 +183,7 @@ class TestSpeedParameter:
 
                 assert "Error: speed must be between 0.25 and 4.0" in result
                 assert "10.0" in result
-                assert "VOICEMODE_TTS_SPEED environment variable" in result
+                assert "YAKK_TTS_SPEED environment variable" in result
 
     @pytest.mark.asyncio
     async def test_speed_explicit_out_of_range_no_env_mention(self):
@@ -199,4 +199,4 @@ class TestSpeedParameter:
                 assert "Error: speed must be between 0.25 and 4.0" in result
                 assert "10.0" in result
                 # Should NOT mention environment variable since it was explicitly provided
-                assert "VOICEMODE_TTS_SPEED" not in result
+                assert "YAKK_TTS_SPEED" not in result

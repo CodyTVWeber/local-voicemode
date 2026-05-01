@@ -1,7 +1,7 @@
-# Voicemode Resource Structure Plan
+# Yakk Resource Structure Plan
 
 ## Goal
-Reduce the `mcp__voicemode__converse` tool description from ~4000 tokens to ~1000 tokens by moving detailed documentation into MCP resources that can be fetched on-demand.
+Reduce the `mcp__yakk__converse` tool description from ~4000 tokens to ~1000 tokens by moving detailed documentation into MCP resources that can be fetched on-demand.
 
 ## Current State
 - Tool description: ~4000 tokens
@@ -21,11 +21,11 @@ The minimal tool description should include:
 Have an ongoing voice conversation - speak a message and optionally listen for response.
 
 See MCP resources for detailed documentation:
-- voicemode-quickstart: Basic usage examples
-- voicemode-parameters: Detailed parameter explanations
-- voicemode-languages: Non-English language support
-- voicemode-patterns: Best practices and conversation patterns
-- voicemode-troubleshooting: Audio, VAD, and connectivity issues
+- yakk-quickstart: Basic usage examples
+- yakk-parameters: Detailed parameter explanations
+- yakk-languages: Non-English language support
+- yakk-patterns: Best practices and conversation patterns
+- yakk-troubleshooting: Audio, VAD, and connectivity issues
 
 Key parameters:
 - message (required): The message to speak
@@ -35,7 +35,7 @@ Key parameters:
 - tts_provider: openai or kokoro (auto-selected unless specified)
 - disable_silence_detection: Disable auto-stop on silence (default: false)
 
-For full parameter list and advanced options, see voicemode-parameters resource.
+For full parameter list and advanced options, see yakk-parameters resource.
 ```
 
 ## Resource Structure
@@ -59,6 +59,6 @@ This directory mirrors the proposed MCP resource structure:
 ## Implementation Notes
 
 - Resource names should be self-explanatory
-- Resource URIs should follow pattern: `voicemode://docs/{resource-name}`
+- Resource URIs should follow pattern: `yakk://docs/{resource-name}`
 - Tool description should hint at resource availability
 - LLM will see resource list in context and fetch as needed

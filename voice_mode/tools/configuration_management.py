@@ -5,22 +5,22 @@ import re
 from pathlib import Path
 from typing import Dict, Optional, List
 from voice_mode.server import mcp
-from voice_mode.config import BASE_DIR, reload_configuration, find_voicemode_env_files
+from voice_mode.config import BASE_DIR, reload_configuration, find_yakk_env_files
 import logging
 
-logger = logging.getLogger("voicemode")
+logger = logging.getLogger("yakk")
 
 # Configuration file path (user-level only for security)
-USER_CONFIG_PATH = Path.home() / ".voicemode" / "voicemode.env"
+USER_CONFIG_PATH = Path.home() / ".yakk" / "yakk.env"
 # Legacy path for backwards compatibility
-LEGACY_CONFIG_PATH = Path.home() / ".voicemode" / ".voicemode.env"
+LEGACY_CONFIG_PATH = Path.home() / ".yakk" / ".yakk.env"
 
 
 def parse_env_file(file_path: Path) -> Dict[str, str]:
     """Parse an environment file and return a dictionary of key-value pairs.
 
     Handles multiline quoted values like:
-        VOICEMODE_PRONOUNCE="
+        YAKK_PRONOUNCE="
         TTS \\bJSON\\b jason
         TTS \\bYAML\\b yammel
         "
@@ -198,9 +198,9 @@ def write_env_file(file_path: Path, config: Dict[str, str], preserve_comments: b
             existing_lines.append('\n')
         
         # Group new keys by category
-        whisper_keys = sorted([k for k in new_keys if k.startswith('VOICEMODE_WHISPER_')])
-        kokoro_keys = sorted([k for k in new_keys if k.startswith('VOICEMODE_KOKORO_')])
-        other_keys = sorted([k for k in new_keys if not k.startswith('VOICEMODE_WHISPER_') and not k.startswith('VOICEMODE_KOKORO_')])
+        whisper_keys = sorted([k for k in new_keys if k.startswith('YAKK_WHISPER_')])
+        kokoro_keys = sorted([k for k in new_keys if k.startswith('YAKK_KOKORO_')])
+        other_keys = sorted([k for k in new_keys if not k.startswith('YAKK_WHISPER_') and not k.startswith('YAKK_KOKORO_')])
         
         if whisper_keys:
             existing_lines.append("# Whisper Configuration\n")
@@ -238,10 +238,10 @@ def write_env_file(file_path: Path, config: Dict[str, str], preserve_comments: b
 
 @mcp.tool()
 async def update_config(key: str, value: str) -> str:
-    """Update a configuration value in the voicemode.env file.
+    """Update a configuration value in the yakk.env file.
     
     Args:
-        key: The configuration key to update (e.g., 'VOICEMODE_VOICES')
+        key: The configuration key to update (e.g., 'YAKK_VOICES')
         value: The new value for the configuration
     
     Returns:
@@ -255,7 +255,7 @@ async def update_config(key: str, value: str) -> str:
     config_path = USER_CONFIG_PATH
     if not config_path.exists() and LEGACY_CONFIG_PATH.exists():
         config_path = LEGACY_CONFIG_PATH
-        logger.warning(f"Using deprecated .voicemode.env - please rename to voicemode.env")
+        logger.warning(f"Using deprecated .yakk.env - please rename to yakk.env")
     
     try:
         # Read existing configuration
@@ -292,38 +292,38 @@ async def list_config_keys() -> str:
     """List all available configuration keys with their descriptions.
     
     Returns:
-        A formatted list of all VOICEMODE_* configuration keys and their purposes
+        A formatted list of all YAKK_* configuration keys and their purposes
     """
     config_keys = [
         ("Core Configuration", [
-            ("VOICEMODE_BASE_DIR", "Base directory for all voicemode data (default: ~/.voicemode)"),
-            ("VOICEMODE_MODELS_DIR", "Directory for all models (default: $VOICEMODE_BASE_DIR/models)"),
-            ("VOICEMODE_DEBUG", "Enable debug mode (true/false)"),
-            ("VOICEMODE_SAVE_ALL", "Save all audio and transcriptions (true/false)"),
-            ("VOICEMODE_SAVE_AUDIO", "Save audio files (true/false)"),
-            ("VOICEMODE_SAVE_TRANSCRIPTIONS", "Save transcription files (true/false)"),
-            ("VOICEMODE_AUDIO_FEEDBACK", "Enable audio feedback (true/false)"),
+            ("YAKK_BASE_DIR", "Base directory for all yakk data (default: ~/.yakk)"),
+            ("YAKK_MODELS_DIR", "Directory for all models (default: $YAKK_BASE_DIR/models)"),
+            ("YAKK_DEBUG", "Enable debug mode (true/false)"),
+            ("YAKK_SAVE_ALL", "Save all audio and transcriptions (true/false)"),
+            ("YAKK_SAVE_AUDIO", "Save audio files (true/false)"),
+            ("YAKK_SAVE_TRANSCRIPTIONS", "Save transcription files (true/false)"),
+            ("YAKK_AUDIO_FEEDBACK", "Enable audio feedback (true/false)"),
         ]),
         ("Provider Configuration", [
-            ("VOICEMODE_TTS_BASE_URLS", "Comma-separated list of TTS endpoints"),
-            ("VOICEMODE_STT_BASE_URLS", "Comma-separated list of STT endpoints"),
-            ("VOICEMODE_VOICES", "Comma-separated list of preferred voices"),
-            ("VOICEMODE_TTS_MODELS", "Comma-separated list of preferred models"),
-            ("VOICEMODE_PREFER_LOCAL", "Prefer local providers over cloud (true/false)"),
-            ("VOICEMODE_ALWAYS_TRY_LOCAL", "Always attempt local providers (true/false)"),
-            ("VOICEMODE_AUTO_START_KOKORO", "Auto-start Kokoro service (true/false)"),
+            ("YAKK_TTS_BASE_URLS", "Comma-separated list of TTS endpoints"),
+            ("YAKK_STT_BASE_URLS", "Comma-separated list of STT endpoints"),
+            ("YAKK_VOICES", "Comma-separated list of preferred voices"),
+            ("YAKK_TTS_MODELS", "Comma-separated list of preferred models"),
+            ("YAKK_PREFER_LOCAL", "Prefer local providers over cloud (true/false)"),
+            ("YAKK_ALWAYS_TRY_LOCAL", "Always attempt local providers (true/false)"),
+            ("YAKK_AUTO_START_KOKORO", "Auto-start Kokoro service (true/false)"),
         ]),
         ("Whisper Configuration", [
-            ("VOICEMODE_WHISPER_MODEL", "Whisper model to use (e.g., large-v2)"),
-            ("VOICEMODE_WHISPER_PORT", "Whisper server port (default: 2022)"),
-            ("VOICEMODE_WHISPER_LANGUAGE", "Language for transcription (default: auto)"),
-            ("VOICEMODE_WHISPER_MODEL_PATH", "Path to Whisper models"),
+            ("YAKK_WHISPER_MODEL", "Whisper model to use (e.g., large-v2)"),
+            ("YAKK_WHISPER_PORT", "Whisper server port (default: 2022)"),
+            ("YAKK_WHISPER_LANGUAGE", "Language for transcription (default: auto)"),
+            ("YAKK_WHISPER_MODEL_PATH", "Path to Whisper models"),
         ]),
         ("Kokoro Configuration", [
-            ("VOICEMODE_KOKORO_PORT", "Kokoro server port (default: 8880)"),
-            ("VOICEMODE_KOKORO_MODELS_DIR", "Directory for Kokoro models"),
-            ("VOICEMODE_KOKORO_CACHE_DIR", "Directory for Kokoro cache"),
-            ("VOICEMODE_KOKORO_DEFAULT_VOICE", "Default Kokoro voice (e.g., af_sky)"),
+            ("YAKK_KOKORO_PORT", "Kokoro server port (default: 8880)"),
+            ("YAKK_KOKORO_MODELS_DIR", "Directory for Kokoro models"),
+            ("YAKK_KOKORO_CACHE_DIR", "Directory for Kokoro cache"),
+            ("YAKK_KOKORO_DEFAULT_VOICE", "Default Kokoro voice (e.g., af_sky)"),
         ]),
     ]
     
@@ -337,18 +337,18 @@ async def list_config_keys() -> str:
             lines.append(f"    {description}")
         lines.append("")
     
-    lines.append("💡 Usage: update_config(key='VOICEMODE_VOICES', value='af_sky,nova')")
+    lines.append("💡 Usage: update_config(key='YAKK_VOICES', value='af_sky,nova')")
     
     return "\n".join(lines)
 
 
 @mcp.tool()
 async def config_reload() -> str:
-    """Reload configuration from .voicemode.env files and clear all caches.
+    """Reload configuration from .yakk.env files and clear all caches.
     
     This tool reloads configuration from:
-    1. Global ~/.voicemode/voicemode.env file
-    2. Project-specific .voicemode.env files (searched up directory tree)
+    1. Global ~/.yakk/yakk.env file
+    2. Project-specific .yakk.env files (searched up directory tree)
     3. Environment variables (highest priority)
     
     Returns:
@@ -356,13 +356,13 @@ async def config_reload() -> str:
     """
     try:
         # Get config files before reload
-        old_files = find_voicemode_env_files()
+        old_files = find_yakk_env_files()
         
         # Reload configuration 
         reload_configuration()
         
         # Get config files after reload
-        new_files = find_voicemode_env_files()
+        new_files = find_yakk_env_files()
         
         lines = ["✅ Configuration reloaded successfully!", ""]
         
@@ -388,10 +388,10 @@ async def config_reload() -> str:
 
 @mcp.tool()
 async def show_config_files() -> str:
-    """Show which .voicemode.env files are being used for configuration.
+    """Show which .yakk.env files are being used for configuration.
     
     This shows the current configuration file discovery and loading order:
-    - Global configuration from ~/.voicemode/voicemode.env
+    - Global configuration from ~/.yakk/yakk.env
     - Project-specific configuration (searched up directory tree)
     - Current working directory for context
     
@@ -399,7 +399,7 @@ async def show_config_files() -> str:
         Formatted list of configuration files and their status
     """
     try:
-        config_files = find_voicemode_env_files()
+        config_files = find_yakk_env_files()
         
         lines = ["📋 Voice Mode Configuration Files", "=" * 40, ""]
         lines.append(f"🗂️  Current directory: {Path.cwd()}")
@@ -413,12 +413,12 @@ async def show_config_files() -> str:
                 status = "✅ EXISTS" if config_file.exists() else "❌ MISSING"
                 file_type = ""
                 
-                if config_file.name == "voicemode.env" and config_file.parent.name == ".voicemode":
-                    if config_file.parent == Path.home() / ".voicemode":
+                if config_file.name == "yakk.env" and config_file.parent.name == ".yakk":
+                    if config_file.parent == Path.home() / ".yakk":
                         file_type = " (Global)"
                     else:
-                        file_type = " (Project - in .voicemode dir)"
-                elif config_file.name == ".voicemode.env":
+                        file_type = " (Project - in .yakk dir)"
+                elif config_file.name == ".yakk.env":
                     if config_file.parent == Path.cwd():
                         file_type = " (Project - current dir)"
                     else:
@@ -430,8 +430,8 @@ async def show_config_files() -> str:
         else:
             lines.append("❌ No configuration files found")
             lines.append("")
-            lines.append("💡 Tip: Create ~/.voicemode/voicemode.env for global configuration")
-            lines.append("💡 Tip: Create .voicemode.env in project directories for project-specific settings")
+            lines.append("💡 Tip: Create ~/.yakk/yakk.env for global configuration")
+            lines.append("💡 Tip: Create .yakk.env in project directories for project-specific settings")
         
         lines.append("")
         lines.append("🔄 Use reload_config() to reload after making changes")

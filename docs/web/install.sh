@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
-# VoiceMode Installer
-# https://getvoicemode.com/install.sh
+# Yakk Installer
+# https://getyakk.com/install.sh
 #
 # Usage:
-#   curl -fsSL https://getvoicemode.com/install.sh | bash
-#   curl -fsSL https://getvoicemode.com/install.sh | bash -s -- -y  # non-interactive
+#   curl -fsSL https://getyakk.com/install.sh | bash
+#   curl -fsSL https://getyakk.com/install.sh | bash -s -- -y  # non-interactive
 #
-# This script installs VoiceMode and its dependencies.
+# This script installs Yakk and its dependencies.
 # It supports macOS and Linux (Debian/Ubuntu, Fedora).
 
 set -o nounset -o pipefail -o errexit
@@ -15,7 +15,7 @@ set -o nounset -o pipefail -o errexit
 # Configuration
 # -----------------------------------------------------------------------------
 
-VOICEMODE_PACKAGE="voice-mode"
+YAKK_PACKAGE="voice-mode"
 INTERACTIVE=true
 
 # Parse command line arguments
@@ -84,7 +84,7 @@ info() {
     echo "  $1"
 }
 
-# Display VoiceMode logo
+# Display Yakk logo
 # Compact 3-line version that fits in ~45 columns
 show_logo() {
     echo ""
@@ -306,10 +306,10 @@ install_macos_prerequisites() {
         case "$response" in
             [nN][oO]|[nN])
                 if [[ "$need_homebrew" == "true" ]]; then
-                    die "Homebrew is required for VoiceMode on macOS"
+                    die "Homebrew is required for Yakk on macOS"
                 fi
                 warn "Skipping package installation"
-                warn "VoiceMode may not work correctly without these packages"
+                warn "Yakk may not work correctly without these packages"
                 return 0
                 ;;
         esac
@@ -495,7 +495,7 @@ install_linux_deps() {
         case "$response" in
             [nN][oO]|[nN])
                 warn "Skipping dependency installation"
-                warn "VoiceMode may not work correctly without these packages"
+                warn "Yakk may not work correctly without these packages"
                 return 0
                 ;;
         esac
@@ -575,12 +575,12 @@ install_system_deps() {
 
 # Check if Whisper STT is installed
 is_whisper_installed() {
-    [[ -d "$HOME/.voicemode/services/whisper" ]]
+    [[ -d "$HOME/.yakk/services/whisper" ]]
 }
 
 # Check if Kokoro TTS is installed
 is_kokoro_installed() {
-    [[ -d "$HOME/.voicemode/services/kokoro" ]]
+    [[ -d "$HOME/.yakk/services/kokoro" ]]
 }
 
 # Assess system capability for local voice services
@@ -696,91 +696,91 @@ install_voice_services() {
         case "$response" in
             [nN][oO]|[nN])
                 info "Skipping local voice services"
-                info "You can install them later with: voicemode whisper install && voicemode kokoro install"
+                info "You can install them later with: yakk whisper install && yakk kokoro install"
                 return 0
                 ;;
         esac
     else
         # Non-interactive: skip voice services by default (they're large downloads)
         info "Skipping local voice services (non-interactive mode)"
-        info "Install later with: voicemode whisper install && voicemode kokoro install"
+        info "Install later with: yakk whisper install && yakk kokoro install"
         return 0
     fi
 
     # Install Whisper if needed
     if [[ "$whisper_installed" == "false" ]]; then
         info "Installing Whisper STT..."
-        if voicemode whisper install; then
+        if yakk whisper install; then
             ok "Whisper STT installed"
         else
-            warn "Whisper installation failed - you can retry with: voicemode whisper install"
+            warn "Whisper installation failed - you can retry with: yakk whisper install"
         fi
     fi
 
     # Install Kokoro if needed
     if [[ "$kokoro_installed" == "false" ]]; then
         info "Installing Kokoro TTS..."
-        if voicemode kokoro install; then
+        if yakk kokoro install; then
             ok "Kokoro TTS installed"
         else
-            warn "Kokoro installation failed - you can retry with: voicemode kokoro install"
+            warn "Kokoro installation failed - you can retry with: yakk kokoro install"
         fi
     fi
 }
 
 # -----------------------------------------------------------------------------
-# VoiceMode Installation
+# Yakk Installation
 # -----------------------------------------------------------------------------
 
-# Install VoiceMode using uv
-install_voicemode() {
-    info "Installing VoiceMode..."
+# Install Yakk using uv
+install_yakk() {
+    info "Installing Yakk..."
 
     local output
     # Use uv tool install for isolated tool installation
     # Capture output to check for "already installed" message
-    if output=$(uv tool install "$VOICEMODE_PACKAGE" 2>&1); then
+    if output=$(uv tool install "$YAKK_PACKAGE" 2>&1); then
         if echo "$output" | grep -q "already installed"; then
-            ok "VoiceMode already installed"
+            ok "Yakk already installed"
         else
-            ok "VoiceMode installed"
+            ok "Yakk installed"
         fi
     else
         # Installation failed
-        if command_exists voicemode; then
+        if command_exists yakk; then
             # Already installed but uv failed (shouldn't happen normally)
-            ok "VoiceMode already installed"
+            ok "Yakk already installed"
         else
             echo "$output" >&2
-            die "VoiceMode installation failed"
+            die "Yakk installation failed"
         fi
     fi
 }
 
-# Verify VoiceMode installation and show version
-verify_voicemode() {
+# Verify Yakk installation and show version
+verify_yakk() {
     # Refresh PATH to pick up newly installed tools
     export PATH="$HOME/.local/bin:$PATH"
 
-    if ! command_exists voicemode; then
-        die "VoiceMode command not found after installation.
+    if ! command_exists yakk; then
+        die "Yakk command not found after installation.
 Please ensure ~/.local/bin is in your PATH:
     export PATH=\"\$HOME/.local/bin:\$PATH\""
     fi
 
     local version
-    version=$(voicemode --version 2>/dev/null | sed 's/VoiceMode, version //' || echo "unknown")
-    ok "VoiceMode $version ready"
+    version=$(yakk --version 2>/dev/null | sed 's/Yakk, version //' || echo "unknown")
+    ok "Yakk $version ready"
 }
 
 # Display next steps for the user
 show_next_steps() {
     echo ""
     echo "Next steps:"
-    echo "  voicemode --help   Show available commands"
-    echo "  voicemode status   Check service status"
+    echo "  yakk --help   Show available commands"
+    echo "  yakk status   Check service status"
     echo ""
-    echo "Documentation: https://getvoicemode.com/docs"
+    echo "Documentation: https://getyakk.com/docs"
 }
 
 # -----------------------------------------------------------------------------
@@ -800,9 +800,9 @@ main() {
     # Install system dependencies (includes uv)
     install_system_deps "$os" "$arch"
 
-    # Install and verify VoiceMode
-    install_voicemode
-    verify_voicemode
+    # Install and verify Yakk
+    install_yakk
+    verify_yakk
 
     # Offer to install local voice services
     install_voice_services "$os" "$arch"

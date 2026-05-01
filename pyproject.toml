@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "voice-mode"
 dynamic = ["version"]
-description = "VoiceMode - Voice interaction capabilities for AI assistants (formerly voice-mcp)"
+description = "Yakk - Voice interaction capabilities for AI assistants (formerly voice-mcp)"
 readme = "README.md"
 requires-python = ">=3.10"
 license = {text = "MIT"}
@@ -38,7 +38,7 @@ dependencies = [
     "audioop-lts; python_version >= '3.13'",
     "simpleaudio",
     "httpx",
-    "websockets>=12.0",  # Required for voicemode connect command
+    "websockets>=12.0",  # Required for yakk connect command
     "aiohttp",  # Required for Whisper and Kokoro service installers
     "psutil>=5.9.0",
     "webrtcvad-wheels>=2.0.14",  # Maintained fork with importlib.metadata (no pkg_resources)
@@ -96,13 +96,13 @@ docs = [
 ]
 
 [project.urls]
-Homepage = "https://getvoicemode.com/"
-Repository = "https://github.com/mbailey/voicemode"
-Issues = "https://github.com/mbailey/voicemode/issues"
+Homepage = "https://getyakk.com/"
+Repository = "https://github.com/mbailey/yakk"
+Issues = "https://github.com/mbailey/yakk/issues"
 
 [project.scripts]
 voice-mode = "voice_mode.cli:voice_mode"
-voicemode = "voice_mode.cli:voice_mode"
+yakk = "voice_mode.cli:voice_mode"
 sayas = "voice_mode.cli:sayas_cli"
 
 [tool.hatch.build.targets.wheel]

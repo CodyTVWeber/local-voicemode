@@ -1,18 +1,18 @@
 # Remote Access Configuration
 
-VoiceMode can run as an HTTP server, enabling remote access from Claude Desktop, Claude Code, Claude.ai, and other MCP clients. This guide covers how to configure different clients to connect to a VoiceMode server.
+Yakk can run as an HTTP server, enabling remote access from Claude Desktop, Claude Code, Claude.ai, and other MCP clients. This guide covers how to configure different clients to connect to a Yakk server.
 
 ## Overview
 
-The `voicemode serve` command starts VoiceMode as an HTTP server instead of the default stdio transport. This enables:
+The `yakk serve` command starts Yakk as an HTTP server instead of the default stdio transport. This enables:
 
 - **Local network access** - Connect from other machines on your network
 - **Cloud access** - Connect from Claude.ai and Claude Cowork via Tailscale Funnel
-- **Multiple clients** - Share one VoiceMode instance across devices
+- **Multiple clients** - Share one Yakk instance across devices
 
 ```bash
 # Start the server (localhost only by default)
-voicemode serve
+yakk serve
 
 # Server starts at http://127.0.0.1:8765/mcp
 ```
@@ -25,7 +25,7 @@ For local development, start the server and connect from your client:
 
 ```bash
 # Terminal 1: Start server
-voicemode serve
+yakk serve
 
 # Server runs at http://127.0.0.1:8765/mcp
 ```
@@ -38,10 +38,10 @@ To allow connections from other devices on your network:
 
 ```bash
 # Bind to all interfaces
-voicemode serve --host 0.0.0.0
+yakk serve --host 0.0.0.0
 
 # Or allow specific IP ranges
-voicemode serve --host 0.0.0.0 --allow-ip 192.168.1.0/24
+yakk serve --host 0.0.0.0 --allow-ip 192.168.1.0/24
 ```
 
 ### Remote Access (Tailscale)
@@ -50,20 +50,20 @@ For connections over Tailscale:
 
 ```bash
 # Allow Tailscale IP range
-voicemode serve --host 0.0.0.0 --allow-tailscale
+yakk serve --host 0.0.0.0 --allow-tailscale
 ```
 
 ## Client Configuration
 
 ### Claude Desktop (via mcp-remote)
 
-Claude Desktop uses stdio transport by default. To connect to a remote VoiceMode server, use [mcp-remote](https://github.com/anthropics/mcp-remote) as a bridge.
+Claude Desktop uses stdio transport by default. To connect to a remote Yakk server, use [mcp-remote](https://github.com/anthropics/mcp-remote) as a bridge.
 
 #### Setup
 
-1. Start the VoiceMode server:
+1. Start the Yakk server:
    ```bash
-   voicemode serve
+   yakk serve
    ```
 
 2. Add to Claude Desktop's MCP configuration (`~/Library/Application Support/Claude/claude_desktop_config.json` on macOS):
@@ -71,7 +71,7 @@ Claude Desktop uses stdio transport by default. To connect to a remote VoiceMode
    ```json
    {
      "mcpServers": {
-       "voicemode": {
+       "yakk": {
          "command": "npx",
          "args": ["-y", "mcp-remote", "http://127.0.0.1:8765/mcp"]
        }
@@ -88,7 +88,7 @@ For a remote server (e.g., on another machine):
 ```json
 {
   "mcpServers": {
-    "voicemode": {
+    "yakk": {
       "command": "npx",
       "args": ["-y", "mcp-remote", "http://192.168.1.100:8765/mcp"]
     }
@@ -103,7 +103,7 @@ If using token authentication:
 ```json
 {
   "mcpServers": {
-    "voicemode": {
+    "yakk": {
       "command": "npx",
       "args": [
         "-y", "mcp-remote",
@@ -117,7 +117,7 @@ If using token authentication:
 
 ### Claude Code
 
-Claude Code can connect to VoiceMode in two ways: direct stdio transport (recommended for local use) or HTTP transport for remote servers.
+Claude Code can connect to Yakk in two ways: direct stdio transport (recommended for local use) or HTTP transport for remote servers.
 
 #### Local Setup (Recommended)
 
@@ -126,7 +126,7 @@ For local development, use stdio transport directly in `.claude/mcp.json`:
 ```json
 {
   "mcpServers": {
-    "voicemode": {
+    "yakk": {
       "command": "uvx",
       "args": ["voice-mode"]
     }
@@ -138,14 +138,14 @@ This is simpler and doesn't require running a separate server.
 
 #### Remote Server (Built-in HTTP Transport)
 
-Claude Code has built-in HTTP transport support. To connect to a VoiceMode server:
+Claude Code has built-in HTTP transport support. To connect to a Yakk server:
 
 ```bash
 # Add to current project (recommended)
-claude mcp add --scope project --transport http voicemode http://127.0.0.1:8765/mcp
+claude mcp add --scope project --transport http yakk http://127.0.0.1:8765/mcp
 
 # Or add globally for all projects
-claude mcp add --scope user --transport http voicemode http://127.0.0.1:8765/mcp
+claude mcp add --scope user --transport http yakk http://127.0.0.1:8765/mcp
 ```
 
 This creates a configuration like:
@@ -153,7 +153,7 @@ This creates a configuration like:
 ```json
 {
   "mcpServers": {
-    "voicemode": {
+    "yakk": {
       "type": "http",
       "url": "http://127.0.0.1:8765/mcp"
     }
@@ -168,7 +168,7 @@ For older Claude Code versions, use mcp-remote:
 ```json
 {
   "mcpServers": {
-    "voicemode": {
+    "yakk": {
       "command": "npx",
       "args": ["-y", "mcp-remote", "http://your-server:8765/mcp"]
     }
@@ -176,13 +176,13 @@ For older Claude Code versions, use mcp-remote:
 }
 ```
 
-#### With VoiceMode Plugin
+#### With Yakk Plugin
 
-If using the VoiceMode plugin for Claude Code, it automatically configures stdio transport. For remote access, disable the plugin and use the HTTP transport configuration above.
+If using the Yakk plugin for Claude Code, it automatically configures stdio transport. For remote access, disable the plugin and use the HTTP transport configuration above.
 
 ### Claude.ai and Claude Cowork
 
-Claude.ai and Claude Cowork can connect to MCP servers via custom connectors. This requires your VoiceMode server to be accessible from the internet.
+Claude.ai and Claude Cowork can connect to MCP servers via custom connectors. This requires your Yakk server to be accessible from the internet.
 
 > **⚠️ Experimental**: The Claude.ai/Cowork integration via Tailscale Funnel is still being refined. The setup works but the workflow may change. Use with caution and expect updates.
 
@@ -222,15 +222,15 @@ Tailscale Funnel exposes your local server to the internet with automatic HTTPS.
    tailscale funnel 8765
    ```
 
-3. Start VoiceMode with Anthropic IP allowlist:
+3. Start Yakk with Anthropic IP allowlist:
    ```bash
    # Allow Anthropic's outbound IPs
-   voicemode serve --allow-anthropic --secret your-secret-uuid
+   yakk serve --allow-anthropic --secret your-secret-uuid
    ```
 
 4. In Claude.ai settings, add a custom MCP connector:
    - **URL**: `https://your-machine.tail12345.ts.net/mcp/your-secret-uuid`
-   - **Name**: VoiceMode
+   - **Name**: Yakk
 
 #### Direct Setup (No Tailscale)
 
@@ -238,9 +238,9 @@ If you have a public IP and domain:
 
 1. Set up a reverse proxy (nginx, Caddy) with HTTPS
 2. Configure the proxy to forward to `localhost:8765`
-3. Start VoiceMode:
+3. Start Yakk:
    ```bash
-   voicemode serve --allow-anthropic --token your-secret-token
+   yakk serve --allow-anthropic --token your-secret-token
    ```
 
 4. Add the custom connector in Claude.ai with your domain.
@@ -255,14 +255,14 @@ The `--allow-anthropic` flag adds Anthropic's outbound IP ranges (`160.79.104.0/
 
 **Recommendations**:
 
-1. **Always use authentication**: Never expose VoiceMode without `--secret` or `--token`
+1. **Always use authentication**: Never expose Yakk without `--secret` or `--token`
 2. **Use IP allowlists**: Combine `--allow-anthropic` with authentication for defense in depth
 3. **Monitor access**: Enable `--log-level debug` initially to monitor connection attempts
 4. **Rotate secrets**: Change your `--secret` UUID periodically, especially if you suspect compromise
 5. **Disable when not needed**: Stop the Funnel (`tailscale funnel off`) when not actively using Claude.ai
 
 **What Funnel exposes**:
-- Your VoiceMode MCP endpoint becomes publicly accessible via HTTPS
+- Your Yakk MCP endpoint becomes publicly accessible via HTTPS
 - Anyone with your Tailscale hostname can attempt connections
 - IP allowlists (`--allow-anthropic`) prevent unauthorized access but require proper configuration
 
@@ -274,10 +274,10 @@ Combine multiple security layers:
 
 ```bash
 # IP allowlist + token authentication
-voicemode serve --allow-anthropic --token your-secret-token
+yakk serve --allow-anthropic --token your-secret-token
 
 # IP allowlist + URL secret
-voicemode serve --allow-anthropic --secret your-secret-uuid
+yakk serve --allow-anthropic --secret your-secret-uuid
 ```
 
 ### Authentication Options
@@ -314,20 +314,20 @@ openssl rand -hex 32
 
 ```bash
 # Use environment variable
-export VOICEMODE_TOKEN="your-secret-token"
-voicemode serve --allow-anthropic --token "$VOICEMODE_TOKEN"
+export YAKK_TOKEN="your-secret-token"
+yakk serve --allow-anthropic --token "$YAKK_TOKEN"
 ```
 
 ## Transport Options
 
-VoiceMode supports two HTTP transports:
+Yakk supports two HTTP transports:
 
 ### Streamable HTTP (Recommended)
 
 The default and recommended transport:
 
 ```bash
-voicemode serve --transport streamable-http
+yakk serve --transport streamable-http
 # Endpoint: http://127.0.0.1:8765/mcp
 ```
 
@@ -340,7 +340,7 @@ voicemode serve --transport streamable-http
 Server-Sent Events transport for backward compatibility:
 
 ```bash
-voicemode serve --transport sse
+yakk serve --transport sse
 # Endpoint: http://127.0.0.1:8765/sse
 ```
 
@@ -358,7 +358,7 @@ voicemode serve --transport sse
 1. Verify server is running: `curl http://127.0.0.1:8765/mcp`
 2. Check firewall settings
 3. Verify correct host/port in client config
-4. Enable debug logging: `voicemode serve --log-level debug`
+4. Enable debug logging: `yakk serve --log-level debug`
 
 ### 401 Unauthorized
 
@@ -427,12 +427,12 @@ curl https://your-machine.tail12345.ts.net/mcp
 
 ### Voice Services Not Available
 
-**Symptom**: VoiceMode connects but voice tools fail.
+**Symptom**: Yakk connects but voice tools fail.
 
 **Solutions**:
 1. Ensure Whisper and Kokoro services are running on the server
-2. Check service status: `voicemode whisper status` and `voicemode kokoro status`
-3. Services must run on the same machine as `voicemode serve`
+2. Check service status: `yakk whisper status` and `yakk kokoro status`
+3. Services must run on the same machine as `yakk serve`
 
 ## Environment Variables
 
@@ -440,13 +440,13 @@ Server behavior can be configured via environment variables:
 
 ```bash
 # Default transport
-export VOICEMODE_SERVE_TRANSPORT=streamable-http
+export YAKK_SERVE_TRANSPORT=streamable-http
 
 # Default port
-export VOICEMODE_SERVE_PORT=8765
+export YAKK_SERVE_PORT=8765
 
 # Default host
-export VOICEMODE_SERVE_HOST=127.0.0.1
+export YAKK_SERVE_HOST=127.0.0.1
 ```
 
 CLI options take precedence over environment variables.
@@ -454,6 +454,6 @@ CLI options take precedence over environment variables.
 ## See Also
 
 - [CLI Reference](../reference/cli.md) - Complete serve command documentation
-- [Configuration Guide](configuration.md) - VoiceMode configuration options
+- [Configuration Guide](configuration.md) - Yakk configuration options
 - [Claude Code Plugin](claude-code-plugin.md) - Plugin installation for Claude Code
 - [Tailscale Funnel documentation](https://tailscale.com/kb/1223/funnel) - Official Tailscale Funnel setup guide

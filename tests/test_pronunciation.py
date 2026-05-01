@@ -108,57 +108,57 @@ def test_parse_insufficient_fields():
 def test_manager_loads_from_env():
     """Test PronounceManager loads from environment variables."""
     # Save original env
-    original = os.environ.get('VOICEMODE_PRONOUNCE')
+    original = os.environ.get('YAKK_PRONOUNCE')
 
     try:
-        os.environ['VOICEMODE_PRONOUNCE'] = 'TTS bag carrier'
+        os.environ['YAKK_PRONOUNCE'] = 'TTS bag carrier'
         manager = PronounceManager()
         assert len(manager.rules['tts']) == 1
         assert manager.rules['tts'][0].pattern == 'bag'
     finally:
         # Restore original env
         if original:
-            os.environ['VOICEMODE_PRONOUNCE'] = original
+            os.environ['YAKK_PRONOUNCE'] = original
         else:
-            os.environ.pop('VOICEMODE_PRONOUNCE', None)
+            os.environ.pop('YAKK_PRONOUNCE', None)
 
 
 def test_manager_strips_quotes():
     """Test that manager strips quotes from env var values."""
     # Save original env
-    original = os.environ.get('VOICEMODE_PRONOUNCE')
+    original = os.environ.get('YAKK_PRONOUNCE')
 
     try:
         # Simulate what .env file loading does - keeps quotes
-        os.environ['VOICEMODE_PRONOUNCE'] = "'STT bag carrier'"
+        os.environ['YAKK_PRONOUNCE'] = "'STT bag carrier'"
         manager = PronounceManager()
         assert len(manager.rules['stt']) == 1
         assert manager.rules['stt'][0].pattern == 'bag'
 
         # Test with double quotes
-        os.environ['VOICEMODE_PRONOUNCE'] = '"STT bag carrier"'
+        os.environ['YAKK_PRONOUNCE'] = '"STT bag carrier"'
         manager = PronounceManager()
         assert len(manager.rules['stt']) == 1
         assert manager.rules['stt'][0].pattern == 'bag'
     finally:
         # Restore original env
         if original:
-            os.environ['VOICEMODE_PRONOUNCE'] = original
+            os.environ['YAKK_PRONOUNCE'] = original
         else:
-            os.environ.pop('VOICEMODE_PRONOUNCE', None)
+            os.environ.pop('YAKK_PRONOUNCE', None)
 
 
 def test_manager_multiple_env_vars():
-    """Test loading from multiple VOICEMODE_PRONOUNCE_* variables."""
+    """Test loading from multiple YAKK_PRONOUNCE_* variables."""
     # Save original env
     originals = {
-        'VOICEMODE_PRONOUNCE': os.environ.get('VOICEMODE_PRONOUNCE'),
-        'VOICEMODE_PRONOUNCE_TEST': os.environ.get('VOICEMODE_PRONOUNCE_TEST')
+        'YAKK_PRONOUNCE': os.environ.get('YAKK_PRONOUNCE'),
+        'YAKK_PRONOUNCE_TEST': os.environ.get('YAKK_PRONOUNCE_TEST')
     }
 
     try:
-        os.environ['VOICEMODE_PRONOUNCE'] = 'TTS bag carrier'
-        os.environ['VOICEMODE_PRONOUNCE_TEST'] = 'STT carrier bag'
+        os.environ['YAKK_PRONOUNCE'] = 'TTS bag carrier'
+        os.environ['YAKK_PRONOUNCE_TEST'] = 'STT carrier bag'
         manager = PronounceManager()
         assert len(manager.rules['tts']) == 1
         assert len(manager.rules['stt']) == 1
@@ -174,35 +174,35 @@ def test_manager_multiple_env_vars():
 def test_tts_processing():
     """Test TTS text processing."""
     # Save original env
-    original = os.environ.get('VOICEMODE_PRONOUNCE')
+    original = os.environ.get('YAKK_PRONOUNCE')
 
     try:
-        os.environ['VOICEMODE_PRONOUNCE'] = 'TTS bag carrier'
+        os.environ['YAKK_PRONOUNCE'] = 'TTS bag carrier'
         manager = PronounceManager()
 
         result = manager.process_tts('where is my bag')
         assert result == 'where is my carrier'
 
         # Should not match partial words
-        os.environ['VOICEMODE_PRONOUNCE'] = r'TTS \bbag\b carrier'
+        os.environ['YAKK_PRONOUNCE'] = r'TTS \bbag\b carrier'
         manager = PronounceManager()
         result = manager.process_tts('bagging')
         assert result == 'bagging'  # Unchanged
     finally:
         # Restore original env
         if original:
-            os.environ['VOICEMODE_PRONOUNCE'] = original
+            os.environ['YAKK_PRONOUNCE'] = original
         else:
-            os.environ.pop('VOICEMODE_PRONOUNCE', None)
+            os.environ.pop('YAKK_PRONOUNCE', None)
 
 
 def test_stt_processing():
     """Test STT text processing."""
     # Save original env
-    original = os.environ.get('VOICEMODE_PRONOUNCE')
+    original = os.environ.get('YAKK_PRONOUNCE')
 
     try:
-        os.environ['VOICEMODE_PRONOUNCE'] = 'STT bag carrier'
+        os.environ['YAKK_PRONOUNCE'] = 'STT bag carrier'
         manager = PronounceManager()
 
         result = manager.process_stt('where is my bag')
@@ -210,6 +210,6 @@ def test_stt_processing():
     finally:
         # Restore original env
         if original:
-            os.environ['VOICEMODE_PRONOUNCE'] = original
+            os.environ['YAKK_PRONOUNCE'] = original
         else:
-            os.environ.pop('VOICEMODE_PRONOUNCE', None)
+            os.environ.pop('YAKK_PRONOUNCE', None)

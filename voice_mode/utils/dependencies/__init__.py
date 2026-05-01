@@ -1,7 +1,7 @@
-"""Dependency management for VoiceMode.
+"""Dependency management for Yakk.
 
 This module provides utilities for checking and installing system dependencies
-required by VoiceMode and its service components (Whisper, Kokoro, etc.).
+required by Yakk and its service components (Whisper, Kokoro, etc.).
 """
 
 from .checker import (

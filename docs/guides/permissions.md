@@ -1,6 +1,6 @@
 # Claude Code Permissions Guide
 
-Configure Claude Code to use VoiceMode without constant permission prompts.
+Configure Claude Code to use Yakk without constant permission prompts.
 
 ## Quick Setup (30 seconds)
 
@@ -10,8 +10,8 @@ Add this to `~/.claude/settings.json`:
 {
   "permissions": {
     "allow": [
-      "mcp__voicemode__converse",
-      "mcp__voicemode__service"
+      "mcp__yakk__converse",
+      "mcp__yakk__service"
     ]
   }
 }
@@ -23,8 +23,8 @@ That's it! Voice conversations and service management now work without prompts.
 
 | Permission | What It Does |
 |------------|--------------|
-| `mcp__voicemode__converse` | Voice conversations (speak and listen) |
-| `mcp__voicemode__service` | Start/stop Whisper and Kokoro services |
+| `mcp__yakk__converse` | Voice conversations (speak and listen) |
+| `mcp__yakk__service` | Start/stop Whisper and Kokoro services |
 
 ## Permission Levels
 
@@ -38,7 +38,7 @@ Just voice conversations, nothing else:
 {
   "permissions": {
     "allow": [
-      "mcp__voicemode__converse"
+      "mcp__yakk__converse"
     ]
   }
 }
@@ -52,14 +52,14 @@ Voice conversations plus service management:
 {
   "permissions": {
     "allow": [
-      "mcp__voicemode__converse",
-      "mcp__voicemode__service"
+      "mcp__yakk__converse",
+      "mcp__yakk__service"
     ]
   }
 }
 ```
 
-### Level 3: All VoiceMode Tools
+### Level 3: All Yakk Tools
 
 Everything except installation (for power users):
 
@@ -67,13 +67,13 @@ Everything except installation (for power users):
 {
   "permissions": {
     "allow": [
-      "mcp__voicemode__*"
+      "mcp__yakk__*"
     ],
     "deny": [
-      "mcp__voicemode__whisper_install",
-      "mcp__voicemode__whisper_uninstall",
-      "mcp__voicemode__kokoro_install",
-      "mcp__voicemode__kokoro_uninstall"
+      "mcp__yakk__whisper_install",
+      "mcp__yakk__whisper_uninstall",
+      "mcp__yakk__kokoro_install",
+      "mcp__yakk__kokoro_uninstall"
     ]
   }
 }
@@ -95,20 +95,20 @@ nano ~/.claude/settings.json
 ### Option 2: Use Claude Code UI
 
 1. In Claude Code, type `/permissions`
-2. Add `mcp__voicemode__converse` to the allow list
-3. Add `mcp__voicemode__service` to the allow list
+2. Add `mcp__yakk__converse` to the allow list
+3. Add `mcp__yakk__service` to the allow list
 
 ### Option 3: Command Line
 
 ```bash
-# Create settings file with VoiceMode permissions
+# Create settings file with Yakk permissions
 mkdir -p ~/.claude
 cat > ~/.claude/settings.json << 'EOF'
 {
   "permissions": {
     "allow": [
-      "mcp__voicemode__converse",
-      "mcp__voicemode__service"
+      "mcp__yakk__converse",
+      "mcp__yakk__service"
     ]
   }
 }
@@ -137,7 +137,7 @@ Should show your permissions block.
 ❌ Wrong:
 ```json
 {
-  "allowedTools": ["mcp__voicemode__converse"]
+  "allowedTools": ["mcp__yakk__converse"]
 }
 ```
 
@@ -145,7 +145,7 @@ Should show your permissions block.
 ```json
 {
   "permissions": {
-    "allow": ["mcp__voicemode__converse"]
+    "allow": ["mcp__yakk__converse"]
   }
 }
 ```
@@ -166,7 +166,7 @@ Or delete the permissions block entirely.
 
 ## Security Notes
 
-### What VoiceMode Tools Can Do
+### What Yakk Tools Can Do
 
 | Tool | Capabilities |
 |------|--------------|
@@ -200,5 +200,5 @@ Settings merge: global → project → local (local wins).
 ## See Also
 
 - [Getting Started](../tutorials/getting-started.md) - Installation guide
-- [Configuration](configuration.md) - VoiceMode settings
+- [Configuration](configuration.md) - Yakk settings
 - [Troubleshooting](../reference/troubleshooting.md) - Common issues

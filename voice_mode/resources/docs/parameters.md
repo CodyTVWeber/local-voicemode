@@ -1,4 +1,4 @@
-# Voicemode Parameters Reference
+# Yakk Parameters Reference
 
 ## Core Parameters
 
@@ -137,7 +137,7 @@ Time to add before audio chime starts.
 
 **Use case:** Bluetooth devices that need audio buffer (e.g., 1.0 seconds)
 
-**Default:** Uses VOICEMODE_CHIME_LEADING_SILENCE env var (0.1s)
+**Default:** Uses YAKK_CHIME_LEADING_SILENCE env var (0.1s)
 
 ### chime_trailing_silence
 **Type:** number (seconds, optional)
@@ -145,11 +145,11 @@ Time to add after audio chime ends.
 
 **Use case:** Prevent chime cutoff (e.g., 0.5 seconds)
 
-**Default:** Uses VOICEMODE_CHIME_TRAILING_SILENCE env var (0.2s)
+**Default:** Uses YAKK_CHIME_TRAILING_SILENCE env var (0.2s)
 
 ## Vocabulary Biasing (STT Prompt)
 
-### VOICEMODE_STT_PROMPT
+### YAKK_STT_PROMPT
 **Type:** environment variable (string, optional)
 
 Bias Whisper's speech recognition toward specific words and names using a prompt hint. This helps improve recognition of technical terms, proper names, and domain-specific vocabulary that Whisper might otherwise mishear.
@@ -168,25 +168,25 @@ Whisper uses a "prompt" field to condition its recognition. By providing words a
 All of these formats work equivalently:
 ```bash
 # Comma-separated
-export VOICEMODE_STT_PROMPT="tmux, Tali, VoiceMode, kubectl"
+export YAKK_STT_PROMPT="tmux, Tali, Yakk, kubectl"
 
 # Space-separated
-export VOICEMODE_STT_PROMPT="tmux Tali VoiceMode kubectl"
+export YAKK_STT_PROMPT="tmux Tali Yakk kubectl"
 
 # Sentence-style (can help with context)
-export VOICEMODE_STT_PROMPT="The user often talks about Tali, tmux sessions, and VoiceMode features."
+export YAKK_STT_PROMPT="The user often talks about Tali, tmux sessions, and Yakk features."
 ```
 
 **Examples:**
 ```bash
 # Developer working with Kubernetes and tmux
-export VOICEMODE_STT_PROMPT="kubectl, tmux, pytest, FastAPI, VoiceMode"
+export YAKK_STT_PROMPT="kubectl, tmux, pytest, FastAPI, Yakk"
 
 # User with a pet named Tali
-export VOICEMODE_STT_PROMPT="Tali, my dog Tali, taking Tali for a walk"
+export YAKK_STT_PROMPT="Tali, my dog Tali, taking Tali for a walk"
 
 # Mix of technical and personal vocabulary
-export VOICEMODE_STT_PROMPT="tmux, neovim, Tali, Brisbane, taskmaster"
+export YAKK_STT_PROMPT="tmux, neovim, Tali, Brisbane, taskmaster"
 ```
 
 **Token limit:**
@@ -216,13 +216,13 @@ Override audio format.
 
 **Options:** pcm, mp3, wav, flac, aac, opus
 
-**Default:** Uses VOICEMODE_TTS_AUDIO_FORMAT env var
+**Default:** Uses YAKK_TTS_AUDIO_FORMAT env var
 
 ### chime_enabled
 **Type:** boolean | string (optional)
 Enable or disable audio feedback chimes.
 
-**Default:** Uses VOICEMODE_CHIME_ENABLED env var
+**Default:** Uses YAKK_CHIME_ENABLED env var
 
 ### skip_tts
 **Type:** boolean (optional)
@@ -231,7 +231,7 @@ Skip text-to-speech, show text only.
 **Values:**
 - `true` - Skip TTS, faster response, text-only
 - `false` - Always use TTS
-- `null` (default) - Follow VOICEMODE_SKIP_TTS env var
+- `null` (default) - Follow YAKK_SKIP_TTS env var
 
 **Use cases:**
 - Rapid development iterations

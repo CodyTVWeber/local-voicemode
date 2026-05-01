@@ -1,4 +1,4 @@
-# Voicemode Quickstart
+# Yakk Quickstart
 
 ## Basic Usage
 

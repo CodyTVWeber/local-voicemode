@@ -24,7 +24,7 @@ from .chapters import convert_cue_to_ffmetadata
 
 # Default locations
 MFP_RSS_URL = "https://musicforprogramming.net/rss.xml"
-DEFAULT_CACHE_DIR = Path.home() / ".voicemode" / "music-for-programming"
+DEFAULT_CACHE_DIR = Path.home() / ".yakk" / "music-for-programming"
 
 
 class RssFetcher(Protocol):
@@ -115,7 +115,7 @@ class MfpService:
         """Initialize the MFP service.
 
         Args:
-            cache_dir: Directory for cached files. Defaults to ~/.voicemode/music-for-programming.
+            cache_dir: Directory for cached files. Defaults to ~/.yakk/music-for-programming.
             fetcher: RSS fetcher implementation. Defaults to HttpFetcher.
         """
         self.cache_dir = cache_dir or DEFAULT_CACHE_DIR
@@ -412,7 +412,7 @@ class MfpService:
         Returns:
             Path to cached chapter file, or None if not available on GitHub.
         """
-        github_base = "https://raw.githubusercontent.com/mbailey/voicemode/master/voice_mode/data/mfp"
+        github_base = "https://raw.githubusercontent.com/mbailey/yakk/master/voice_mode/data/mfp"
 
         self._ensure_cache_dir()
 

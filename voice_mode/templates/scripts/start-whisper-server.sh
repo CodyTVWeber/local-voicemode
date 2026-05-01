@@ -3,7 +3,7 @@ set -o nounset -o pipefail -o errexit
 
 # Whisper Service Startup Script
 # This script is used by both macOS (launchd) and Linux (systemd) to start the whisper service
-# It sources the voicemode.env file to get configuration, especially VOICEMODE_WHISPER_MODEL
+# It sources the yakk.env file to get configuration, especially YAKK_WHISPER_MODEL
 #
 # Features:
 # - Startup health check with 120s timeout
@@ -14,9 +14,9 @@ set -o nounset -o pipefail -o errexit
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 WHISPER_DIR="$(dirname "$SCRIPT_DIR")"
 
-# Voicemode configuration directory
-VOICEMODE_DIR="$HOME/.voicemode"
-LOG_DIR="$VOICEMODE_DIR/logs/whisper"
+# Yakk configuration directory
+YAKK_DIR="$HOME/.yakk"
+LOG_DIR="$YAKK_DIR/logs/whisper"
 
 # Create log directory if it doesn't exist
 mkdir -p "$LOG_DIR"
@@ -28,16 +28,16 @@ log() {
     echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1" >> "$STARTUP_LOG"
 }
 
-# Source voicemode configuration if it exists
-if [ -f "$VOICEMODE_DIR/voicemode.env" ]; then
-    log "Sourcing voicemode.env"
-    source "$VOICEMODE_DIR/voicemode.env"
+# Source yakk configuration if it exists
+if [ -f "$YAKK_DIR/yakk.env" ]; then
+    log "Sourcing yakk.env"
+    source "$YAKK_DIR/yakk.env"
 else
-    log "Warning: voicemode.env not found"
+    log "Warning: yakk.env not found"
 fi
 
 # Model selection with environment variable support
-MODEL_NAME="${VOICEMODE_WHISPER_MODEL:-base}"
+MODEL_NAME="${YAKK_WHISPER_MODEL:-base}"
 MODEL_PATH="$WHISPER_DIR/models/ggml-$MODEL_NAME.bin"
 
 log "Starting whisper-server with model: $MODEL_NAME"
@@ -60,12 +60,12 @@ if [ ! -f "$MODEL_PATH" ]; then
 fi
 
 # Port configuration (with environment variable support)
-WHISPER_PORT="${VOICEMODE_WHISPER_PORT:-2022}"
+WHISPER_PORT="${YAKK_WHISPER_PORT:-2022}"
 
 # Thread configuration - auto-detect CPU cores if not specified
 # Works on macOS, Linux, and WSL
-if [ -n "${VOICEMODE_WHISPER_THREADS:-}" ]; then
-    WHISPER_THREADS="$VOICEMODE_WHISPER_THREADS"
+if [ -n "${YAKK_WHISPER_THREADS:-}" ]; then
+    WHISPER_THREADS="$YAKK_WHISPER_THREADS"
 elif [ "$(uname -s)" = "Darwin" ]; then
     # macOS - use sysctl
     WHISPER_THREADS=$(sysctl -n hw.ncpu 2>/dev/null || echo 4)
@@ -108,7 +108,7 @@ log "Port: $WHISPER_PORT"
 COREML_MODEL_DIR="$WHISPER_DIR/models/ggml-${MODEL_NAME}-encoder.mlmodelc"
 
 # Startup timeout configuration
-STARTUP_TIMEOUT="${VOICEMODE_WHISPER_STARTUP_TIMEOUT:-120}"
+STARTUP_TIMEOUT="${YAKK_WHISPER_STARTUP_TIMEOUT:-120}"
 HEALTH_URL="http://127.0.0.1:${WHISPER_PORT}/health"
 
 # Start whisper-server in background to monitor startup

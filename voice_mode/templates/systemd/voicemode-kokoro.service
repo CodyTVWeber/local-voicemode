@@ -1,7 +1,7 @@
-# voicemode-kokoro.service v1.3.0
+# yakk-kokoro.service v1.3.0
 # Last updated: 2026-02-18
 # Compatible with: kokoro-fastapi v1.0.0+
-# Simplified: start script handles config via voicemode.env
+# Simplified: start script handles config via yakk.env
 
 [Unit]
 Description=Voice Mode Kokoro Text-to-Speech Service
@@ -16,7 +16,7 @@ RestartSec=10
 # Don't restart if the executable is missing
 RestartPreventExitStatus=127
 
-# Environment - start script sources voicemode.env for port config
+# Environment - start script sources yakk.env for port config
 # Include .cargo/bin for ARM64 Linux where Rust may be needed to build dependencies
 Environment="PATH=%h/.cargo/bin:%h/.local/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
 # Restart worker after N requests to mitigate memory leak (hexgrad/kokoro#152)
@@ -29,7 +29,7 @@ CPUQuota=100%
 # Logging
 StandardOutput=journal
 StandardError=journal
-SyslogIdentifier=voicemode-kokoro
+SyslogIdentifier=yakk-kokoro
 
 [Install]
 WantedBy=default.target

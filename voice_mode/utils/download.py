@@ -16,8 +16,8 @@ def detect_progress_style() -> str:
         return 'verbose'  # CI environment
     if not sys.stdout.isatty():
         return 'verbose'  # Not a terminal
-    if os.environ.get('VOICEMODE_PROGRESS_STYLE'):
-        return os.environ['VOICEMODE_PROGRESS_STYLE']
+    if os.environ.get('YAKK_PROGRESS_STYLE'):
+        return os.environ['YAKK_PROGRESS_STYLE']
     return 'bar'  # Default to progress bar
 
 

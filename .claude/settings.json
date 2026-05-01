@@ -5,7 +5,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "./.claude/scripts/voicemode-hook-receiver || true"
+            "command": "./.claude/scripts/yakk-hook-receiver || true"
           }
         ]
       }
@@ -15,7 +15,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "./.claude/scripts/voicemode-hook-receiver || true"
+            "command": "./.claude/scripts/yakk-hook-receiver || true"
           }
         ]
       }
@@ -25,7 +25,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "./.claude/scripts/voicemode-hook-receiver || true"
+            "command": "./.claude/scripts/yakk-hook-receiver || true"
           }
         ]
       }
@@ -35,7 +35,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "./.claude/scripts/voicemode-hook-receiver || true"
+            "command": "./.claude/scripts/yakk-hook-receiver || true"
           }
         ]
       }
@@ -45,7 +45,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "./.claude/scripts/voicemode-hook-receiver || true"
+            "command": "./.claude/scripts/yakk-hook-receiver || true"
           }
         ]
       }

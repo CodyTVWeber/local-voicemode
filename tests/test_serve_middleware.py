@@ -1,4 +1,4 @@
-"""Unit tests for VoiceMode serve middleware.
+"""Unit tests for Yakk serve middleware.
 
 Tests for:
 - IPAllowlistMiddleware - IP-based access control with CIDR support

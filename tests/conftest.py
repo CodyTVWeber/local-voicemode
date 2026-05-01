@@ -1,4 +1,4 @@
-"""Shared test fixtures and configuration for VoiceMode tests."""
+"""Shared test fixtures and configuration for Yakk tests."""
 
 import os
 import sys
@@ -117,9 +117,9 @@ def isolate_home_directory(tmp_path, monkeypatch):
     # Create expected subdirectories that tests may write to
     (fake_home / "Library" / "LaunchAgents").mkdir(parents=True, exist_ok=True)
     (fake_home / ".config" / "systemd" / "user").mkdir(parents=True, exist_ok=True)
-    (fake_home / ".voicemode" / "logs").mkdir(parents=True, exist_ok=True)
-    (fake_home / ".voicemode" / "services").mkdir(parents=True, exist_ok=True)
-    (fake_home / ".voicemode" / "config").mkdir(parents=True, exist_ok=True)
+    (fake_home / ".yakk" / "logs").mkdir(parents=True, exist_ok=True)
+    (fake_home / ".yakk" / "services").mkdir(parents=True, exist_ok=True)
+    (fake_home / ".yakk" / "config").mkdir(parents=True, exist_ok=True)
 
     # Mock Path.home() to return the fake home directory
     monkeypatch.setattr("pathlib.Path.home", lambda: fake_home)

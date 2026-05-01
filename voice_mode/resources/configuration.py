@@ -160,10 +160,10 @@ async def whisper_configuration() -> str:
     lines.append("")
     
     lines.append("Environment Variables:")
-    lines.append(f"  VOICEMODE_WHISPER_MODEL: {os.getenv('VOICEMODE_WHISPER_MODEL', '[not set]')}")
-    lines.append(f"  VOICEMODE_WHISPER_PORT: {os.getenv('VOICEMODE_WHISPER_PORT', '[not set]')}")
-    lines.append(f"  VOICEMODE_WHISPER_LANGUAGE: {os.getenv('VOICEMODE_WHISPER_LANGUAGE', '[not set]')}")
-    lines.append(f"  VOICEMODE_WHISPER_MODEL_PATH: {os.getenv('VOICEMODE_WHISPER_MODEL_PATH', '[not set]')}")
+    lines.append(f"  YAKK_WHISPER_MODEL: {os.getenv('YAKK_WHISPER_MODEL', '[not set]')}")
+    lines.append(f"  YAKK_WHISPER_PORT: {os.getenv('YAKK_WHISPER_PORT', '[not set]')}")
+    lines.append(f"  YAKK_WHISPER_LANGUAGE: {os.getenv('YAKK_WHISPER_LANGUAGE', '[not set]')}")
+    lines.append(f"  YAKK_WHISPER_MODEL_PATH: {os.getenv('YAKK_WHISPER_MODEL_PATH', '[not set]')}")
     
     return "\n".join(lines)
 
@@ -195,10 +195,10 @@ async def kokoro_configuration() -> str:
     lines.append("")
     
     lines.append("Environment Variables:")
-    lines.append(f"  VOICEMODE_KOKORO_PORT: {os.getenv('VOICEMODE_KOKORO_PORT', '[not set]')}")
-    lines.append(f"  VOICEMODE_KOKORO_MODELS_DIR: {os.getenv('VOICEMODE_KOKORO_MODELS_DIR', '[not set]')}")
-    lines.append(f"  VOICEMODE_KOKORO_CACHE_DIR: {os.getenv('VOICEMODE_KOKORO_CACHE_DIR', '[not set]')}")
-    lines.append(f"  VOICEMODE_KOKORO_DEFAULT_VOICE: {os.getenv('VOICEMODE_KOKORO_DEFAULT_VOICE', '[not set]')}")
+    lines.append(f"  YAKK_KOKORO_PORT: {os.getenv('YAKK_KOKORO_PORT', '[not set]')}")
+    lines.append(f"  YAKK_KOKORO_MODELS_DIR: {os.getenv('YAKK_KOKORO_MODELS_DIR', '[not set]')}")
+    lines.append(f"  YAKK_KOKORO_CACHE_DIR: {os.getenv('YAKK_KOKORO_CACHE_DIR', '[not set]')}")
+    lines.append(f"  YAKK_KOKORO_DEFAULT_VOICE: {os.getenv('YAKK_KOKORO_DEFAULT_VOICE', '[not set]')}")
     
     return "\n".join(lines)
 
@@ -236,15 +236,15 @@ async def environment_variables() -> str:
     Shows each configuration variable with:
     - Name: The environment variable name
     - Environment Value: Current value from environment
-    - Config File Value: Value from ~/.voicemode/voicemode.env (if exists)
+    - Config File Value: Value from ~/.yakk/yakk.env (if exists)
     - Description: What the variable controls
     
     This helps identify configuration sources and troubleshoot settings.
     """
     # Parse config file - try new path first, fall back to old
-    user_config_path = Path.home() / ".voicemode" / "voicemode.env"
+    user_config_path = Path.home() / ".yakk" / "yakk.env"
     if not user_config_path.exists():
-        old_path = Path.home() / ".voicemode" / ".voicemode.env"
+        old_path = Path.home() / ".yakk" / ".yakk.env"
         if old_path.exists():
             user_config_path = old_path
     file_config = parse_env_file(user_config_path)
@@ -252,53 +252,53 @@ async def environment_variables() -> str:
     # Define all configuration variables with descriptions
     config_vars = [
         # Core Settings
-        ("VOICEMODE_BASE_DIR", "Base directory for all voicemode data"),
-        ("VOICEMODE_MODELS_DIR", "Directory for all models (defaults to $VOICEMODE_BASE_DIR/models)"),
-        ("VOICEMODE_DEBUG", "Enable debug mode (true/false)"),
-        ("VOICEMODE_SAVE_ALL", "Save all audio and transcriptions (true/false)"),
-        ("VOICEMODE_SAVE_AUDIO", "Save audio files (true/false)"),
-        ("VOICEMODE_SAVE_TRANSCRIPTIONS", "Save transcription files (true/false)"),
-        ("VOICEMODE_AUDIO_FEEDBACK", "Enable audio feedback (true/false)"),
+        ("YAKK_BASE_DIR", "Base directory for all yakk data"),
+        ("YAKK_MODELS_DIR", "Directory for all models (defaults to $YAKK_BASE_DIR/models)"),
+        ("YAKK_DEBUG", "Enable debug mode (true/false)"),
+        ("YAKK_SAVE_ALL", "Save all audio and transcriptions (true/false)"),
+        ("YAKK_SAVE_AUDIO", "Save audio files (true/false)"),
+        ("YAKK_SAVE_TRANSCRIPTIONS", "Save transcription files (true/false)"),
+        ("YAKK_AUDIO_FEEDBACK", "Enable audio feedback (true/false)"),
         # Provider Settings
-        ("VOICEMODE_PREFER_LOCAL", "Prefer local providers over cloud (true/false)"),
-        ("VOICEMODE_ALWAYS_TRY_LOCAL", "Always attempt local providers (true/false)"),
-        ("VOICEMODE_AUTO_START_KOKORO", "Auto-start Kokoro service (true/false)"),
-        ("VOICEMODE_TTS_BASE_URLS", "Comma-separated list of TTS endpoints"),
-        ("VOICEMODE_STT_BASE_URLS", "Comma-separated list of STT endpoints"),
-        ("VOICEMODE_VOICES", "Comma-separated list of preferred voices"),
-        ("VOICEMODE_TTS_MODELS", "Comma-separated list of preferred models"),
+        ("YAKK_PREFER_LOCAL", "Prefer local providers over cloud (true/false)"),
+        ("YAKK_ALWAYS_TRY_LOCAL", "Always attempt local providers (true/false)"),
+        ("YAKK_AUTO_START_KOKORO", "Auto-start Kokoro service (true/false)"),
+        ("YAKK_TTS_BASE_URLS", "Comma-separated list of TTS endpoints"),
+        ("YAKK_STT_BASE_URLS", "Comma-separated list of STT endpoints"),
+        ("YAKK_VOICES", "Comma-separated list of preferred voices"),
+        ("YAKK_TTS_MODELS", "Comma-separated list of preferred models"),
         # Audio Settings
-        ("VOICEMODE_AUDIO_FORMAT", "Audio format for recording (pcm/mp3/wav/flac/aac/opus)"),
-        ("VOICEMODE_TTS_AUDIO_FORMAT", "Audio format for TTS output"),
-        ("VOICEMODE_STT_AUDIO_FORMAT", "Audio format for STT input"),
+        ("YAKK_AUDIO_FORMAT", "Audio format for recording (pcm/mp3/wav/flac/aac/opus)"),
+        ("YAKK_TTS_AUDIO_FORMAT", "Audio format for TTS output"),
+        ("YAKK_STT_AUDIO_FORMAT", "Audio format for STT input"),
         # STT Prompt for vocabulary biasing
-        ("VOICEMODE_STT_PROMPT", "Vocabulary hints for Whisper (names, technical terms)"),
+        ("YAKK_STT_PROMPT", "Vocabulary hints for Whisper (names, technical terms)"),
         # Whisper Configuration
-        ("VOICEMODE_WHISPER_MODEL", "Whisper model to use (e.g., large-v2)"),
-        ("VOICEMODE_WHISPER_PORT", "Whisper server port"),
-        ("VOICEMODE_WHISPER_LANGUAGE", "Language for transcription"),
-        ("VOICEMODE_WHISPER_MODEL_PATH", "Path to Whisper models"),
+        ("YAKK_WHISPER_MODEL", "Whisper model to use (e.g., large-v2)"),
+        ("YAKK_WHISPER_PORT", "Whisper server port"),
+        ("YAKK_WHISPER_LANGUAGE", "Language for transcription"),
+        ("YAKK_WHISPER_MODEL_PATH", "Path to Whisper models"),
         # Kokoro Configuration
-        ("VOICEMODE_KOKORO_PORT", "Kokoro server port"),
-        ("VOICEMODE_KOKORO_MODELS_DIR", "Directory for Kokoro models"),
-        ("VOICEMODE_KOKORO_CACHE_DIR", "Directory for Kokoro cache"),
-        ("VOICEMODE_KOKORO_DEFAULT_VOICE", "Default Kokoro voice"),
+        ("YAKK_KOKORO_PORT", "Kokoro server port"),
+        ("YAKK_KOKORO_MODELS_DIR", "Directory for Kokoro models"),
+        ("YAKK_KOKORO_CACHE_DIR", "Directory for Kokoro cache"),
+        ("YAKK_KOKORO_DEFAULT_VOICE", "Default Kokoro voice"),
         # Silence Detection
-        ("VOICEMODE_DISABLE_SILENCE_DETECTION", "Disable silence detection (true/false)"),
-        ("VOICEMODE_VAD_AGGRESSIVENESS", "Voice activity detection aggressiveness (0-3)"),
-        ("VOICEMODE_SILENCE_THRESHOLD_MS", "Silence threshold in milliseconds"),
-        ("VOICEMODE_MIN_RECORDING_DURATION", "Minimum recording duration in seconds"),
-        ("VOICEMODE_INITIAL_SILENCE_GRACE_PERIOD", "Initial silence grace period in seconds"),
-        ("VOICEMODE_DEFAULT_LISTEN_DURATION", "Default listen duration in seconds"),
+        ("YAKK_DISABLE_SILENCE_DETECTION", "Disable silence detection (true/false)"),
+        ("YAKK_VAD_AGGRESSIVENESS", "Voice activity detection aggressiveness (0-3)"),
+        ("YAKK_SILENCE_THRESHOLD_MS", "Silence threshold in milliseconds"),
+        ("YAKK_MIN_RECORDING_DURATION", "Minimum recording duration in seconds"),
+        ("YAKK_INITIAL_SILENCE_GRACE_PERIOD", "Initial silence grace period in seconds"),
+        ("YAKK_DEFAULT_LISTEN_DURATION", "Default listen duration in seconds"),
         # Streaming
-        ("VOICEMODE_STREAMING_ENABLED", "Enable audio streaming (true/false)"),
-        ("VOICEMODE_STREAM_CHUNK_SIZE", "Stream chunk size in bytes"),
-        ("VOICEMODE_STREAM_BUFFER_MS", "Stream buffer in milliseconds"),
-        ("VOICEMODE_STREAM_MAX_BUFFER", "Maximum stream buffer in seconds"),
+        ("YAKK_STREAMING_ENABLED", "Enable audio streaming (true/false)"),
+        ("YAKK_STREAM_CHUNK_SIZE", "Stream chunk size in bytes"),
+        ("YAKK_STREAM_BUFFER_MS", "Stream buffer in milliseconds"),
+        ("YAKK_STREAM_MAX_BUFFER", "Maximum stream buffer in seconds"),
         # Event Logging
-        ("VOICEMODE_EVENT_LOG_ENABLED", "Enable event logging (true/false)"),
-        ("VOICEMODE_EVENT_LOG_DIR", "Directory for event logs"),
-        ("VOICEMODE_EVENT_LOG_ROTATION", "Log rotation policy (daily/weekly/monthly)"),
+        ("YAKK_EVENT_LOG_ENABLED", "Enable event logging (true/false)"),
+        ("YAKK_EVENT_LOG_DIR", "Directory for event logs"),
+        ("YAKK_EVENT_LOG_ROTATION", "Log rotation policy (daily/weekly/monthly)"),
     ]
     
     result = []
@@ -332,7 +332,7 @@ async def environment_template() -> str:
     Environment variable template for voice mode configuration.
     
     Provides a ready-to-use template of all available environment variables
-    with their current values. This can be saved to ~/.voicemode/voicemode.env and
+    with their current values. This can be saved to ~/.yakk/yakk.env and
     customized as needed.
     
     Sensitive values like API keys are masked for security.
@@ -343,57 +343,57 @@ async def environment_template() -> str:
         "# Generated from current settings",
         "",
         "# Core Settings",
-        f"export VOICEMODE_BASE_DIR=\"{BASE_DIR}\"",
-        f"export VOICEMODE_DEBUG=\"{str(DEBUG).lower()}\"",
-        f"export VOICEMODE_SAVE_ALL=\"{str(SAVE_ALL).lower()}\"",
-        f"export VOICEMODE_SAVE_AUDIO=\"{str(SAVE_AUDIO).lower()}\"",
-        f"export VOICEMODE_SAVE_TRANSCRIPTIONS=\"{str(SAVE_TRANSCRIPTIONS).lower()}\"",
-        f"export VOICEMODE_AUDIO_FEEDBACK=\"{str(AUDIO_FEEDBACK_ENABLED).lower()}\"",
+        f"export YAKK_BASE_DIR=\"{BASE_DIR}\"",
+        f"export YAKK_DEBUG=\"{str(DEBUG).lower()}\"",
+        f"export YAKK_SAVE_ALL=\"{str(SAVE_ALL).lower()}\"",
+        f"export YAKK_SAVE_AUDIO=\"{str(SAVE_AUDIO).lower()}\"",
+        f"export YAKK_SAVE_TRANSCRIPTIONS=\"{str(SAVE_TRANSCRIPTIONS).lower()}\"",
+        f"export YAKK_AUDIO_FEEDBACK=\"{str(AUDIO_FEEDBACK_ENABLED).lower()}\"",
         "",
         "# Provider Settings",
-        f"export VOICEMODE_PREFER_LOCAL=\"{str(PREFER_LOCAL).lower()}\"",
-        f"export VOICEMODE_ALWAYS_TRY_LOCAL=\"{str(ALWAYS_TRY_LOCAL).lower()}\"",
-        f"export VOICEMODE_AUTO_START_KOKORO=\"{str(AUTO_START_KOKORO).lower()}\"",
-        f"export VOICEMODE_TTS_BASE_URLS=\"{','.join(TTS_BASE_URLS)}\"",
-        f"export VOICEMODE_STT_BASE_URLS=\"{','.join(STT_BASE_URLS)}\"",
-        f"export VOICEMODE_VOICES=\"{','.join(TTS_VOICES)}\"",
-        f"export VOICEMODE_TTS_MODELS=\"{','.join(TTS_MODELS)}\"",
+        f"export YAKK_PREFER_LOCAL=\"{str(PREFER_LOCAL).lower()}\"",
+        f"export YAKK_ALWAYS_TRY_LOCAL=\"{str(ALWAYS_TRY_LOCAL).lower()}\"",
+        f"export YAKK_AUTO_START_KOKORO=\"{str(AUTO_START_KOKORO).lower()}\"",
+        f"export YAKK_TTS_BASE_URLS=\"{','.join(TTS_BASE_URLS)}\"",
+        f"export YAKK_STT_BASE_URLS=\"{','.join(STT_BASE_URLS)}\"",
+        f"export YAKK_VOICES=\"{','.join(TTS_VOICES)}\"",
+        f"export YAKK_TTS_MODELS=\"{','.join(TTS_MODELS)}\"",
         "",
         "# Audio Settings",
-        f"export VOICEMODE_AUDIO_FORMAT=\"{AUDIO_FORMAT}\"",
-        f"export VOICEMODE_TTS_AUDIO_FORMAT=\"{TTS_AUDIO_FORMAT}\"",
-        f"export VOICEMODE_STT_AUDIO_FORMAT=\"{STT_AUDIO_FORMAT}\"",
+        f"export YAKK_AUDIO_FORMAT=\"{AUDIO_FORMAT}\"",
+        f"export YAKK_TTS_AUDIO_FORMAT=\"{TTS_AUDIO_FORMAT}\"",
+        f"export YAKK_STT_AUDIO_FORMAT=\"{STT_AUDIO_FORMAT}\"",
         "",
         "# Whisper Configuration",
-        f"export VOICEMODE_WHISPER_MODEL=\"{WHISPER_MODEL}\"",
-        f"export VOICEMODE_WHISPER_PORT=\"{WHISPER_PORT}\"",
-        f"export VOICEMODE_WHISPER_LANGUAGE=\"{WHISPER_LANGUAGE}\"",
-        f"export VOICEMODE_WHISPER_MODEL_PATH=\"{WHISPER_MODEL_PATH}\"",
+        f"export YAKK_WHISPER_MODEL=\"{WHISPER_MODEL}\"",
+        f"export YAKK_WHISPER_PORT=\"{WHISPER_PORT}\"",
+        f"export YAKK_WHISPER_LANGUAGE=\"{WHISPER_LANGUAGE}\"",
+        f"export YAKK_WHISPER_MODEL_PATH=\"{WHISPER_MODEL_PATH}\"",
         "",
         "# Kokoro Configuration",
-        f"export VOICEMODE_KOKORO_PORT=\"{KOKORO_PORT}\"",
-        f"export VOICEMODE_KOKORO_MODELS_DIR=\"{KOKORO_MODELS_DIR}\"",
-        f"export VOICEMODE_KOKORO_CACHE_DIR=\"{KOKORO_CACHE_DIR}\"",
-        f"export VOICEMODE_KOKORO_DEFAULT_VOICE=\"{KOKORO_DEFAULT_VOICE}\"",
+        f"export YAKK_KOKORO_PORT=\"{KOKORO_PORT}\"",
+        f"export YAKK_KOKORO_MODELS_DIR=\"{KOKORO_MODELS_DIR}\"",
+        f"export YAKK_KOKORO_CACHE_DIR=\"{KOKORO_CACHE_DIR}\"",
+        f"export YAKK_KOKORO_DEFAULT_VOICE=\"{KOKORO_DEFAULT_VOICE}\"",
         "",
         "# Silence Detection",
-        f"export VOICEMODE_DISABLE_SILENCE_DETECTION=\"{str(DISABLE_SILENCE_DETECTION).lower()}\"",
-        f"export VOICEMODE_VAD_AGGRESSIVENESS=\"{VAD_AGGRESSIVENESS}\"",
-        f"export VOICEMODE_SILENCE_THRESHOLD_MS=\"{SILENCE_THRESHOLD_MS}\"",
-        f"export VOICEMODE_MIN_RECORDING_DURATION=\"{MIN_RECORDING_DURATION}\"",
-        f"export VOICEMODE_INITIAL_SILENCE_GRACE_PERIOD=\"{INITIAL_SILENCE_GRACE_PERIOD}\"",
-        f"export VOICEMODE_DEFAULT_LISTEN_DURATION=\"{DEFAULT_LISTEN_DURATION}\"",
+        f"export YAKK_DISABLE_SILENCE_DETECTION=\"{str(DISABLE_SILENCE_DETECTION).lower()}\"",
+        f"export YAKK_VAD_AGGRESSIVENESS=\"{VAD_AGGRESSIVENESS}\"",
+        f"export YAKK_SILENCE_THRESHOLD_MS=\"{SILENCE_THRESHOLD_MS}\"",
+        f"export YAKK_MIN_RECORDING_DURATION=\"{MIN_RECORDING_DURATION}\"",
+        f"export YAKK_INITIAL_SILENCE_GRACE_PERIOD=\"{INITIAL_SILENCE_GRACE_PERIOD}\"",
+        f"export YAKK_DEFAULT_LISTEN_DURATION=\"{DEFAULT_LISTEN_DURATION}\"",
         "",
         "# Streaming",
-        f"export VOICEMODE_STREAMING_ENABLED=\"{str(STREAMING_ENABLED).lower()}\"",
-        f"export VOICEMODE_STREAM_CHUNK_SIZE=\"{STREAM_CHUNK_SIZE}\"",
-        f"export VOICEMODE_STREAM_BUFFER_MS=\"{STREAM_BUFFER_MS}\"",
-        f"export VOICEMODE_STREAM_MAX_BUFFER=\"{STREAM_MAX_BUFFER}\"",
+        f"export YAKK_STREAMING_ENABLED=\"{str(STREAMING_ENABLED).lower()}\"",
+        f"export YAKK_STREAM_CHUNK_SIZE=\"{STREAM_CHUNK_SIZE}\"",
+        f"export YAKK_STREAM_BUFFER_MS=\"{STREAM_BUFFER_MS}\"",
+        f"export YAKK_STREAM_MAX_BUFFER=\"{STREAM_MAX_BUFFER}\"",
         "",
         "# Event Logging",
-        f"export VOICEMODE_EVENT_LOG_ENABLED=\"{str(EVENT_LOG_ENABLED).lower()}\"",
-        f"export VOICEMODE_EVENT_LOG_DIR=\"{EVENT_LOG_DIR}\"",
-        f"export VOICEMODE_EVENT_LOG_ROTATION=\"{EVENT_LOG_ROTATION}\"",
+        f"export YAKK_EVENT_LOG_ENABLED=\"{str(EVENT_LOG_ENABLED).lower()}\"",
+        f"export YAKK_EVENT_LOG_DIR=\"{EVENT_LOG_DIR}\"",
+        f"export YAKK_EVENT_LOG_ROTATION=\"{EVENT_LOG_ROTATION}\"",
     ]
     
     return "\n".join(template_lines)

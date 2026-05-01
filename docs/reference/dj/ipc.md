@@ -5,7 +5,7 @@ DJ mode communicates with mpv via JSON IPC over a Unix socket.
 ## Socket Location
 
 ```
-/tmp/voicemode-mpv.sock
+/tmp/yakk-mpv.sock
 ```
 
 ## Sending Commands
@@ -13,7 +13,7 @@ DJ mode communicates with mpv via JSON IPC over a Unix socket.
 Use socat to send JSON commands:
 
 ```bash
-echo '{"command": [...]}' | socat - /tmp/voicemode-mpv.sock
+echo '{"command": [...]}' | socat - /tmp/yakk-mpv.sock
 ```
 
 ## Common Commands
@@ -22,74 +22,74 @@ echo '{"command": [...]}' | socat - /tmp/voicemode-mpv.sock
 
 ```bash
 # Pause
-echo '{"command": ["set_property", "pause", true]}' | socat - /tmp/voicemode-mpv.sock
+echo '{"command": ["set_property", "pause", true]}' | socat - /tmp/yakk-mpv.sock
 
 # Resume
-echo '{"command": ["set_property", "pause", false]}' | socat - /tmp/voicemode-mpv.sock
+echo '{"command": ["set_property", "pause", false]}' | socat - /tmp/yakk-mpv.sock
 
 # Stop
-echo '{"command": ["quit"]}' | socat - /tmp/voicemode-mpv.sock
+echo '{"command": ["quit"]}' | socat - /tmp/yakk-mpv.sock
 
 # Seek to position (seconds)
-echo '{"command": ["seek", "300", "absolute"]}' | socat - /tmp/voicemode-mpv.sock
+echo '{"command": ["seek", "300", "absolute"]}' | socat - /tmp/yakk-mpv.sock
 ```
 
 ### Volume
 
 ```bash
 # Get volume
-echo '{"command": ["get_property", "volume"]}' | socat - /tmp/voicemode-mpv.sock
+echo '{"command": ["get_property", "volume"]}' | socat - /tmp/yakk-mpv.sock
 
 # Set volume (0-100)
-echo '{"command": ["set_property", "volume", 50]}' | socat - /tmp/voicemode-mpv.sock
+echo '{"command": ["set_property", "volume", 50]}' | socat - /tmp/yakk-mpv.sock
 ```
 
 ### Position and Duration
 
 ```bash
 # Current position (seconds)
-echo '{"command": ["get_property", "time-pos"]}' | socat - /tmp/voicemode-mpv.sock
+echo '{"command": ["get_property", "time-pos"]}' | socat - /tmp/yakk-mpv.sock
 
 # Total duration (seconds)
-echo '{"command": ["get_property", "duration"]}' | socat - /tmp/voicemode-mpv.sock
+echo '{"command": ["get_property", "duration"]}' | socat - /tmp/yakk-mpv.sock
 
 # Percentage progress
-echo '{"command": ["get_property", "percent-pos"]}' | socat - /tmp/voicemode-mpv.sock
+echo '{"command": ["get_property", "percent-pos"]}' | socat - /tmp/yakk-mpv.sock
 ```
 
 ### Chapters
 
 ```bash
 # List all chapters
-echo '{"command": ["get_property", "chapter-list"]}' | socat - /tmp/voicemode-mpv.sock
+echo '{"command": ["get_property", "chapter-list"]}' | socat - /tmp/yakk-mpv.sock
 
 # Current chapter index
-echo '{"command": ["get_property", "chapter"]}' | socat - /tmp/voicemode-mpv.sock
+echo '{"command": ["get_property", "chapter"]}' | socat - /tmp/yakk-mpv.sock
 
 # Current chapter metadata
-echo '{"command": ["get_property", "chapter-metadata"]}' | socat - /tmp/voicemode-mpv.sock
+echo '{"command": ["get_property", "chapter-metadata"]}' | socat - /tmp/yakk-mpv.sock
 
 # Jump to specific chapter
-echo '{"command": ["set_property", "chapter", 3]}' | socat - /tmp/voicemode-mpv.sock
+echo '{"command": ["set_property", "chapter", 3]}' | socat - /tmp/yakk-mpv.sock
 
 # Next chapter
-echo '{"command": ["add", "chapter", 1]}' | socat - /tmp/voicemode-mpv.sock
+echo '{"command": ["add", "chapter", 1]}' | socat - /tmp/yakk-mpv.sock
 
 # Previous chapter
-echo '{"command": ["add", "chapter", -1]}' | socat - /tmp/voicemode-mpv.sock
+echo '{"command": ["add", "chapter", -1]}' | socat - /tmp/yakk-mpv.sock
 ```
 
 ### Audio Devices
 
 ```bash
 # List available devices
-echo '{"command": ["get_property", "audio-device-list"]}' | socat - /tmp/voicemode-mpv.sock
+echo '{"command": ["get_property", "audio-device-list"]}' | socat - /tmp/yakk-mpv.sock
 
 # Get current device
-echo '{"command": ["get_property", "audio-device"]}' | socat - /tmp/voicemode-mpv.sock
+echo '{"command": ["get_property", "audio-device"]}' | socat - /tmp/yakk-mpv.sock
 
 # Set device
-echo '{"command": ["set_property", "audio-device", "coreaudio/AppleUSBAudioEngine:..."]}' | socat - /tmp/voicemode-mpv.sock
+echo '{"command": ["set_property", "audio-device", "coreaudio/AppleUSBAudioEngine:..."]}' | socat - /tmp/yakk-mpv.sock
 ```
 
 ## Response Format
@@ -121,7 +121,7 @@ import json
 
 def mpv_command(cmd):
     sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
-    sock.connect('/tmp/voicemode-mpv.sock')
+    sock.connect('/tmp/yakk-mpv.sock')
     sock.send(json.dumps({"command": cmd}).encode() + b'\n')
     response = sock.recv(4096)
     sock.close()

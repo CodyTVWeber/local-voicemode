@@ -12,7 +12,7 @@ from voice_mode.server import mcp
 from voice_mode.config import BASE_DIR
 from voice_mode.utils.services.common import find_process_by_port
 
-logger = logging.getLogger("voicemode")
+logger = logging.getLogger("yakk")
 
 
 @mcp.tool()
@@ -57,8 +57,8 @@ async def whisper_uninstall(
         if system == "Darwin":
             # Remove launchd plist files (check both old and new names)
             plist_names = [
-                "com.voicemode.whisper.plist",
-                "com.voicemode.whisper-server.plist"  # Old name for compatibility
+                "com.yakk.whisper.plist",
+                "com.yakk.whisper-server.plist"  # Old name for compatibility
             ]
             
             for plist_name in plist_names:
@@ -80,7 +80,7 @@ async def whisper_uninstall(
         elif system == "Linux":
             # Remove systemd service files
             service_names = [
-                "voicemode-whisper.service",
+                "yakk-whisper.service",
                 "whisper-server.service"  # Old name for compatibility
             ]
             

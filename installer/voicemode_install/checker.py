@@ -37,7 +37,7 @@ class DependencyChecker:
             return yaml.safe_load(f)
 
     def check_core_dependencies(self) -> List[PackageInfo]:
-        """Check core VoiceMode dependencies."""
+        """Check core Yakk dependencies."""
         return self._check_component_dependencies('core')
 
     def check_whisper_dependencies(self) -> List[PackageInfo]:
@@ -53,8 +53,8 @@ class DependencyChecker:
         packages = []
 
         # Get the component section
-        voicemode_deps = self.dependencies.get('voicemode', {})
-        component_deps = voicemode_deps.get(component, {})
+        yakk_deps = self.dependencies.get('yakk', {})
+        component_deps = yakk_deps.get(component, {})
 
         if not component_deps:
             return packages

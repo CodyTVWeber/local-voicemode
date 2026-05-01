@@ -1,11 +1,11 @@
 # CLI Command Reference
 
-Complete reference for all VoiceMode command-line interface commands.
+Complete reference for all Yakk command-line interface commands.
 
 ## Global Options
 
 ```bash
-voicemode [OPTIONS] COMMAND [ARGS]...
+yakk [OPTIONS] COMMAND [ARGS]...
 
 Options:
   --version   Show the version and exit
@@ -15,17 +15,17 @@ Options:
 
 ## Core Commands
 
-### voicemode (default)
+### yakk (default)
 Start the MCP server (stdio transport)
 ```bash
-voicemode
+yakk
 ```
 
 ### serve
 Start the MCP server with HTTP transport for remote access
 
 ```bash
-voicemode serve [OPTIONS]
+yakk serve [OPTIONS]
 
 Options:
   --host TEXT                  Host to bind to (default: 127.0.0.1)
@@ -46,40 +46,40 @@ Options:
 
 Examples:
 # Local development with streamable-http (default - localhost only)
-voicemode serve
+yakk serve
 
 # Explicitly specify streamable-http transport
-voicemode serve --transport streamable-http
+yakk serve --transport streamable-http
 
 # Use SSE transport (deprecated - for legacy compatibility)
-voicemode serve --transport sse
+yakk serve --transport sse
 
 # Allow Anthropic's Claude.ai and Claude Cowork to connect
-voicemode serve --allow-anthropic
+yakk serve --allow-anthropic
 
 # Custom IP allowlist
-voicemode serve --allow-ip 192.168.1.0/24 --allow-ip 10.0.0.0/8
+yakk serve --allow-ip 192.168.1.0/24 --allow-ip 10.0.0.0/8
 
 # Allow all devices on your Tailscale network
-voicemode serve --allow-tailscale
+yakk serve --allow-tailscale
 
 # Strict Anthropic-only mode (no localhost)
-voicemode serve --allow-anthropic --no-allow-local
+yakk serve --allow-anthropic --no-allow-local
 
 # URL secret authentication (recommended for Claude.ai)
-voicemode serve --secret my-secret-uuid
+yakk serve --secret my-secret-uuid
 
 # Bearer token authentication
-voicemode serve --token my-secret-token
+yakk serve --token my-secret-token
 
 # Defense in depth: combine IP allowlist + token
-voicemode serve --allow-anthropic --token my-secret-token
+yakk serve --allow-anthropic --token my-secret-token
 
 # SSE with secret path segment (deprecated)
-voicemode serve --transport sse --secret my-secret-uuid
+yakk serve --transport sse --secret my-secret-uuid
 
 # Enable debug logging for troubleshooting
-voicemode serve --log-level debug
+yakk serve --log-level debug
 ```
 
 #### Transport Options
@@ -94,7 +94,7 @@ The `streamable-http` transport is the modern, recommended transport for MCP ser
 - Supports bidirectional streaming
 - Recommended for all new deployments
 
-Example: `voicemode serve --transport streamable-http` creates endpoint at `http://127.0.0.1:8765/mcp`
+Example: `yakk serve --transport streamable-http` creates endpoint at `http://127.0.0.1:8765/mcp`
 
 **SSE (Deprecated)**
 
@@ -104,14 +104,14 @@ The `sse` (Server-Sent Events) transport is maintained for backward compatibilit
 - Will show a deprecation warning when used
 - Consider migrating to streamable-http
 
-Example: `voicemode serve --transport sse` creates endpoint at `http://127.0.0.1:8765/sse`
+Example: `yakk serve --transport sse` creates endpoint at `http://127.0.0.1:8765/sse`
 
 **Environment Variable**
 
 You can also set the default transport via environment variable:
 ```bash
-export VOICEMODE_SERVE_TRANSPORT=streamable-http  # or 'sse'
-voicemode serve
+export YAKK_SERVE_TRANSPORT=streamable-http  # or 'sse'
+yakk serve
 ```
 
 The CLI option takes precedence over the environment variable.
@@ -153,8 +153,8 @@ The `--secret` option adds a secret path segment to the endpoint URL:
 - Ideal for Claude.ai which accepts any URL but doesn't support OAuth
 
 Examples:
-- Streamable HTTP: `voicemode serve --secret abc123` creates endpoint at `/mcp/abc123`
-- SSE: `voicemode serve --transport sse --secret abc123` creates endpoint at `/sse/abc123`
+- Streamable HTTP: `yakk serve --secret abc123` creates endpoint at `/mcp/abc123`
+- SSE: `yakk serve --transport sse --secret abc123` creates endpoint at `/sse/abc123`
 
 **Bearer Token Authentication**
 
@@ -168,7 +168,7 @@ Returns 401 Unauthorized for missing or invalid tokens.
 ### converse
 Have a voice conversation directly from the command line
 ```bash
-voicemode converse [OPTIONS]
+yakk converse [OPTIONS]
 
 Options:
   --voice TEXT          Override TTS voice
@@ -182,7 +182,7 @@ Options:
 Transcribe audio with optional word-level timestamps
 
 ```bash
-voicemode transcribe [OPTIONS]
+yakk transcribe [OPTIONS]
 
 Options:
   --timestamps     Include word-level timestamps
@@ -190,22 +190,22 @@ Options:
   --format TEXT    Output format: text, json, vtt, srt
 
 Examples:
-echo "Hello" | voicemode transcribe
-voicemode transcribe < audio.wav
-voicemode transcribe --timestamps < recording.wav
+echo "Hello" | yakk transcribe
+yakk transcribe < audio.wav
+yakk transcribe --timestamps < recording.wav
 ```
 
 ## Diagnostic Commands
 
 ### diag
-Diagnostic tools for voicemode
+Diagnostic tools for yakk
 
 ```bash
-voicemode diag [OPTIONS] COMMAND [ARGS]...
+yakk diag [OPTIONS] COMMAND [ARGS]...
 
 Commands:
   devices       List available audio input and output devices
-  info          Show voicemode installation information
+  info          Show yakk installation information
   registry      Show voice provider registry with all discovered endpoints
 ```
 
@@ -216,28 +216,28 @@ Manage Whisper STT service
 
 ```bash
 # Installation and setup
-voicemode whisper install [--model MODEL]
-voicemode whisper uninstall
+yakk whisper install [--model MODEL]
+yakk whisper uninstall
 
 # Service control
-voicemode whisper start
-voicemode whisper stop
-voicemode whisper restart
-voicemode whisper status
+yakk whisper start
+yakk whisper stop
+yakk whisper restart
+yakk whisper status
 
 # Service management
-voicemode whisper enable    # Start at boot
-voicemode whisper disable   # Don't start at boot
+yakk whisper enable    # Start at boot
+yakk whisper disable   # Don't start at boot
 
 # Model management
-voicemode whisper models                    # List available models
-voicemode whisper model active             # Show active model
-voicemode whisper model active MODEL       # Set active model
-voicemode whisper model install MODEL      # Install specific model
-voicemode whisper model remove MODEL       # Remove model
+yakk whisper models                    # List available models
+yakk whisper model active             # Show active model
+yakk whisper model active MODEL       # Set active model
+yakk whisper model install MODEL      # Install specific model
+yakk whisper model remove MODEL       # Remove model
 
 # Logs and debugging
-voicemode whisper logs [--follow]
+yakk whisper logs [--follow]
 ```
 
 Available models:
@@ -253,22 +253,22 @@ Manage Kokoro TTS service
 
 ```bash
 # Installation and setup
-voicemode kokoro install
-voicemode kokoro uninstall
+yakk kokoro install
+yakk kokoro uninstall
 
 # Service control
-voicemode kokoro start
-voicemode kokoro stop
-voicemode kokoro restart
-voicemode kokoro status
+yakk kokoro start
+yakk kokoro stop
+yakk kokoro restart
+yakk kokoro status
 
 # Service management
-voicemode kokoro enable
-voicemode kokoro disable
+yakk kokoro enable
+yakk kokoro disable
 
 # Information
-voicemode kokoro voices     # List available voices
-voicemode kokoro logs [--follow]
+yakk kokoro voices     # List available voices
+yakk kokoro logs [--follow]
 ```
 
 ### livekit
@@ -276,22 +276,22 @@ Manage LiveKit RTC service
 
 ```bash
 # Installation and setup
-voicemode livekit install
-voicemode livekit uninstall [--remove-all-data]
+yakk livekit install
+yakk livekit uninstall [--remove-all-data]
 
 # Service control
-voicemode livekit start
-voicemode livekit stop
-voicemode livekit restart
-voicemode livekit status
+yakk livekit start
+yakk livekit stop
+yakk livekit restart
+yakk livekit status
 
 # Service management
-voicemode livekit enable
-voicemode livekit disable
+yakk livekit enable
+yakk livekit disable
 
 # Configuration
-voicemode livekit update    # Update service files
-voicemode livekit logs [--follow]
+yakk livekit update    # Update service files
+yakk livekit logs [--follow]
 ```
 
 
@@ -302,18 +302,18 @@ Toggle soundfont playback for Claude Code hooks
 
 ```bash
 # Quick toggle (session-scoped)
-voicemode soundfonts off          # Disable immediately
-voicemode soundfonts on           # Re-enable
+yakk soundfonts off          # Disable immediately
+yakk soundfonts on           # Re-enable
 
 # Persistent config change
-voicemode soundfonts on --config  # Enable + update voicemode.env
-voicemode soundfonts off --config # Disable + update voicemode.env
+yakk soundfonts on --config  # Enable + update yakk.env
+yakk soundfonts off --config # Disable + update yakk.env
 
 # Check current state
-voicemode soundfonts status       # Shows sentinel file + env var state
+yakk soundfonts status       # Shows sentinel file + env var state
 ```
 
-The `off` command creates a sentinel file (`~/.voicemode/soundfonts-disabled`) that the hook receiver checks before playing sounds. The `--config` flag also updates `VOICEMODE_SOUNDFONTS_ENABLED` in `~/.voicemode/voicemode.env`.
+The `off` command creates a sentinel file (`~/.yakk/soundfonts-disabled`) that the hook receiver checks before playing sounds. The `--config` flag also updates `YAKK_SOUNDFONTS_ENABLED` in `~/.yakk/yakk.env`.
 
 ## Claude Code Integration
 
@@ -322,34 +322,34 @@ Manage Claude Code hook integration
 
 ```bash
 # Install hooks
-voicemode claude hooks add
+yakk claude hooks add
 
 # Remove hooks
-voicemode claude hooks remove
+yakk claude hooks remove
 
 # List installed hooks
-voicemode claude hooks list
+yakk claude hooks list
 ```
 
-Hooks connect Claude Code's tool events to VoiceMode's soundfont system. The `add` command registers the hook receiver script with Claude Code's settings.
+Hooks connect Claude Code's tool events to Yakk's soundfont system. The `add` command registers the hook receiver script with Claude Code's settings.
 
 ## Configuration Commands
 
 ### config
-Manage voicemode configuration
+Manage yakk configuration
 
 ```bash
 # Show current configuration
-voicemode config show
+yakk config show
 
 # Initialize default config
-voicemode config init
+yakk config init
 
 # Test configuration
-voicemode config test
+yakk config test
 
 # Edit configuration
-voicemode config edit
+yakk config edit
 ```
 
 ## Conversation Management
@@ -359,13 +359,13 @@ Manage and view conversation exchange logs
 
 ```bash
 # View recent exchanges
-voicemode exchanges
+yakk exchanges
 
 # View specific exchange
-voicemode exchanges show EXCHANGE_ID
+yakk exchanges show EXCHANGE_ID
 
 # Clear exchange logs
-voicemode exchanges clear
+yakk exchanges clear
 ```
 
 ## Utility Commands
@@ -375,12 +375,12 @@ Generate or install shell completion scripts
 
 ```bash
 # Install completions for your shell
-voicemode completions install
+yakk completions install
 
 # Generate completion script for specific shell
-voicemode completions bash
-voicemode completions zsh
-voicemode completions fish
+yakk completions bash
+yakk completions zsh
+yakk completions fish
 ```
 
 ## Environment Variables
@@ -389,13 +389,13 @@ Commands respect environment variables for configuration:
 
 ```bash
 # Use specific API key
-OPENAI_API_KEY=sk-... voicemode converse
+OPENAI_API_KEY=sk-... yakk converse
 
 # Enable debug mode
-VOICEMODE_DEBUG=true voicemode
+YAKK_DEBUG=true yakk
 
 # Use local services
-VOICEMODE_TTS_BASE_URLS=http://localhost:8880/v1 voicemode converse
+YAKK_TTS_BASE_URLS=http://localhost:8880/v1 yakk converse
 ```
 
 ## Exit Codes
@@ -413,50 +413,50 @@ VOICEMODE_TTS_BASE_URLS=http://localhost:8880/v1 voicemode converse
 ### Basic Usage
 ```bash
 # Start MCP server
-voicemode
+yakk
 
 # Have a conversation
-voicemode converse
+yakk converse
 
 # Transcribe audio file
-voicemode transcribe < recording.wav
+yakk transcribe < recording.wav
 ```
 
 ### Service Setup
 ```bash
 # Full local setup
-voicemode whisper install
-voicemode kokoro install
-voicemode whisper enable
-voicemode kokoro enable
+yakk whisper install
+yakk kokoro install
+yakk whisper enable
+yakk kokoro enable
 ```
 
 ### Development
 ```bash
 # Debug mode with all saves
-VOICEMODE_DEBUG=true VOICEMODE_SAVE_ALL=true voicemode converse
+YAKK_DEBUG=true YAKK_SAVE_ALL=true yakk converse
 
 # Test local changes
-uvx --from . voicemode
+uvx --from . yakk
 
 # Check diagnostics
-voicemode diag info
+yakk diag info
 ```
 
 ### Troubleshooting
 ```bash
 # Check what's running
-voicemode whisper status
-voicemode kokoro status
+yakk whisper status
+yakk kokoro status
 
 # View logs
-voicemode whisper logs --follow
-voicemode kokoro logs --follow
+yakk whisper logs --follow
+yakk kokoro logs --follow
 
 # Check registry and providers
-voicemode diag registry
+yakk diag registry
 
 # Restart services
-voicemode whisper restart
-voicemode kokoro restart
+yakk whisper restart
+yakk kokoro restart
 ```

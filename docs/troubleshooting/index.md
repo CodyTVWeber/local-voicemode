@@ -1,18 +1,18 @@
 # Troubleshooting Guide
 
-This guide helps you diagnose and resolve common issues with VoiceMode.
+This guide helps you diagnose and resolve common issues with Yakk.
 
 ## Quick Diagnostic Flowchart
 
 ```mermaid
 graph TD
-    A[VoiceMode Issue] --> B{Voice working?}
+    A[Yakk Issue] --> B{Voice working?}
     B -->|No| C[Check Microphone]
     B -->|Yes| D{Speech detected?}
 
     C --> C1[Check system audio settings]
-    C --> C2[Run 'voicemode diag devices']
-    C --> C3[Test with 'voicemode converse --debug']
+    C --> C2[Run 'yakk diag devices']
+    C --> C3[Test with 'yakk converse --debug']
 
     D -->|No| E[No Speech Detected]
     D -->|Yes| F{Quality issues?}
@@ -41,20 +41,20 @@ graph TD
 
 **Quick Fix:** Adjust minimum listen duration to allow more speaking time:
 ```python
-voicemode:converse("message", listen_duration_min=5.0)
+yakk:converse("message", listen_duration_min=5.0)
 ```
 
 **Manual Recovery:** If audio was saved but STT failed, manually transcribe the recording:
 ```bash
 # Check if recording exists and transcribe it
-if [ -f ~/.voicemode/audio/latest-STT.wav ]; then
-  whisper-cli ~/.voicemode/audio/latest-STT.wav
+if [ -f ~/.yakk/audio/latest-STT.wav ]; then
+  whisper-cli ~/.yakk/audio/latest-STT.wav
 fi
 ```
 
 **Prerequisites for manual recovery:**
-- Audio saving must be enabled (`VOICEMODE_SAVE_AUDIO=true`, `VOICEMODE_SAVE_ALL=true`, or `VOICEMODE_DEBUG=true`)
-- Recording file exists at `~/.voicemode/audio/latest-STT.wav` (symlink to most recent)
+- Audio saving must be enabled (`YAKK_SAVE_AUDIO=true`, `YAKK_SAVE_ALL=true`, or `YAKK_DEBUG=true`)
+- Recording file exists at `~/.yakk/audio/latest-STT.wav` (symlink to most recent)
 
 This recovery technique allows you to retrieve the transcription without asking the user to repeat themselves.
 
@@ -64,15 +64,15 @@ This recovery technique allows you to retrieve the transcription without asking 
 
 ### 3. Microphone Not Found
 **Symptoms:** "No audio input device" errors
-**Quick Fix:** Run `voicemode diag devices` and check system permissions
+**Quick Fix:** Run `yakk diag devices` and check system permissions
 
 ### 4. Service Not Available
 **Symptoms:** "Failed to connect to TTS/STT service"
-**Quick Fix:** Check service status with `voicemode whisper status` or `voicemode kokoro status`
+**Quick Fix:** Check service status with `yakk whisper status` or `yakk kokoro status`
 
 ### 5. Poor Audio Quality
 **Symptoms:** Garbled or robotic voice output
-**Quick Fix:** Verify audio format with `voicemode config get VOICEMODE_TTS_AUDIO_FORMAT`
+**Quick Fix:** Verify audio format with `yakk config get YAKK_TTS_AUDIO_FORMAT`
 
 ## Troubleshooting by Category
 
@@ -103,57 +103,57 @@ This recovery technique allows you to retrieve the transcription without asking 
 
 ```bash
 # For detailed debug output
-export VOICEMODE_DEBUG=true
+export YAKK_DEBUG=true
 
 # For VAD (Voice Activity Detection) debugging
-export VOICEMODE_VAD_DEBUG=true
+export YAKK_VAD_DEBUG=true
 
 # Run with debug flags
-voicemode converse --debug
+yakk converse --debug
 ```
 
 ### Check System Status
 
 ```bash
 # Show system information
-voicemode diag info
+yakk diag info
 
 # List audio devices
-voicemode diag devices
+yakk diag devices
 
 # Check service status
-voicemode whisper status
-voicemode kokoro status
+yakk whisper status
+yakk kokoro status
 
 # View recent logs
-voicemode logs --tail 50
+yakk logs --tail 50
 ```
 
 ### Collect Diagnostics for Bug Reports
 
 When reporting issues, include:
 
-1. **System info:** `voicemode diag info`
+1. **System info:** `yakk diag info`
 2. **Debug logs:** Run command with `--debug` flag
-3. **Event logs:** `voicemode logs --tail 100`
-4. **Configuration:** `voicemode config list`
+3. **Event logs:** `yakk logs --tail 100`
+4. **Configuration:** `yakk config list`
 
 ## Quick Command Reference
 
 | Issue | Command | Purpose |
 |-------|---------|---------|
-| No audio | `voicemode diag devices` | List available audio devices |
-| Test voice | `voicemode converse` | Interactive voice test |
-| Service down | `voicemode whisper status` | Check Whisper service |
-| API errors | `voicemode config get OPENAI_API_KEY` | Verify API key |
-| Debug mode | `export VOICEMODE_DEBUG=true` | Enable detailed logging |
+| No audio | `yakk diag devices` | List available audio devices |
+| Test voice | `yakk converse` | Interactive voice test |
+| Service down | `yakk whisper status` | Check Whisper service |
+| API errors | `yakk config get OPENAI_API_KEY` | Verify API key |
+| Debug mode | `export YAKK_DEBUG=true` | Enable detailed logging |
 
 ## Getting Help
 
 If you can't resolve your issue:
 
-1. Check the [GitHub Issues](https://github.com/mbailey/voicemode/issues) for similar problems
-2. Review the [documentation](https://voicemode.dev)
+1. Check the [GitHub Issues](https://github.com/mbailey/yakk/issues) for similar problems
+2. Review the [documentation](https://yakk.dev)
 3. File a new issue with diagnostic information
 
 ## Contributing
@@ -164,4 +164,4 @@ Found a solution to a problem not documented here? Please contribute:
 2. Update this index if adding a new category
 3. Submit a pull request
 
-Your contributions help make VoiceMode better for everyone!
+Your contributions help make Yakk better for everyone!

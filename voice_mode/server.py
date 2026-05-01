@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""VoiceMode MCP Server - Modular version using FastMCP patterns."""
+"""Yakk MCP Server - Modular version using FastMCP patterns."""
 
 import logging
 import os
@@ -21,9 +21,9 @@ if platform.system() == "Darwin":
 
 from fastmcp import FastMCP
 
-logger = logging.getLogger("voicemode")
+logger = logging.getLogger("yakk")
 
-mcp = FastMCP("voicemode")
+mcp = FastMCP("yakk")
 
 # Import shared configuration and utilities
 from . import config
@@ -36,7 +36,7 @@ from . import resources
 
 # Main entry point
 def main():
-    """Run the VoiceMode MCP server."""
+    """Run the Yakk MCP server."""
     import sys
     from .config import setup_logging, EVENT_LOG_ENABLED, EVENT_LOG_DIR
     from .utils import initialize_event_logger
@@ -72,7 +72,7 @@ def main():
     
     # Log version information
     from .version import __version__
-    logger.info(f"Starting VoiceMode v{__version__}")
+    logger.info(f"Starting Yakk v{__version__}")
     
     # Log FFmpeg status for MCP mode
     if not ffmpeg_available:

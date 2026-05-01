@@ -2,7 +2,7 @@
 
 ## Overview
 
-Standardize download progress indicators across VoiceMode CLI for consistent UX when downloading models, services, or other resources.
+Standardize download progress indicators across Yakk CLI for consistent UX when downloading models, services, or other resources.
 
 ## Design Principles
 
@@ -147,8 +147,8 @@ def detect_progress_style():
         return 'verbose'  # CI environment
     if not sys.stdout.isatty():
         return 'verbose'  # Not a terminal
-    if os.environ.get('VOICEMODE_PROGRESS_STYLE'):
-        return os.environ['VOICEMODE_PROGRESS_STYLE']
+    if os.environ.get('YAKK_PROGRESS_STYLE'):
+        return os.environ['YAKK_PROGRESS_STYLE']
     return 'bar'  # Default to progress bar
 ```
 
@@ -186,24 +186,24 @@ async def download_coreml_model(...):
 ### Environment Variables
 ```bash
 # Progress bar style
-export VOICEMODE_PROGRESS_STYLE=bar  # bar, spinner, blocks, verbose, quiet
+export YAKK_PROGRESS_STYLE=bar  # bar, spinner, blocks, verbose, quiet
 
 # Colors
-export VOICEMODE_PROGRESS_COLOR=true  # Enable/disable colors
+export YAKK_PROGRESS_COLOR=true  # Enable/disable colors
 
 # Update frequency
-export VOICEMODE_PROGRESS_RATE=10  # Updates per second
+export YAKK_PROGRESS_RATE=10  # Updates per second
 ```
 
 ### CLI Flags
 ```bash
 # Global flags
-voicemode --progress=verbose whisper model install large-v3
-voicemode --quiet whisper model install base
+yakk --progress=verbose whisper model install large-v3
+yakk --quiet whisper model install base
 
 # Command-specific
-voicemode whisper model install large-v3 --no-progress
-voicemode whisper model install large-v3 --progress-style=blocks
+yakk whisper model install large-v3 --no-progress
+yakk whisper model install large-v3 --progress-style=blocks
 ```
 
 ## Error Handling
@@ -213,7 +213,7 @@ voicemode whisper model install large-v3 --progress-style=blocks
 Downloading ggml-large-v3.bin (3.1 GB)
 [████████████░░░░░░░░░░░░░░░░░░░░░░]  35% (1.1GB/3.1GB)
 ❌ Download interrupted: Connection reset by peer
-💡 Resume with: voicemode whisper model install large-v3 --resume
+💡 Resume with: yakk whisper model install large-v3 --resume
 ```
 
 ### Disk Space

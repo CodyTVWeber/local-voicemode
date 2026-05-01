@@ -3,7 +3,7 @@
 
 *Note: These docs need review.*
 
-This guide covers setting up VoiceMode for development, including building from source, configuring your IDE, and contributing to the project.
+This guide covers setting up Yakk for development, including building from source, configuring your IDE, and contributing to the project.
 
 ## Prerequisites
 
@@ -14,7 +14,7 @@ This guide covers setting up VoiceMode for development, including building from 
 
 ## Setting Up UV
 
-UV is a fast Python package manager written in Rust. It's the recommended tool for VoiceMode development:
+UV is a fast Python package manager written in Rust. It's the recommended tool for Yakk development:
 
 ```bash
 # Install UV
@@ -26,12 +26,12 @@ pip install uv
 
 ## Cloning the Repository
 
-**For contributors:** Fork the repo first at https://github.com/mbailey/voicemode, then clone your fork:
+**For contributors:** Fork the repo first at https://github.com/mbailey/yakk, then clone your fork:
 
 ```bash
 # Clone your fork (replace YOUR-USERNAME)
-git clone https://github.com/YOUR-USERNAME/voicemode
-cd voicemode
+git clone https://github.com/YOUR-USERNAME/yakk
+cd yakk
 
 # Install in development mode
 uv tool install -e .
@@ -52,7 +52,7 @@ uv build
 # dist/voice_mode-X.Y.Z.tar.gz
 
 # Test the built package
-uvx --from dist/voice_mode-*.whl voicemode
+uvx --from dist/voice_mode-*.whl yakk
 ```
 
 ### Running Tests
@@ -77,18 +77,18 @@ For development without API keys:
 
 ```bash
 # Or manually
-voicemode whisper install
-voicemode kokoro install
+yakk whisper install
+yakk kokoro install
 
 # Or manually
-voicemode whisper start
-voicemode kokoro start
+yakk whisper start
+yakk kokoro start
 ```
 
 ## Project Structure
 
 ```
-voicemode/
+yakk/
 ├── voice_mode/           # Main package
 │   ├── __init__.py
 │   ├── server.py         # MCP server
@@ -141,22 +141,22 @@ uv sync
 ### Enable Debug Mode
 
 ```bash
-export VOICEMODE_DEBUG=true
-export VOICEMODE_LOG_LEVEL=debug
+export YAKK_DEBUG=true
+export YAKK_LOG_LEVEL=debug
 ```
 
 ### Debug Output Locations
 
-- Logs: `~/.voicemode/logs/`
-- Audio files: `~/.voicemode/debug/`
-- Event logs: `~/.voicemode/events.log`
+- Logs: `~/.yakk/logs/`
+- Audio files: `~/.yakk/debug/`
+- Event logs: `~/.yakk/events.log`
 
 ### Common Debug Commands
 
 ```bash
 # Check service status
-voicemode whisper status
-voicemode kokoro status
+yakk whisper status
+yakk kokoro status
 ```
 
 ## Testing
@@ -185,10 +185,10 @@ pytest tests/integration/test_whisper.py
 
 ```bash
 # Test voice conversation
-voicemode converse --debug
+yakk converse --debug
 
 # Test with different providers
-VOICEMODE_TTS_BASE_URLS=http://localhost:8880/v1 voicemode converse
+YAKK_TTS_BASE_URLS=http://localhost:8880/v1 yakk converse
 ```
 
 ## Contributing
@@ -285,7 +285,7 @@ pkill -f whisper
 
 ## Additional Resources
 
-- [VoiceMode Architecture](../concepts/architecture.md)
+- [Yakk Architecture](../concepts/architecture.md)
 - [CLI Reference](../reference/cli.md)
 - [Tool Loading Architecture](../reference/tool-loading-architecture.md)
 - [Environment Variables](../reference/environment.md)

@@ -6,7 +6,7 @@ import logging
 from pathlib import Path
 from typing import List, Optional
 
-logger = logging.getLogger("voicemode")
+logger = logging.getLogger("yakk")
 
 
 def check_old_whisper_installations() -> List[Path]:
@@ -16,7 +16,7 @@ def check_old_whisper_installations() -> List[Path]:
     if os.uname().sysname == "Darwin":
         launchd_dir = Path.home() / "Library" / "LaunchAgents"
         old_names = [
-            "com.voicemode.whisper-server.plist",
+            "com.yakk.whisper-server.plist",
             "com.whisper.server.plist"
         ]
         for name in old_names:
@@ -42,7 +42,7 @@ def check_old_kokoro_installations() -> List[Path]:
     if os.uname().sysname == "Darwin":
         launchd_dir = Path.home() / "Library" / "LaunchAgents"
         # Check for any kokoro plist with port numbers
-        for plist in launchd_dir.glob("com.voicemode.kokoro-*.plist"):
+        for plist in launchd_dir.glob("com.yakk.kokoro-*.plist"):
             old_files.append(plist)
     
     elif os.uname().sysname == "Linux":
@@ -85,7 +85,7 @@ def auto_migrate_if_needed(service_name: str) -> Optional[str]:
         try:
             if system == "Darwin":
                 # Handle macOS launchd files
-                if service_name == "whisper" and old_path.name in ["com.voicemode.whisper-server.plist", "com.whisper.server.plist"]:
+                if service_name == "whisper" and old_path.name in ["com.yakk.whisper-server.plist", "com.whisper.server.plist"]:
                     # Unload old service
                     subprocess.run(["launchctl", "unload", str(old_path)], capture_output=True)
                     # Remove file

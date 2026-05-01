@@ -1,24 +1,24 @@
 # Pronunciation Customization
 
-VoiceMode allows you to customize how words and phrases are pronounced through pronunciation rules configured via environment variables.
+Yakk allows you to customize how words and phrases are pronounced through pronunciation rules configured via environment variables.
 
 ## Quick Start
 
-Add pronunciation rules to your `~/.voicemode/voicemode.env` file:
+Add pronunciation rules to your `~/.yakk/yakk.env` file:
 
 ```bash
 # Basic pronunciation rule
-export VOICEMODE_PRONOUNCE='TTS \bTali\b Tar-lee # Dog name'
+export YAKK_PRONOUNCE='TTS \bTali\b Tar-lee # Dog name'
 
 # Multiple rules in one variable
-export VOICEMODE_PRONOUNCE='TTS \bTali\b Tar-lee # Dog name
+export YAKK_PRONOUNCE='TTS \bTali\b Tar-lee # Dog name
 TTS \b3M\b "three M" # Company name'
 
 # Organize rules by category
-export VOICEMODE_PRONOUNCE_NETWORKING='TTS \bPoE\b "P O E" # Power over Ethernet
+export YAKK_PRONOUNCE_NETWORKING='TTS \bPoE\b "P O E" # Power over Ethernet
 TTS \bGbE\b "gigabit ethernet" # Network speed'
 
-export VOICEMODE_PRONOUNCE_STT='STT "me tool" metool # Whisper correction'
+export YAKK_PRONOUNCE_STT='STT "me tool" metool # Whisper correction'
 ```
 
 ## Format Specification
@@ -110,29 +110,29 @@ STT "(tally|tahlee|tolly)" Tali # Multiple variations
 Load all rules from one variable:
 
 ```bash
-export VOICEMODE_PRONOUNCE='TTS \bTali\b Tar-lee # Dog name
+export YAKK_PRONOUNCE='TTS \bTali\b Tar-lee # Dog name
 TTS \b3M\b "three M" # Company name
 STT "me tool" metool # Correction'
 ```
 
 ### Multiple Variables
 
-Organize rules by category using the `VOICEMODE_PRONOUNCE_*` pattern:
+Organize rules by category using the `YAKK_PRONOUNCE_*` pattern:
 
 ```bash
-export VOICEMODE_PRONOUNCE='TTS \bTali\b Tar-lee # Dog name'
-export VOICEMODE_PRONOUNCE_NETWORKING='TTS \bPoE\b "P O E"'
-export VOICEMODE_PRONOUNCE_TECH='TTS \bAWS\b "A W S"'
+export YAKK_PRONOUNCE='TTS \bTali\b Tar-lee # Dog name'
+export YAKK_PRONOUNCE_NETWORKING='TTS \bPoE\b "P O E"'
+export YAKK_PRONOUNCE_TECH='TTS \bAWS\b "A W S"'
 ```
 
-All variables matching `VOICEMODE_PRONOUNCE` or `VOICEMODE_PRONOUNCE_*` will be loaded and combined.
+All variables matching `YAKK_PRONOUNCE` or `YAKK_PRONOUNCE_*` will be loaded and combined.
 
 ## Disabling Rules
 
 Comment out rules with `#` to disable them:
 
 ```bash
-export VOICEMODE_PRONOUNCE='TTS \bTali\b Tar-lee # Active rule
+export YAKK_PRONOUNCE='TTS \bTali\b Tar-lee # Active rule
 # TTS \b3M\b "three M" # Disabled rule'
 ```
 
@@ -234,7 +234,7 @@ TTS \bGPT-4\b "G P T four"
 1. Check regex syntax: Test patterns at https://regex101.com (Python flavor)
 2. Verify quoting: Quote patterns/replacements with spaces
 3. Check escape sequences: Use raw strings in shell: `export VAR=$'pattern'`
-4. Enable logging: `export VOICEMODE_PRONUNCIATION_LOG_SUBSTITUTIONS=true`
+4. Enable logging: `export YAKK_PRONUNCIATION_LOG_SUBSTITUTIONS=true`
 
 ### Escape Sequence Issues
 
@@ -242,13 +242,13 @@ In bash, backslashes can be tricky. Use one of these approaches:
 
 ```bash
 # Method 1: Double backslashes
-export VOICEMODE_PRONOUNCE='TTS \\bword\\b replacement'
+export YAKK_PRONOUNCE='TTS \\bword\\b replacement'
 
 # Method 2: Single quotes with escaped backslashes
-export VOICEMODE_PRONOUNCE='TTS \bword\b replacement'
+export YAKK_PRONOUNCE='TTS \bword\b replacement'
 
 # Method 3: $'...' syntax (recommended)
-export VOICEMODE_PRONOUNCE=$'TTS \\bword\\b replacement'
+export YAKK_PRONOUNCE=$'TTS \\bword\\b replacement'
 ```
 
 ### Debugging
@@ -256,25 +256,25 @@ export VOICEMODE_PRONOUNCE=$'TTS \\bword\\b replacement'
 Enable pronunciation logging to see which rules are being applied:
 
 ```bash
-export VOICEMODE_PRONUNCIATION_LOG_SUBSTITUTIONS=true
+export YAKK_PRONUNCIATION_LOG_SUBSTITUTIONS=true
 ```
 
-Then check the VoiceMode event logs at `~/.voicemode/logs/events/`.
+Then check the Yakk event logs at `~/.yakk/logs/events/`.
 
 ## Configuration Location
 
-Pronunciation rules should be defined in your voicemode configuration file:
+Pronunciation rules should be defined in your yakk configuration file:
 
-- User-level: `~/.voicemode/voicemode.env`
-- Project-level: `./.voicemode.env` (in your project directory)
+- User-level: `~/.yakk/yakk.env`
+- Project-level: `./.yakk.env` (in your project directory)
 
-The voicemode configuration system automatically loads these files and sets the environment variables.
+The yakk configuration system automatically loads these files and sets the environment variables.
 
 ## Migration from v5.x
 
 If you used the old YAML-based pronunciation system:
 
-**Old format** (`~/.voicemode/config/pronunciation.yaml`):
+**Old format** (`~/.yakk/config/pronunciation.yaml`):
 ```yaml
 tts_rules:
   - name: "tali_name"
@@ -283,9 +283,9 @@ tts_rules:
     description: "Dog's name"
 ```
 
-**New format** (`~/.voicemode/voicemode.env`):
+**New format** (`~/.yakk/yakk.env`):
 ```bash
-export VOICEMODE_PRONOUNCE='TTS \bTali\b Tar-lee # Dog name'
+export YAKK_PRONOUNCE='TTS \bTali\b Tar-lee # Dog name'
 ```
 
 The new format is simpler, more flexible, and doesn't require separate YAML files.

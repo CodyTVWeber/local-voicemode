@@ -4,11 +4,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Voice Interaction
 
-Load the voicemode skill for voice conversation support: `/voicemode:voicemode`
+Load the yakk skill for voice conversation support: `/yakk:yakk`
 
 ## Project Overview
 
-VoiceMode is a Python package that provides voice interaction capabilities for AI assistants through the Model Context Protocol (MCP). It enables natural voice conversations with Claude Code and other AI coding assistants by integrating speech-to-text (STT) and text-to-speech (TTS) services.
+Yakk is a Python package that provides voice interaction capabilities for AI assistants through the Model Context Protocol (MCP). It enables natural voice conversations with Claude Code and other AI coding assistants by integrating speech-to-text (STT) and text-to-speech (TTS) services.
 
 ## Key Commands
 
@@ -90,7 +90,6 @@ make docs-check
 ### Service Architecture
 
 The project supports multiple voice service backends:
-- **OpenAI API**: Cloud-based TTS/STT (requires API key)
 - **Whisper.cpp**: Local speech-to-text service
 - **Kokoro**: Local text-to-speech with multiple voices
 
@@ -98,11 +97,10 @@ Services can be installed and managed through MCP tools, with automatic service 
 
 ### Key Design Patterns
 
-1. **OpenAI API Compatibility**: All voice services expose OpenAI-compatible endpoints, enabling transparent switching between providers
-2. **Dynamic Tool Discovery**: Tools are auto-imported from the tools directory structure
-3. **Failover Support**: Automatic fallback between services based on availability
-4. **Local Microphone Transport**: Direct audio capture via PyAudio for voice interactions
-5. **Audio Format Negotiation**: Automatic format validation against provider capabilities
+1. **Dynamic Tool Discovery**: Tools are auto-imported from the tools directory structure
+2. **Failover Support**: Automatic fallback between services based on availability
+3. **Local Microphone Transport**: Direct audio capture via PyAudio for voice interactions
+4. **Audio Format Negotiation**: Automatic format validation against provider capabilities
 
 ## Development Notes
 
@@ -121,30 +119,30 @@ Services can be installed and managed through MCP tools, with automatic service 
 
 ## Logging
 
-Logs are stored in `~/.voicemode/`:
+Logs are stored in `~/.yakk/`:
 - `logs/conversations/` - Voice exchange history (JSONL)
 - `logs/events/` - Operational events and errors
 - `audio/` - Saved TTS/STT audio files
-- `voicemode.env` - User configuration
+- `yakk.env` - User configuration
 
-## VoiceMode Suite
+## Yakk Suite
 
-This is the core Python package. VoiceMode is a suite of related projects:
+This is the core Python package. Yakk is a suite of related projects:
 
-**For a complete overview of all VoiceMode components**, read:
-- **[voicemode-meta/COMPONENTS.md](../voicemode-meta/COMPONENTS.md)** - Full suite documentation
+**For a complete overview of all Yakk components**, read:
+- **[yakk-meta/COMPONENTS.md](../yakk-meta/COMPONENTS.md)** - Full suite documentation
 
 Quick reference:
-- **voicemode** (this repo) - Python MCP server for local voice mode
-- **voicemode-dev** - Cloudflare Workers backend for voicemode.dev
-- **voicemode-ios** - Native iOS app
-- **voicemode-macos** - Native macOS app
-- **voicemode-meta** - Project coordination and operations
+- **yakk** (this repo) - Python MCP server for local voice mode
+- **yakk-dev** - Cloudflare Workers backend for yakk.dev
+- **yakk-ios** - Native iOS app
+- **yakk-macos** - Native macOS app
+- **yakk-meta** - Project coordination and operations
 
 ## See Also
 
-- **[skills/voicemode/SKILL.md](skills/voicemode/SKILL.md)** - Voice interaction usage and MCP tools
-- **[skills/voicemode-connect/SKILL.md](skills/voicemode-connect/SKILL.md)** - Remote voice via mobile/web clients
+- **[skills/yakk/SKILL.md](skills/yakk/SKILL.md)** - Voice interaction usage and MCP tools
+- **[skills/yakk-connect/SKILL.md](skills/yakk-connect/SKILL.md)** - Remote voice via mobile/web clients
 - **[docs/tutorials/getting-started.md](docs/tutorials/getting-started.md)** - Installation guide
 - **[docs/guides/configuration.md](docs/guides/configuration.md)** - Configuration reference
 - **[docs/concepts/architecture.md](docs/concepts/architecture.md)** - Detailed architecture

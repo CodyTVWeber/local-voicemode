@@ -26,8 +26,8 @@ def voices_dir(tmp_path, monkeypatch):
     bare.mkdir()
     (bare / "default.wav").write_bytes(b"riff-bare")
 
-    monkeypatch.setenv("VOICEMODE_VOICES_DIR", str(voices))
-    monkeypatch.delenv("VOICEMODE_REMOTE_VOICES_DIR", raising=False)
+    monkeypatch.setenv("YAKK_VOICES_DIR", str(voices))
+    monkeypatch.delenv("YAKK_REMOTE_VOICES_DIR", raising=False)
     return voices
 
 
@@ -42,8 +42,8 @@ def vp(voices_dir):
 
 @pytest.fixture
 def vp_remote(voices_dir, monkeypatch):
-    """Same as vp but with VOICEMODE_REMOTE_VOICES_DIR set to /remote/voices."""
-    monkeypatch.setenv("VOICEMODE_REMOTE_VOICES_DIR", "/remote/voices")
+    """Same as vp but with YAKK_REMOTE_VOICES_DIR set to /remote/voices."""
+    monkeypatch.setenv("YAKK_REMOTE_VOICES_DIR", "/remote/voices")
     from voice_mode import voice_profiles
 
     importlib.reload(voice_profiles)

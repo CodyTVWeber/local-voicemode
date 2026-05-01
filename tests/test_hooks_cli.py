@@ -15,7 +15,7 @@ from voice_mode.cli_commands.claude import (
     hook_name_add_completion,
     hook_name_remove_completion,
     install_hook_receiver,
-    is_voicemode_hook,
+    is_yakk_hook,
     merge_hooks,
     remove_hooks,
     resolve_hook_command,
@@ -57,7 +57,7 @@ def mock_hook_def():
                     "hooks": [
                         {
                             "type": "command",
-                            "command": "${CLAUDE_PLUGIN_ROOT}/.claude/scripts/voicemode-hook-receiver || true"
+                            "command": "${CLAUDE_PLUGIN_ROOT}/.claude/scripts/yakk-hook-receiver || true"
                         }
                     ]
                 }
@@ -77,7 +77,7 @@ class TestMergeHooks:
     def test_merge_hooks_empty_settings(self, mock_hook_def):
         """Should merge into empty settings."""
         existing = {}
-        command = 'voicemode-hook-receiver || true'
+        command = 'yakk-hook-receiver || true'
 
         result, added = merge_hooks(existing, mock_hook_def, command)
 
@@ -88,7 +88,7 @@ class TestMergeHooks:
         assert 'PreToolUse' in added
 
     def test_merge_hooks_existing_settings(self, mock_hook_def):
-        """Should preserve existing non-VoiceMode content."""
+        """Should preserve existing non-Yakk content."""
         existing = {
             'some_other_setting': 'value',
             'hooks': {
@@ -97,7 +97,7 @@ class TestMergeHooks:
                 ]
             }
         }
-        command = 'voicemode-hook-receiver || true'
+        command = 'yakk-hook-receiver || true'
 
         result, added = merge_hooks(existing, mock_hook_def, command)
 
@@ -107,8 +107,8 @@ class TestMergeHooks:
         assert 'PreToolUse' in added
 
     def test_merge_hooks_idempotent(self, mock_hook_def):
-        """Should not duplicate if VoiceMode hook already present."""
-        command = 'voicemode-hook-receiver || true'
+        """Should not duplicate if Yakk hook already present."""
+        command = 'yakk-hook-receiver || true'
         existing = {}
 
         # First merge
@@ -125,7 +125,7 @@ class TestRemoveHooks:
     """Tests for remove_hooks function."""
 
     def test_remove_hooks_clean(self):
-        """Should remove only VoiceMode hooks."""
+        """Should remove only Yakk hooks."""
         existing = {
             'hooks': {
                 'PreToolUse': [
@@ -133,7 +133,7 @@ class TestRemoveHooks:
                         'hooks': [
                             {
                                 'type': 'command',
-                                'command': 'voicemode-hook-receiver || true'
+                                'command': 'yakk-hook-receiver || true'
                             }
                         ]
                     }
@@ -147,7 +147,7 @@ class TestRemoveHooks:
         assert 'hooks' not in result  # Should clean up empty hooks object
 
     def test_remove_hooks_preserves_others(self):
-        """Should not affect non-VoiceMode hooks."""
+        """Should not affect non-Yakk hooks."""
         existing = {
             'hooks': {
                 'PreToolUse': [
@@ -163,7 +163,7 @@ class TestRemoveHooks:
                         'hooks': [
                             {
                                 'type': 'command',
-                                'command': 'voicemode-hook-receiver || true'
+                                'command': 'yakk-hook-receiver || true'
                             }
                         ]
                     }
@@ -187,7 +187,7 @@ class TestRemoveHooks:
                         'hooks': [
                             {
                                 'type': 'command',
-                                'command': 'voicemode-hook-receiver || true'
+                                'command': 'yakk-hook-receiver || true'
                             }
                         ]
                     }
@@ -197,7 +197,7 @@ class TestRemoveHooks:
                         'hooks': [
                             {
                                 'type': 'command',
-                                'command': 'voicemode hook-receiver || true'
+                                'command': 'yakk hook-receiver || true'
                             }
                         ]
                     }
@@ -220,7 +220,7 @@ class TestRemoveHooks:
                         'hooks': [
                             {
                                 'type': 'command',
-                                'command': 'voicemode-hook-receiver || true'
+                                'command': 'yakk-hook-receiver || true'
                             }
                         ]
                     }
@@ -230,7 +230,7 @@ class TestRemoveHooks:
                         'hooks': [
                             {
                                 'type': 'command',
-                                'command': 'voicemode-hook-receiver || true'
+                                'command': 'yakk-hook-receiver || true'
                             }
                         ]
                     }
@@ -246,46 +246,46 @@ class TestRemoveHooks:
         assert 'PostToolUse' in result['hooks']
 
 
-class TestIsVoicemodeHook:
-    """Tests for is_voicemode_hook function."""
+class TestIsYakkHook:
+    """Tests for is_yakk_hook function."""
 
-    def test_is_voicemode_hook_with_receiver(self):
-        """Should identify voicemode-hook-receiver command."""
+    def test_is_yakk_hook_with_receiver(self):
+        """Should identify yakk-hook-receiver command."""
         hook_entry = {
             'hooks': [
                 {
                     'type': 'command',
-                    'command': 'voicemode-hook-receiver || true'
+                    'command': 'yakk-hook-receiver || true'
                 }
             ]
         }
-        assert is_voicemode_hook(hook_entry) is True
+        assert is_yakk_hook(hook_entry) is True
 
-    def test_is_voicemode_hook_with_cli(self):
-        """Should identify voicemode hook-receiver command."""
+    def test_is_yakk_hook_with_cli(self):
+        """Should identify yakk hook-receiver command."""
         hook_entry = {
             'hooks': [
                 {
                     'type': 'command',
-                    'command': 'voicemode hook-receiver || true'
+                    'command': 'yakk hook-receiver || true'
                 }
             ]
         }
-        assert is_voicemode_hook(hook_entry) is True
+        assert is_yakk_hook(hook_entry) is True
 
-    def test_is_voicemode_hook_with_path(self):
-        """Should identify voicemode-hook-receiver with path."""
+    def test_is_yakk_hook_with_path(self):
+        """Should identify yakk-hook-receiver with path."""
         hook_entry = {
             'hooks': [
                 {
                     'type': 'command',
-                    'command': '/home/user/.voicemode/bin/voicemode-hook-receiver || true'
+                    'command': '/home/user/.yakk/bin/yakk-hook-receiver || true'
                 }
             ]
         }
-        assert is_voicemode_hook(hook_entry) is True
+        assert is_yakk_hook(hook_entry) is True
 
-    def test_is_not_voicemode_hook(self):
+    def test_is_not_yakk_hook(self):
         """Should not identify other commands."""
         hook_entry = {
             'hooks': [
@@ -295,12 +295,12 @@ class TestIsVoicemodeHook:
                 }
             ]
         }
-        assert is_voicemode_hook(hook_entry) is False
+        assert is_yakk_hook(hook_entry) is False
 
-    def test_is_voicemode_hook_empty(self):
+    def test_is_yakk_hook_empty(self):
         """Should handle empty hook entry."""
         hook_entry = {'hooks': []}
-        assert is_voicemode_hook(hook_entry) is False
+        assert is_yakk_hook(hook_entry) is False
 
 
 class TestResolveHookCommand:
@@ -308,13 +308,13 @@ class TestResolveHookCommand:
 
     def test_resolve_hook_command_in_path(self):
         """Should use bare command if in PATH."""
-        with patch('shutil.which', return_value='/usr/local/bin/voicemode-hook-receiver'):
+        with patch('shutil.which', return_value='/usr/local/bin/yakk-hook-receiver'):
             result = resolve_hook_command()
-            assert result == 'voicemode-hook-receiver || true'
+            assert result == 'yakk-hook-receiver || true'
 
     def test_resolve_hook_command_in_home_bin(self):
         """Should use home bin path if not in PATH but exists."""
-        home_bin = Path.home() / '.voicemode' / 'bin' / 'voicemode-hook-receiver'
+        home_bin = Path.home() / '.yakk' / 'bin' / 'yakk-hook-receiver'
 
         with patch('shutil.which', return_value=None):
             with patch.object(Path, 'exists', return_value=True):
@@ -324,10 +324,10 @@ class TestResolveHookCommand:
                     assert '|| true' in result
 
     def test_resolve_hook_command_installs_when_missing(self, tmp_path):
-        """Should install hook receiver to ~/.voicemode/bin/ if not found."""
+        """Should install hook receiver to ~/.yakk/bin/ if not found."""
         fake_home = tmp_path / 'home'
         fake_home.mkdir(exist_ok=True)
-        home_bin = fake_home / '.voicemode' / 'bin' / 'voicemode-hook-receiver'
+        home_bin = fake_home / '.yakk' / 'bin' / 'yakk-hook-receiver'
 
         with patch('shutil.which', return_value=None):
             with patch('voice_mode.cli_commands.claude.Path.home', return_value=fake_home):
@@ -376,11 +376,11 @@ class TestHookNameMapping:
 
 
 class TestHooksAddCommand:
-    """Tests for 'voicemode claude hooks add' command."""
+    """Tests for 'yakk claude hooks add' command."""
 
     def test_add_all_hooks(self, runner, temp_settings_dir):
         """Should add all hooks to user settings."""
-        with patch('voice_mode.cli_commands.claude.resolve_hook_command', return_value='voicemode-hook-receiver || true'):
+        with patch('voice_mode.cli_commands.claude.resolve_hook_command', return_value='yakk-hook-receiver || true'):
             result = runner.invoke(claude, ['hooks', 'add'])
 
         assert result.exit_code == 0
@@ -400,7 +400,7 @@ class TestHooksAddCommand:
 
     def test_add_single_hook(self, runner, temp_settings_dir):
         """Should add only specified hook."""
-        with patch('voice_mode.cli_commands.claude.resolve_hook_command', return_value='voicemode-hook-receiver || true'):
+        with patch('voice_mode.cli_commands.claude.resolve_hook_command', return_value='yakk-hook-receiver || true'):
             result = runner.invoke(claude, ['hooks', 'add', 'pre-tool-use'])
 
         assert result.exit_code == 0
@@ -414,7 +414,7 @@ class TestHooksAddCommand:
 
     def test_add_hooks_idempotent(self, runner, temp_settings_dir):
         """Should not duplicate on repeated adds."""
-        with patch('voice_mode.cli_commands.claude.resolve_hook_command', return_value='voicemode-hook-receiver || true'):
+        with patch('voice_mode.cli_commands.claude.resolve_hook_command', return_value='yakk-hook-receiver || true'):
             # First add
             result1 = runner.invoke(claude, ['hooks', 'add', 'pre-tool-use'])
             assert result1.exit_code == 0
@@ -439,7 +439,7 @@ class TestHooksAddCommand:
 
     def test_add_to_project_scope(self, runner, temp_settings_dir):
         """Should add to project settings with --scope."""
-        with patch('voice_mode.cli_commands.claude.resolve_hook_command', return_value='voicemode-hook-receiver || true'):
+        with patch('voice_mode.cli_commands.claude.resolve_hook_command', return_value='yakk-hook-receiver || true'):
             result = runner.invoke(claude, ['hooks', 'add', '-s', 'project'])
 
         assert result.exit_code == 0
@@ -447,12 +447,12 @@ class TestHooksAddCommand:
 
 
 class TestHooksRemoveCommand:
-    """Tests for 'voicemode claude hooks remove' command."""
+    """Tests for 'yakk claude hooks remove' command."""
 
     def test_remove_all_hooks(self, runner, temp_settings_dir):
-        """Should remove all VoiceMode hooks."""
+        """Should remove all Yakk hooks."""
         # First add hooks
-        with patch('voice_mode.cli_commands.claude.resolve_hook_command', return_value='voicemode-hook-receiver || true'):
+        with patch('voice_mode.cli_commands.claude.resolve_hook_command', return_value='yakk-hook-receiver || true'):
             runner.invoke(claude, ['hooks', 'add'])
 
         # Then remove
@@ -469,7 +469,7 @@ class TestHooksRemoveCommand:
     def test_remove_single_hook(self, runner, temp_settings_dir):
         """Should remove only specified hook."""
         # Add hooks first
-        with patch('voice_mode.cli_commands.claude.resolve_hook_command', return_value='voicemode-hook-receiver || true'):
+        with patch('voice_mode.cli_commands.claude.resolve_hook_command', return_value='yakk-hook-receiver || true'):
             runner.invoke(claude, ['hooks', 'add'])
 
         # Remove one
@@ -499,7 +499,7 @@ class TestHooksRemoveCommand:
 
 
 class TestHooksListCommand:
-    """Tests for 'voicemode claude hooks list' command."""
+    """Tests for 'yakk claude hooks list' command."""
 
     def test_list_empty_hooks(self, runner, temp_settings_dir):
         """Should show not installed for all hooks."""
@@ -512,7 +512,7 @@ class TestHooksListCommand:
     def test_list_installed_hooks(self, runner, temp_settings_dir):
         """Should show installed hooks."""
         # Add hooks first
-        with patch('voice_mode.cli_commands.claude.resolve_hook_command', return_value='voicemode-hook-receiver || true'):
+        with patch('voice_mode.cli_commands.claude.resolve_hook_command', return_value='yakk-hook-receiver || true'):
             runner.invoke(claude, ['hooks', 'add', 'pre-tool-use'])
 
         result = runner.invoke(claude, ['hooks', 'list'])
@@ -542,14 +542,14 @@ class TestInstallHookReceiver:
     """Tests for install_hook_receiver function."""
 
     def test_install_creates_script(self, tmp_path):
-        """Should install script to ~/.voicemode/bin/."""
+        """Should install script to ~/.yakk/bin/."""
         fake_home = tmp_path / 'home'
         fake_home.mkdir(exist_ok=True)
 
         with patch('voice_mode.cli_commands.claude.Path.home', return_value=fake_home):
             result = install_hook_receiver()
 
-        expected = fake_home / '.voicemode' / 'bin' / 'voicemode-hook-receiver'
+        expected = fake_home / '.yakk' / 'bin' / 'yakk-hook-receiver'
         assert result == expected
         assert expected.exists()
         assert os.access(expected, os.X_OK)
@@ -557,7 +557,7 @@ class TestInstallHookReceiver:
         # Verify it's a bash script
         content = expected.read_text()
         assert content.startswith('#!/usr/bin/env bash')
-        assert 'voicemode-hook-receiver' in content
+        assert 'yakk-hook-receiver' in content
 
     def test_install_idempotent(self, tmp_path):
         """Should overwrite existing script without error."""
@@ -580,8 +580,8 @@ class TestGetInstalledHookNames:
         installed = get_installed_hook_names('user')
         assert installed == set()
 
-    def test_no_voicemode_hooks(self, temp_settings_dir):
-        """Should return empty set when no VoiceMode hooks are installed."""
+    def test_no_yakk_hooks(self, temp_settings_dir):
+        """Should return empty set when no Yakk hooks are installed."""
         from voice_mode.cli_commands import claude as claude_mod
         settings_path = claude_mod.SETTINGS_PATHS['user']
         settings_path.write_text(json.dumps({
@@ -595,16 +595,16 @@ class TestGetInstalledHookNames:
         assert installed == set()
 
     def test_with_installed_hooks(self, temp_settings_dir):
-        """Should return hook names for installed VoiceMode hooks."""
+        """Should return hook names for installed Yakk hooks."""
         from voice_mode.cli_commands import claude as claude_mod
         settings_path = claude_mod.SETTINGS_PATHS['user']
         settings_path.write_text(json.dumps({
             'hooks': {
                 'PreToolUse': [
-                    {'hooks': [{'type': 'command', 'command': 'voicemode-hook-receiver || true'}]}
+                    {'hooks': [{'type': 'command', 'command': 'yakk-hook-receiver || true'}]}
                 ],
                 'PostToolUse': [
-                    {'hooks': [{'type': 'command', 'command': 'voicemode-hook-receiver || true'}]}
+                    {'hooks': [{'type': 'command', 'command': 'yakk-hook-receiver || true'}]}
                 ]
             }
         }))
@@ -628,7 +628,7 @@ class TestHookNameAddCompletion:
         settings_path.write_text(json.dumps({
             'hooks': {
                 'PreToolUse': [
-                    {'hooks': [{'type': 'command', 'command': 'voicemode-hook-receiver || true'}]}
+                    {'hooks': [{'type': 'command', 'command': 'yakk-hook-receiver || true'}]}
                 ]
             }
         }))
@@ -675,10 +675,10 @@ class TestHookNameRemoveCompletion:
         settings_path.write_text(json.dumps({
             'hooks': {
                 'PreToolUse': [
-                    {'hooks': [{'type': 'command', 'command': 'voicemode-hook-receiver || true'}]}
+                    {'hooks': [{'type': 'command', 'command': 'yakk-hook-receiver || true'}]}
                 ],
                 'Stop': [
-                    {'hooks': [{'type': 'command', 'command': 'voicemode-hook-receiver || true'}]}
+                    {'hooks': [{'type': 'command', 'command': 'yakk-hook-receiver || true'}]}
                 ]
             }
         }))
@@ -704,13 +704,13 @@ class TestHookNameRemoveCompletion:
         settings_path.write_text(json.dumps({
             'hooks': {
                 'PreToolUse': [
-                    {'hooks': [{'type': 'command', 'command': 'voicemode-hook-receiver || true'}]}
+                    {'hooks': [{'type': 'command', 'command': 'yakk-hook-receiver || true'}]}
                 ],
                 'PostToolUse': [
-                    {'hooks': [{'type': 'command', 'command': 'voicemode-hook-receiver || true'}]}
+                    {'hooks': [{'type': 'command', 'command': 'yakk-hook-receiver || true'}]}
                 ],
                 'Stop': [
-                    {'hooks': [{'type': 'command', 'command': 'voicemode-hook-receiver || true'}]}
+                    {'hooks': [{'type': 'command', 'command': 'yakk-hook-receiver || true'}]}
                 ]
             }
         }))
@@ -730,7 +730,7 @@ class TestHookNameRemoveCompletion:
 
 
 class TestHooksGroupDefault:
-    """Tests for 'voicemode claude hooks' without subcommand."""
+    """Tests for 'yakk claude hooks' without subcommand."""
 
     def test_hooks_default_shows_list(self, runner, temp_settings_dir):
         """Should default to list command."""

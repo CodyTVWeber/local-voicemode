@@ -1,12 +1,12 @@
 {
-  "description": "VoiceMode PreToolUse hook - audio feedback before tool execution",
+  "description": "Yakk PreToolUse hook - audio feedback before tool execution",
   "hooks": {
     "PreToolUse": [
       {
         "hooks": [
           {
             "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/.claude/scripts/voicemode-hook-receiver || true"
+            "command": "${CLAUDE_PLUGIN_ROOT}/.claude/scripts/yakk-hook-receiver || true"
           }
         ]
       }

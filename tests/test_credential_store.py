@@ -41,7 +41,7 @@ class TestPlaintextStore:
     @pytest.fixture(autouse=True)
     def temp_credentials_dir(self, tmp_path, monkeypatch):
         """Redirect credential paths to a temp directory."""
-        cred_dir = tmp_path / ".voicemode"
+        cred_dir = tmp_path / ".yakk"
         cred_file = cred_dir / "credentials"
         migrated_file = cred_dir / "credentials.migrated"
         monkeypatch.setattr("voice_mode.credential_store.CREDENTIALS_DIR", cred_dir)
@@ -311,7 +311,7 @@ class TestMigration:
 
     @pytest.fixture(autouse=True)
     def temp_credentials_dir(self, tmp_path, monkeypatch):
-        cred_dir = tmp_path / ".voicemode"
+        cred_dir = tmp_path / ".yakk"
         cred_dir.mkdir(parents=True)
         cred_file = cred_dir / "credentials"
         migrated_file = cred_dir / "credentials.migrated"
@@ -383,39 +383,39 @@ class TestGetCredentialStore:
         cred_mod._cached_store = None
 
     def test_plaintext_when_configured(self, monkeypatch):
-        monkeypatch.setenv("VOICEMODE_CREDENTIAL_STORE", "plaintext")
+        monkeypatch.setenv("YAKK_CREDENTIAL_STORE", "plaintext")
         store = get_credential_store()
         assert isinstance(store, PlaintextStore)
 
     def test_keyring_when_configured_and_viable(self, monkeypatch):
-        monkeypatch.setenv("VOICEMODE_CREDENTIAL_STORE", "keyring")
+        monkeypatch.setenv("YAKK_CREDENTIAL_STORE", "keyring")
         with patch("voice_mode.credential_store._keyring_backend_is_viable", return_value=True), \
              patch("voice_mode.credential_store._migrate_plaintext_to_keyring"):
             store = get_credential_store()
             assert isinstance(store, KeyringStore)
 
     def test_fallback_to_plaintext_when_keyring_unavailable(self, monkeypatch):
-        monkeypatch.setenv("VOICEMODE_CREDENTIAL_STORE", "keyring")
+        monkeypatch.setenv("YAKK_CREDENTIAL_STORE", "keyring")
         with patch("voice_mode.credential_store._keyring_backend_is_viable", return_value=False):
             store = get_credential_store()
             assert isinstance(store, PlaintextStore)
 
     def test_default_is_plaintext(self, monkeypatch):
-        """When VOICEMODE_CREDENTIAL_STORE is unset, default to plaintext."""
-        monkeypatch.delenv("VOICEMODE_CREDENTIAL_STORE", raising=False)
+        """When YAKK_CREDENTIAL_STORE is unset, default to plaintext."""
+        monkeypatch.delenv("YAKK_CREDENTIAL_STORE", raising=False)
         store = get_credential_store()
         assert isinstance(store, PlaintextStore)
 
     def test_singleton_cache_returns_same_instance(self, monkeypatch):
         """Repeated calls return the cached instance."""
-        monkeypatch.delenv("VOICEMODE_CREDENTIAL_STORE", raising=False)
+        monkeypatch.delenv("YAKK_CREDENTIAL_STORE", raising=False)
         store1 = get_credential_store()
         store2 = get_credential_store()
         assert store1 is store2
 
     def test_fallback_on_keychain_runtime_error(self, monkeypatch):
         """Keychain runtime errors (e.g. SSH -25308) trigger plaintext fallback."""
-        monkeypatch.setenv("VOICEMODE_CREDENTIAL_STORE", "keyring")
+        monkeypatch.setenv("YAKK_CREDENTIAL_STORE", "keyring")
 
         BackendCls = _make_backend_class("keyring.backends.macOS", "Keyring")
         mock_keyring = MagicMock()

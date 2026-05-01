@@ -1,10 +1,10 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-07-09/server.schema.json",
-  "name": "com.failmode/voicemode",
+  "name": "com.failmode/yakk",
   "description": "Natural voice conversations for AI assistants - STT/TTS via MCP",
   "status": "active",
   "repository": {
-    "url": "https://github.com/mbailey/voicemode",
+    "url": "https://github.com/mbailey/yakk",
     "source": "github"
   },
   "version": "8.6.1",
@@ -30,42 +30,42 @@
           "is_required": false,
           "format": "string",
           "is_secret": false,
-          "name": "VOICEMODE_DEBUG"
+          "name": "YAKK_DEBUG"
         },
         {
           "description": "Skip TTS and show text only for faster response (true/false)",
           "is_required": false,
           "format": "string",
           "is_secret": false,
-          "name": "VOICEMODE_SKIP_TTS"
+          "name": "YAKK_SKIP_TTS"
         },
         {
           "description": "Prefer local services over cloud when available (true/false, default: true)",
           "is_required": false,
           "format": "string",
           "is_secret": false,
-          "name": "VOICEMODE_PREFER_LOCAL"
+          "name": "YAKK_PREFER_LOCAL"
         },
         {
           "description": "Audio format: pcm, mp3, wav, flac, aac, opus (default: pcm)",
           "is_required": false,
           "format": "string",
           "is_secret": false,
-          "name": "VOICEMODE_AUDIO_FORMAT"
+          "name": "YAKK_AUDIO_FORMAT"
         },
         {
           "description": "Whisper model: tiny, base, small, medium, large (default: base)",
           "is_required": false,
           "format": "string",
           "is_secret": false,
-          "name": "VOICEMODE_WHISPER_MODEL"
+          "name": "YAKK_WHISPER_MODEL"
         },
         {
           "description": "Disable silence detection for continuous recording (true/false)",
           "is_required": false,
           "format": "string",
           "is_secret": false,
-          "name": "VOICEMODE_DISABLE_SILENCE_DETECTION"
+          "name": "YAKK_DISABLE_SILENCE_DETECTION"
         }
       ]
     }

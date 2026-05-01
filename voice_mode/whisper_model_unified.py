@@ -15,10 +15,10 @@ def model_name_completion(ctx, args, incomplete):
 @click.command("model",
     epilog="""
 Examples:
-  voicemode whisper model              # Show current model
-  voicemode whisper model --all        # List all models
-  voicemode whisper model large-v2     # Switch to (and install) large-v2
-  voicemode whisper model tiny --no-install  # Switch to tiny (must be installed)
+  yakk whisper model              # Show current model
+  yakk whisper model --all        # List all models
+  yakk whisper model large-v2     # Switch to (and install) large-v2
+  yakk whisper model tiny --no-install  # Switch to tiny (must be installed)
 """)
 @click.help_option('-h', '--help')
 @click.argument('model_name', required=False, shell_complete=model_name_completion)
@@ -106,7 +106,7 @@ def whisper_model_unified(model_name, all, no_install, no_activate, no_restart):
                 f"{format_size(total_available_size)} available"
             )
 
-        click.echo("\nTo use a model: voicemode whisper model <model-name>")
+        click.echo("\nTo use a model: yakk whisper model <model-name>")
         return
 
     # Set model mode
@@ -123,7 +123,7 @@ def whisper_model_unified(model_name, all, no_install, no_activate, no_restart):
         if not is_whisper_model_installed(model_name):
             if no_install:
                 click.echo(f"Error: Model '{model_name}' is not installed.", err=True)
-                click.echo(f"Install it with: voicemode whisper model {model_name}", err=True)
+                click.echo(f"Install it with: yakk whisper model {model_name}", err=True)
                 click.echo(f"(or remove --no-install flag to auto-install)", err=True)
                 raise click.Abort()
             else:
@@ -182,17 +182,17 @@ def whisper_model_unified(model_name, all, no_install, no_activate, no_restart):
                             click.echo(f"✓ Whisper service restarted with {model_name} model")
                         else:
                             click.echo(f"⚠️  Could not restart whisper service automatically")
-                            click.echo(f"  Please run: {click.style('voicemode whisper restart', fg='yellow', bold=True)}")
+                            click.echo(f"  Please run: {click.style('yakk whisper restart', fg='yellow', bold=True)}")
                 except Exception as e:
                     click.echo(f"⚠️  Could not restart whisper service: {e}")
-                    click.echo(f"  Please run: {click.style('voicemode whisper restart', fg='yellow', bold=True)}")
+                    click.echo(f"  Please run: {click.style('yakk whisper restart', fg='yellow', bold=True)}")
             else:
                 # no_restart flag was used
                 try:
                     result = subprocess.run(['pgrep', '-f', 'whisper-server'], capture_output=True)
                     if result.returncode == 0:
                         click.echo(f"\n⚠️  Please restart the whisper service for changes to take effect:")
-                        click.echo(f"  {click.style('voicemode whisper restart', fg='yellow', bold=True)}")
+                        click.echo(f"  {click.style('yakk whisper restart', fg='yellow', bold=True)}")
                         click.echo(f"  (auto-restart skipped due to --no-restart flag)")
                 except:
                     pass
@@ -227,5 +227,5 @@ def whisper_model_unified(model_name, all, no_install, no_activate, no_restart):
     except:
         pass
 
-    click.echo(f"\nTo change: voicemode whisper model <model-name>")
-    click.echo(f"To list all: voicemode whisper model --all")
+    click.echo(f"\nTo change: yakk whisper model <model-name>")
+    click.echo(f"To list all: yakk whisper model --all")

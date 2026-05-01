@@ -4,7 +4,7 @@ The Conch provides a lock file mechanism to indicate when a voice conversation
 is active. This allows other processes (like sound effect hooks) to check
 whether to suppress their audio output.
 
-Lock file location: ~/.voicemode/conch
+Lock file location: ~/.yakk/conch
 
 Usage:
     # As context manager (recommended)
@@ -44,7 +44,7 @@ def _get_lock_expiry() -> float:
 class Conch:
     """Simple lock file for voice conversation coordination.
 
-    Creates a lock file at ~/.voicemode/conch when a voice conversation
+    Creates a lock file at ~/.yakk/conch when a voice conversation
     is active. The lock file contains:
     - pid: Process ID of the lock holder (for stale lock detection)
     - agent: Name of the agent holding the lock
@@ -52,7 +52,7 @@ class Conch:
     - expires: Optional expiry time (reserved for future use)
     """
 
-    LOCK_FILE = Path.home() / ".voicemode" / "conch"
+    LOCK_FILE = Path.home() / ".yakk" / "conch"
 
     def __init__(self, agent_name: Optional[str] = None):
         """Initialize Conch with optional agent name.

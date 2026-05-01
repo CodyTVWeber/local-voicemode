@@ -17,13 +17,13 @@ class TestToolFiltering:
     def setup_method(self):
         """Reset environment before each test."""
         # Clear any existing tool environment variables
-        for key in ['VOICEMODE_TOOLS', 'VOICEMODE_TOOLS_ENABLED', 'VOICEMODE_TOOLS_DISABLED']:
+        for key in ['YAKK_TOOLS', 'YAKK_TOOLS_ENABLED', 'YAKK_TOOLS_DISABLED']:
             os.environ.pop(key, None)
 
     def teardown_method(self):
         """Clean up after each test."""
         # Clear environment variables
-        for key in ['VOICEMODE_TOOLS', 'VOICEMODE_TOOLS_ENABLED', 'VOICEMODE_TOOLS_DISABLED']:
+        for key in ['YAKK_TOOLS', 'YAKK_TOOLS_ENABLED', 'YAKK_TOOLS_DISABLED']:
             os.environ.pop(key, None)
 
     def test_get_all_available_tools(self):
@@ -63,10 +63,10 @@ class TestToolFiltering:
         assert parse_tool_list("converse,converse,service") == {"converse", "service"}
 
     def test_whitelist_mode(self):
-        """Test VOICEMODE_TOOLS_ENABLED whitelist mode."""
+        """Test YAKK_TOOLS_ENABLED whitelist mode."""
         from voice_mode.tools import determine_tools_to_load
 
-        os.environ['VOICEMODE_TOOLS_ENABLED'] = "converse,service"
+        os.environ['YAKK_TOOLS_ENABLED'] = "converse,service"
 
         tools, mode = determine_tools_to_load()
 
@@ -76,10 +76,10 @@ class TestToolFiltering:
         assert len(tools) == 2  # Only the specified tools
 
     def test_blacklist_mode(self):
-        """Test VOICEMODE_TOOLS_DISABLED blacklist mode."""
+        """Test YAKK_TOOLS_DISABLED blacklist mode."""
         from voice_mode.tools import determine_tools_to_load, get_all_available_tools
 
-        os.environ['VOICEMODE_TOOLS_DISABLED'] = "kokoro_install,whisper_install"
+        os.environ['YAKK_TOOLS_DISABLED'] = "kokoro_install,whisper_install"
 
         tools, mode = determine_tools_to_load()
         all_tools = get_all_available_tools()
@@ -94,8 +94,8 @@ class TestToolFiltering:
         """Test that whitelist takes precedence when both are set."""
         from voice_mode.tools import determine_tools_to_load
 
-        os.environ['VOICEMODE_TOOLS_ENABLED'] = "converse"
-        os.environ['VOICEMODE_TOOLS_DISABLED'] = "service"
+        os.environ['YAKK_TOOLS_ENABLED'] = "converse"
+        os.environ['YAKK_TOOLS_DISABLED'] = "service"
 
         tools, mode = determine_tools_to_load()
 
@@ -104,18 +104,18 @@ class TestToolFiltering:
         assert len(tools) == 1  # Only whitelist should apply
 
     def test_legacy_mode_with_deprecation(self):
-        """Test legacy VOICEMODE_TOOLS with deprecation warning."""
+        """Test legacy YAKK_TOOLS with deprecation warning."""
         from voice_mode.tools import determine_tools_to_load
 
-        os.environ['VOICEMODE_TOOLS'] = "converse,service"
+        os.environ['YAKK_TOOLS'] = "converse,service"
 
         with patch('voice_mode.tools.logger') as mock_logger:
             tools, mode = determine_tools_to_load()
 
             # Check deprecation warning was logged
             mock_logger.warning.assert_called_with(
-                "VOICEMODE_TOOLS is deprecated and will be removed in v5.0. "
-                "Please use VOICEMODE_TOOLS_ENABLED or VOICEMODE_TOOLS_DISABLED instead."
+                "YAKK_TOOLS is deprecated and will be removed in v5.0. "
+                "Please use YAKK_TOOLS_ENABLED or YAKK_TOOLS_DISABLED instead."
             )
 
         assert "legacy mode" in mode
@@ -137,7 +137,7 @@ class TestToolFiltering:
         """Test that invalid tool names generate warnings."""
         from voice_mode.tools import determine_tools_to_load
 
-        os.environ['VOICEMODE_TOOLS_ENABLED'] = "converse,nonexistent_tool"
+        os.environ['YAKK_TOOLS_ENABLED'] = "converse,nonexistent_tool"
 
         with patch('voice_mode.tools.logger') as mock_logger:
             tools, mode = determine_tools_to_load()
@@ -166,10 +166,10 @@ class TestToolFiltering:
             mock_import.assert_called_with(".kokoro.install", package="voice_mode.tools")
 
     def test_empty_tools_enabled(self):
-        """Test that empty VOICEMODE_TOOLS_ENABLED loads nothing."""
+        """Test that empty YAKK_TOOLS_ENABLED loads nothing."""
         from voice_mode.tools import determine_tools_to_load
 
-        os.environ['VOICEMODE_TOOLS_ENABLED'] = ""
+        os.environ['YAKK_TOOLS_ENABLED'] = ""
 
         tools, mode = determine_tools_to_load()
 
@@ -178,10 +178,10 @@ class TestToolFiltering:
         assert len(tools) > 0  # Should load all tools
 
     def test_whitespace_only_tools_enabled(self):
-        """Test that whitespace-only VOICEMODE_TOOLS_ENABLED loads nothing."""
+        """Test that whitespace-only YAKK_TOOLS_ENABLED loads nothing."""
         from voice_mode.tools import determine_tools_to_load
 
-        os.environ['VOICEMODE_TOOLS_ENABLED'] = "   "
+        os.environ['YAKK_TOOLS_ENABLED'] = "   "
 
         tools, mode = determine_tools_to_load()
 
@@ -227,7 +227,7 @@ class TestIntegration:
         # Create a test script that imports voice_mode.tools and checks loaded tools
         test_script = '''
 import os
-os.environ['VOICEMODE_TOOLS_ENABLED'] = 'converse'
+os.environ['YAKK_TOOLS_ENABLED'] = 'converse'
 import voice_mode.tools
 from voice_mode.tools import tools_to_load
 print(','.join(sorted(tools_to_load)))
@@ -248,7 +248,7 @@ print(','.join(sorted(tools_to_load)))
         """Test that tools are excluded when running as subprocess."""
         test_script = '''
 import os
-os.environ['VOICEMODE_TOOLS_DISABLED'] = 'kokoro_install,whisper_install'
+os.environ['YAKK_TOOLS_DISABLED'] = 'kokoro_install,whisper_install'
 import voice_mode.tools
 from voice_mode.tools import tools_to_load
 # Check that disabled tools are not in the loaded set

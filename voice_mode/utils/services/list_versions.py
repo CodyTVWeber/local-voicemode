@@ -23,7 +23,7 @@ def list_whisper_versions() -> str:
         return "❌ Failed to fetch whisper.cpp versions"
     
     # Get current version
-    install_dir = Path.home() / ".voicemode" / "whisper.cpp"
+    install_dir = Path.home() / ".yakk" / "whisper.cpp"
     current = get_current_version(install_dir)
     
     # Get latest stable
@@ -63,7 +63,7 @@ def list_kokoro_versions() -> str:
         return "❌ Failed to fetch kokoro-fastapi versions"
     
     # Get current version
-    install_dir = Path.home() / ".voicemode" / "kokoro-fastapi"
+    install_dir = Path.home() / ".yakk" / "kokoro-fastapi"
     current = get_current_version(install_dir)
     
     # Get latest stable

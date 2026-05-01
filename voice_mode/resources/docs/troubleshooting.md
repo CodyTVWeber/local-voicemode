@@ -1,4 +1,4 @@
-# Voicemode Troubleshooting
+# Yakk Troubleshooting
 
 ## Audio Issues
 
@@ -61,7 +61,7 @@
 
 **Solutions:**
 1. Check if `skip_tts` is enabled
-2. Verify VOICEMODE_SKIP_TTS env var
+2. Verify YAKK_SKIP_TTS env var
 3. Force TTS:
    ```python
    converse("Test message", skip_tts=False)
@@ -150,7 +150,7 @@
    converse("Bonjour", voice="ff_siwis", tts_provider="kokoro")
    ```
 
-2. See `voicemode-languages` resource for language-specific voices
+2. See `yakk-languages` resource for language-specific voices
 
 ### Robotic/unnatural voice
 
@@ -228,12 +228,12 @@ converse("Quick update", speed=1.5)
 - Names are consistently misspelled (e.g., "Tali" → "Talley" or "Tolly")
 - Technical terms get mangled (e.g., "kubectl" → "cube control")
 
-**Solution:** Use vocabulary biasing with `VOICEMODE_STT_PROMPT`.
+**Solution:** Use vocabulary biasing with `YAKK_STT_PROMPT`.
 
 Set the environment variable with words you frequently use:
 ```bash
-# In ~/.voicemode/voicemode.env
-VOICEMODE_STT_PROMPT="tmux, Tali, kubectl, pytest, VoiceMode"
+# In ~/.yakk/yakk.env
+YAKK_STT_PROMPT="tmux, Tali, kubectl, pytest, Yakk"
 ```
 
 This "primes" Whisper to recognize these specific terms correctly.

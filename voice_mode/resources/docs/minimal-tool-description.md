@@ -1,6 +1,6 @@
 # Minimal Tool Description
 
-This is the proposed minimal description for the `mcp__voicemode__converse` tool.
+This is the proposed minimal description for the `mcp__yakk__converse` tool.
 
 **Target:** ~200-300 tokens (down from ~4000 tokens)
 
@@ -13,11 +13,11 @@ Have an ongoing voice conversation - speak a message and optionally listen for r
    /v1/audio/transcriptions and /v1/audio/speech
 
 📚 DOCUMENTATION: See MCP resources for detailed information:
-   - voicemode-quickstart: Basic usage and common examples
-   - voicemode-parameters: Complete parameter reference
-   - voicemode-languages: Non-English language support guide
-   - voicemode-patterns: Best practices and conversation patterns
-   - voicemode-troubleshooting: Audio, VAD, and connectivity issues
+   - yakk-quickstart: Basic usage and common examples
+   - yakk-parameters: Complete parameter reference
+   - yakk-languages: Non-English language support guide
+   - yakk-patterns: Best practices and conversation patterns
+   - yakk-troubleshooting: Audio, VAD, and connectivity issues
 
 KEY PARAMETERS:
 • message (required): The message to speak

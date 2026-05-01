@@ -131,11 +131,11 @@ class MusicLibrary:
         """Initialize the music library.
 
         Args:
-            db_path: Path to SQLite database. Defaults to ~/.voicemode/music-library.db
+            db_path: Path to SQLite database. Defaults to ~/.yakk/music-library.db
             music_root: Default music directory. Defaults to ~/Audio/music
             scanner: File scanner implementation (for testing).
         """
-        self.db_path = db_path or Path.home() / ".voicemode" / "music-library.db"
+        self.db_path = db_path or Path.home() / ".yakk" / "music-library.db"
         self.music_root = music_root or Path.home() / "Audio" / "music"
         self._scanner = scanner or DefaultFileScanner()
         self._ensure_db()

@@ -9,13 +9,13 @@ from unittest.mock import patch, MagicMock
 
 
 def test_selective_loading_converse_only():
-    """Test that VOICEMODE_TOOLS=converse only loads the converse tool."""
+    """Test that YAKK_TOOLS=converse only loads the converse tool."""
     # Run in subprocess to ensure clean import state
     result = subprocess.run(
         [sys.executable, "-c", """
 import os
 import sys
-os.environ['VOICEMODE_TOOLS'] = 'converse'
+os.environ['YAKK_TOOLS'] = 'converse'
 
 # Import after setting env var
 from voice_mode import tools
@@ -40,12 +40,12 @@ print('SUCCESS')
 
 
 def test_selective_loading_multiple_tools():
-    """Test that VOICEMODE_TOOLS_ENABLED can load multiple specified tools."""
+    """Test that YAKK_TOOLS_ENABLED can load multiple specified tools."""
     result = subprocess.run(
         [sys.executable, "-c", """
 import os
 import sys
-os.environ['VOICEMODE_TOOLS_ENABLED'] = 'converse,statistics'
+os.environ['YAKK_TOOLS_ENABLED'] = 'converse,statistics'
 
 from voice_mode import tools
 
@@ -72,9 +72,9 @@ import os
 import sys
 
 # Ensure no filter variables are set
-os.environ.pop('VOICEMODE_TOOLS', None)
-os.environ.pop('VOICEMODE_TOOLS_ENABLED', None)
-os.environ.pop('VOICEMODE_TOOLS_DISABLED', None)
+os.environ.pop('YAKK_TOOLS', None)
+os.environ.pop('YAKK_TOOLS_ENABLED', None)
+os.environ.pop('YAKK_TOOLS_DISABLED', None)
 
 from voice_mode import tools
 
@@ -108,7 +108,7 @@ import logging
 # Set up logging to capture warnings
 logging.basicConfig(level=logging.WARNING)
 
-os.environ['VOICEMODE_TOOLS_ENABLED'] = 'converse,nonexistent_tool'
+os.environ['YAKK_TOOLS_ENABLED'] = 'converse,nonexistent_tool'
 
 from voice_mode import tools
 
@@ -132,7 +132,7 @@ def test_statistics_tracking_without_loading_tools():
         [sys.executable, "-c", """
 import os
 import sys
-os.environ['VOICEMODE_TOOLS'] = 'converse'
+os.environ['YAKK_TOOLS'] = 'converse'
 
 # Import the tracking function
 from voice_mode.statistics_tracking import track_voice_interaction
@@ -153,14 +153,14 @@ print('SUCCESS')
 
 
 @pytest.mark.skip(reason="Flaky test - passes individually but fails in full suite due to environment pollution from other tests")
-def test_empty_voicemode_tools():
-    """Test that empty VOICEMODE_TOOLS_ENABLED loads all tools (same as not set)."""
+def test_empty_yakk_tools():
+    """Test that empty YAKK_TOOLS_ENABLED loads all tools (same as not set)."""
     result = subprocess.run(
         [sys.executable, "-c", """
 import os
 import sys
 
-os.environ['VOICEMODE_TOOLS_ENABLED'] = ''
+os.environ['YAKK_TOOLS_ENABLED'] = ''
 
 from voice_mode import tools
 
@@ -185,7 +185,7 @@ def test_whitespace_handling_in_tool_list():
 import os
 import sys
 
-os.environ['VOICEMODE_TOOLS_ENABLED'] = ' converse , statistics '
+os.environ['YAKK_TOOLS_ENABLED'] = ' converse , statistics '
 
 from voice_mode import tools
 

@@ -1,15 +1,15 @@
 # Environment Variables Reference
 
-Complete reference of all environment variables used by VoiceMode.
+Complete reference of all environment variables used by Yakk.
 
 ## Variable Precedence
 
 Environment variables are processed in this order (highest to lowest priority):
-1. Command-line environment (`OPENAI_API_KEY=xxx voicemode`)
+1. Command-line environment (`OPENAI_API_KEY=xxx yakk`)
 2. MCP host configuration
 3. Shell environment variables
-4. Project `.voicemode.env` file
-5. User `~/.voicemode/voicemode.env` file
+4. Project `.yakk.env` file
+5. User `~/.yakk/yakk.env` file
 6. Built-in defaults
 
 ## Core Configuration
@@ -26,47 +26,47 @@ Environment variables are processed in this order (highest to lowest priority):
 
 | Variable | Description | Default | Example |
 |----------|-------------|---------|---------|
-| `VOICEMODE_TTS_BASE_URLS` | Comma-separated TTS service URLs | `http://127.0.0.1:8880/v1,https://api.openai.com/v1` | `http://localhost:8880/v1` |
-| `VOICEMODE_VOICES` | Comma-separated voice preferences | `af_sky,alloy` | `nova,shimmer` |
-| `VOICEMODE_TTS_VOICE` | Default TTS voice | First from VOICES | `nova` |
-| `VOICEMODE_TTS_MODELS` | Comma-separated TTS models | `tts-1-hd,tts-1` | `gpt-4o-mini-tts,tts-1` |
-| `VOICEMODE_TTS_MODEL` | Default TTS model | First from MODELS | `tts-1-hd` |
-| `VOICEMODE_TTS_SPEED` | Speech speed (0.25-4.0) | `1.0` | `1.5` |
+| `YAKK_TTS_BASE_URLS` | Comma-separated TTS service URLs | `http://127.0.0.1:8880/v1,https://api.openai.com/v1` | `http://localhost:8880/v1` |
+| `YAKK_VOICES` | Comma-separated voice preferences | `af_sky,alloy` | `nova,shimmer` |
+| `YAKK_TTS_VOICE` | Default TTS voice | First from VOICES | `nova` |
+| `YAKK_TTS_MODELS` | Comma-separated TTS models | `tts-1-hd,tts-1` | `gpt-4o-mini-tts,tts-1` |
+| `YAKK_TTS_MODEL` | Default TTS model | First from MODELS | `tts-1-hd` |
+| `YAKK_TTS_SPEED` | Speech speed (0.25-4.0) | `1.0` | `1.5` |
 
 ### Speech-to-Text (STT)
 
 | Variable | Description | Default | Example |
 |----------|-------------|---------|---------|
-| `VOICEMODE_STT_BASE_URLS` | Comma-separated STT service URLs | `https://api.openai.com/v1` | `http://localhost:2022/v1` |
-| `VOICEMODE_STT_MODEL` | STT model | `whisper-1` | `whisper-1` |
-| `VOICEMODE_STT_PROMPT` | Vocabulary biasing for Whisper (names, terms) | None | `tmux, Tali, kubectl` |
+| `YAKK_STT_BASE_URLS` | Comma-separated STT service URLs | `https://api.openai.com/v1` | `http://localhost:2022/v1` |
+| `YAKK_STT_MODEL` | STT model | `whisper-1` | `whisper-1` |
+| `YAKK_STT_PROMPT` | Vocabulary biasing for Whisper (names, terms) | None | `tmux, Tali, kubectl` |
 
 ### Whisper Configuration
 
 | Variable | Description | Default | Example |
 |----------|-------------|---------|---------|
-| `VOICEMODE_WHISPER_MODEL` | Whisper model size | `large-v2` | `base.en` |
-| `VOICEMODE_WHISPER_LANGUAGE` | Language code or 'auto' | `auto` | `en` |
-| `VOICEMODE_WHISPER_PORT` | Whisper server port | `2022` | `2023` |
-| `VOICEMODE_WHISPER_MODEL_PATH` | Path to Whisper models | `~/.voicemode/models/whisper` | `/models/whisper` |
+| `YAKK_WHISPER_MODEL` | Whisper model size | `large-v2` | `base.en` |
+| `YAKK_WHISPER_LANGUAGE` | Language code or 'auto' | `auto` | `en` |
+| `YAKK_WHISPER_PORT` | Whisper server port | `2022` | `2023` |
+| `YAKK_WHISPER_MODEL_PATH` | Path to Whisper models | `~/.yakk/models/whisper` | `/models/whisper` |
 
 ### Kokoro Configuration
 
 | Variable | Description | Default | Example |
 |----------|-------------|---------|---------|
-| `VOICEMODE_KOKORO_PORT` | Kokoro server port | `8880` | `8881` |
-| `VOICEMODE_KOKORO_MODELS_DIR` | Kokoro models directory | `~/Models/kokoro` | `/models/kokoro` |
-| `VOICEMODE_KOKORO_CACHE_DIR` | Kokoro cache directory | `~/.voicemode/cache/kokoro` | `/cache/kokoro` |
-| `VOICEMODE_KOKORO_DEFAULT_VOICE` | Default Kokoro voice | `af_sky` | `am_adam` |
+| `YAKK_KOKORO_PORT` | Kokoro server port | `8880` | `8881` |
+| `YAKK_KOKORO_MODELS_DIR` | Kokoro models directory | `~/Models/kokoro` | `/models/kokoro` |
+| `YAKK_KOKORO_CACHE_DIR` | Kokoro cache directory | `~/.yakk/cache/kokoro` | `/cache/kokoro` |
+| `YAKK_KOKORO_DEFAULT_VOICE` | Default Kokoro voice | `af_sky` | `am_adam` |
 
 ## Soundfonts
 
 | Variable | Description | Default | Example |
 |----------|-------------|---------|---------|
-| `VOICEMODE_SOUNDFONTS_ENABLED` | Enable/disable soundfont playback | `true` | `false` |
-| `VOICEMODE_HOOK_DEBUG` | Enable debug output from hook receiver | unset | `1` |
+| `YAKK_SOUNDFONTS_ENABLED` | Enable/disable soundfont playback | `true` | `false` |
+| `YAKK_HOOK_DEBUG` | Enable debug output from hook receiver | unset | `1` |
 
-`VOICEMODE_SOUNDFONTS_ENABLED` can be set in `~/.voicemode/voicemode.env` or the shell environment. The sentinel file (`~/.voicemode/soundfonts-disabled`, managed by `voicemode soundfonts on/off`) takes priority when present.
+`YAKK_SOUNDFONTS_ENABLED` can be set in `~/.yakk/yakk.env` or the shell environment. The sentinel file (`~/.yakk/soundfonts-disabled`, managed by `yakk soundfonts on/off`) takes priority when present.
 
 See the [Soundfonts Guide](../guides/soundfonts.md) for details.
 
@@ -76,9 +76,9 @@ See the [Soundfonts Guide](../guides/soundfonts.md) for details.
 
 | Variable | Description | Default | Example |
 |----------|-------------|---------|---------|
-| `VOICEMODE_AUDIO_FORMAT` | Global audio format | `pcm` | `mp3` |
-| `VOICEMODE_TTS_AUDIO_FORMAT` | TTS-specific format | `pcm` | `opus` |
-| `VOICEMODE_STT_AUDIO_FORMAT` | STT-specific format | `mp3` | `wav` |
+| `YAKK_AUDIO_FORMAT` | Global audio format | `pcm` | `mp3` |
+| `YAKK_TTS_AUDIO_FORMAT` | TTS-specific format | `pcm` | `opus` |
+| `YAKK_STT_AUDIO_FORMAT` | STT-specific format | `mp3` | `wav` |
 
 Supported formats: `pcm`, `opus`, `mp3`, `wav`, `flac`, `aac`
 
@@ -86,51 +86,51 @@ Supported formats: `pcm`, `opus`, `mp3`, `wav`, `flac`, `aac`
 
 | Variable | Description | Default | Example |
 |----------|-------------|---------|---------|
-| `VOICEMODE_SAMPLE_RATE` | Sample rate in Hz | `24000` | `48000` |
-| `VOICEMODE_OPUS_BITRATE` | Opus bitrate in bps | `32000` | `64000` |
-| `VOICEMODE_MP3_BITRATE` | MP3 bitrate | `64k` | `128k` |
-| `VOICEMODE_AAC_BITRATE` | AAC bitrate | `64k` | `96k` |
+| `YAKK_SAMPLE_RATE` | Sample rate in Hz | `24000` | `48000` |
+| `YAKK_OPUS_BITRATE` | Opus bitrate in bps | `32000` | `64000` |
+| `YAKK_MP3_BITRATE` | MP3 bitrate | `64k` | `128k` |
+| `YAKK_AAC_BITRATE` | AAC bitrate | `64k` | `96k` |
 
 ### Audio Feedback
 
 | Variable | Description | Default | Example |
 |----------|-------------|---------|---------|
-| `VOICEMODE_AUDIO_FEEDBACK` | Enable recording chimes | `true` | `false` |
-| `VOICEMODE_FEEDBACK_STYLE` | Chime style | `whisper` | `shout` |
-| `VOICEMODE_CHIME_PRE_DELAY` | Silence before chime (seconds) | `0.1` | `1.0` |
-| `VOICEMODE_CHIME_POST_DELAY` | Silence after chime (seconds) | `0.2` | `0.5` |
+| `YAKK_AUDIO_FEEDBACK` | Enable recording chimes | `true` | `false` |
+| `YAKK_FEEDBACK_STYLE` | Chime style | `whisper` | `shout` |
+| `YAKK_CHIME_PRE_DELAY` | Silence before chime (seconds) | `0.1` | `1.0` |
+| `YAKK_CHIME_POST_DELAY` | Silence after chime (seconds) | `0.2` | `0.5` |
 
 ## Voice Activity Detection
 
 | Variable | Description | Default | Example |
 |----------|-------------|---------|---------|
-| `VOICEMODE_VAD_AGGRESSIVENESS` | VAD level (0-3) | `3` | `3` |
-| `VOICEMODE_DISABLE_VAD` | Disable VAD | `false` | `true` |
-| `VOICEMODE_DISABLE_SILENCE_DETECTION` | Disable silence detection | `false` | `true` |
-| `VOICEMODE_SILENCE_THRESHOLD` | Silence duration (seconds) | `3.0` | `5.0` |
-| `VOICEMODE_MIN_RECORDING_TIME` | Minimum recording (seconds) | `0.5` | `1.0` |
-| `VOICEMODE_MAX_RECORDING_TIME` | Maximum recording (seconds) | `120.0` | `60.0` |
+| `YAKK_VAD_AGGRESSIVENESS` | VAD level (0-3) | `3` | `3` |
+| `YAKK_DISABLE_VAD` | Disable VAD | `false` | `true` |
+| `YAKK_DISABLE_SILENCE_DETECTION` | Disable silence detection | `false` | `true` |
+| `YAKK_SILENCE_THRESHOLD` | Silence duration (seconds) | `3.0` | `5.0` |
+| `YAKK_MIN_RECORDING_TIME` | Minimum recording (seconds) | `0.5` | `1.0` |
+| `YAKK_MAX_RECORDING_TIME` | Maximum recording (seconds) | `120.0` | `60.0` |
 
 ## File Storage
 
 | Variable | Description | Default | Example |
 |----------|-------------|---------|---------|
-| `VOICEMODE_DATA_DIR` | Data directory | `~/.voicemode` | `/data/voicemode` |
-| `VOICEMODE_LOG_DIR` | Log directory | `~/.voicemode/logs` | `/var/log/voicemode` |
-| `VOICEMODE_CACHE_DIR` | Cache directory | `~/.voicemode/cache` | `/tmp/voicemode` |
-| `VOICEMODE_SAVE_ALL` | Save all audio files | `false` | `true` |
-| `VOICEMODE_SAVE_RECORDINGS` | Save input recordings | `false` | `true` |
-| `VOICEMODE_SAVE_TTS` | Save TTS output | `false` | `true` |
+| `YAKK_DATA_DIR` | Data directory | `~/.yakk` | `/data/yakk` |
+| `YAKK_LOG_DIR` | Log directory | `~/.yakk/logs` | `/var/log/yakk` |
+| `YAKK_CACHE_DIR` | Cache directory | `~/.yakk/cache` | `/tmp/yakk` |
+| `YAKK_SAVE_ALL` | Save all audio files | `false` | `true` |
+| `YAKK_SAVE_RECORDINGS` | Save input recordings | `false` | `true` |
+| `YAKK_SAVE_TTS` | Save TTS output | `false` | `true` |
 
 ## Logging and Debugging
 
 | Variable | Description | Default | Example |
 |----------|-------------|---------|---------|
-| `VOICEMODE_DEBUG` | Enable debug mode | `false` | `true` |
-| `VOICEMODE_LOG_LEVEL` | Log level | `info` | `debug` |
-| `VOICEMODE_EVENT_LOG` | Enable event logging | `false` | `true` |
-| `VOICEMODE_CONVERSATION_LOG` | Log conversations | `false` | `true` |
-| `VOICEMODE_SKIP_TTS` | Skip TTS for testing | `false` | `true` |
+| `YAKK_DEBUG` | Enable debug mode | `false` | `true` |
+| `YAKK_LOG_LEVEL` | Log level | `info` | `debug` |
+| `YAKK_EVENT_LOG` | Enable event logging | `false` | `true` |
+| `YAKK_CONVERSATION_LOG` | Log conversations | `false` | `true` |
+| `YAKK_SKIP_TTS` | Skip TTS for testing | `false` | `true` |
 
 Log levels: `debug`, `info`, `warning`, `error`, `critical`
 
@@ -140,27 +140,27 @@ Log levels: `debug`, `info`, `warning`, `error`, `critical`
 
 | Variable | Description | Default | Example |
 |----------|-------------|---------|---------|
-| `VOICEMODE_ALLOW_EMOTIONS` | Enable emotional TTS | `false` | `true` |
-| `VOICEMODE_EMOTION_AUTO_UPGRADE` | Auto-upgrade to emotional model | `false` | `true` |
+| `YAKK_ALLOW_EMOTIONS` | Enable emotional TTS | `false` | `true` |
+| `YAKK_EMOTION_AUTO_UPGRADE` | Auto-upgrade to emotional model | `false` | `true` |
 
 ### Service Preferences
 
 | Variable | Description | Default | Example |
 |----------|-------------|---------|---------|
-| `VOICEMODE_PREFER_LOCAL` | Prefer local services | `true` | `false` |
-| `VOICEMODE_AUTO_START_SERVICES` | Auto-start local services | `false` | `true` |
+| `YAKK_PREFER_LOCAL` | Prefer local services | `true` | `false` |
+| `YAKK_AUTO_START_SERVICES` | Auto-start local services | `false` | `true` |
 
 ### Serve Command
 
 | Variable | Description | Default | Example |
 |----------|-------------|---------|---------|
-| `VOICEMODE_SERVE_TRANSPORT` | MCP transport protocol (`streamable-http` or `sse`) | `sse` | `streamable-http` |
-| `VOICEMODE_SERVE_ALLOW_LOCAL` | Allow localhost connections | `true` | `false` |
-| `VOICEMODE_SERVE_ALLOW_ANTHROPIC` | Allow Anthropic IP ranges | `false` | `true` |
-| `VOICEMODE_SERVE_ALLOW_TAILSCALE` | Allow Tailscale IP range (100.64.0.0/10) | `false` | `true` |
-| `VOICEMODE_SERVE_ALLOWED_IPS` | Custom CIDR allowlist (comma-separated) | None | `192.168.1.0/24,10.0.0.0/8` |
-| `VOICEMODE_SERVE_SECRET` | URL path secret segment | None | `my-secret-uuid` |
-| `VOICEMODE_SERVE_TOKEN` | Bearer token for authentication | None | `my-secret-token` |
+| `YAKK_SERVE_TRANSPORT` | MCP transport protocol (`streamable-http` or `sse`) | `sse` | `streamable-http` |
+| `YAKK_SERVE_ALLOW_LOCAL` | Allow localhost connections | `true` | `false` |
+| `YAKK_SERVE_ALLOW_ANTHROPIC` | Allow Anthropic IP ranges | `false` | `true` |
+| `YAKK_SERVE_ALLOW_TAILSCALE` | Allow Tailscale IP range (100.64.0.0/10) | `false` | `true` |
+| `YAKK_SERVE_ALLOWED_IPS` | Custom CIDR allowlist (comma-separated) | None | `192.168.1.0/24,10.0.0.0/8` |
+| `YAKK_SERVE_SECRET` | URL path secret segment | None | `my-secret-uuid` |
+| `YAKK_SERVE_TOKEN` | Bearer token for authentication | None | `my-secret-token` |
 
 ## Legacy Variables
 
@@ -168,28 +168,28 @@ These variables from older versions are still supported:
 
 | Old Variable | New Variable | Notes |
 |--------------|--------------|-------|
-| `VOICE_MODE_DEBUG` | `VOICEMODE_DEBUG` | Deprecated |
-| `VOICE_MODE_SAVE_AUDIO` | `VOICEMODE_SAVE_ALL` | Deprecated |
-| `TTS_BASE_URL` | `VOICEMODE_TTS_BASE_URLS` | Still supported |
-| `STT_BASE_URL` | `VOICEMODE_STT_BASE_URLS` | Still supported |
-| `TTS_VOICE` | `VOICEMODE_TTS_VOICE` | Still supported |
-| `TTS_MODEL` | `VOICEMODE_TTS_MODEL` | Still supported |
+| `VOICE_MODE_DEBUG` | `YAKK_DEBUG` | Deprecated |
+| `VOICE_MODE_SAVE_AUDIO` | `YAKK_SAVE_ALL` | Deprecated |
+| `TTS_BASE_URL` | `YAKK_TTS_BASE_URLS` | Still supported |
+| `STT_BASE_URL` | `YAKK_STT_BASE_URLS` | Still supported |
+| `TTS_VOICE` | `YAKK_TTS_VOICE` | Still supported |
+| `TTS_MODEL` | `YAKK_TTS_MODEL` | Still supported |
 
 ## Configuration Files
 
 ### User Configuration
-Create `~/.voicemode/voicemode.env`:
+Create `~/.yakk/yakk.env`:
 ```bash
 export OPENAI_API_KEY="sk-..."
-export VOICEMODE_VOICES="nova,shimmer"
-export VOICEMODE_DEBUG=false
+export YAKK_VOICES="nova,shimmer"
+export YAKK_DEBUG=false
 ```
 
 ### Project Configuration
-Create `.voicemode.env` in project root:
+Create `.yakk.env` in project root:
 ```bash
-export VOICEMODE_VOICES="onyx"
-export VOICEMODE_TTS_SPEED=0.9
+export YAKK_VOICES="onyx"
+export YAKK_TTS_SPEED=0.9
 ```
 
 ## MCP Host Configuration
@@ -199,12 +199,12 @@ When used as an MCP server, environment variables can be set in the host configu
 ```json
 {
   "mcpServers": {
-    "voicemode": {
+    "yakk": {
       "command": "uvx",
       "args": ["voice-mode"],
       "env": {
         "OPENAI_API_KEY": "sk-...",
-        "VOICEMODE_DEBUG": "true"
+        "YAKK_DEBUG": "true"
       }
     }
   }
@@ -215,10 +215,10 @@ When used as an MCP server, environment variables can be set in the host configu
 
 To see all active environment variables:
 ```bash
-voicemode config show --env
+yakk config show --env
 ```
 
 To test with specific variables:
 ```bash
-VOICEMODE_DEBUG=true VOICEMODE_LOG_LEVEL=debug voicemode converse
+YAKK_DEBUG=true YAKK_LOG_LEVEL=debug yakk converse
 ```

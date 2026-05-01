@@ -1,6 +1,6 @@
 """Voice profiles for clone-based TTS.
 
-Voices live in ``$VOICEMODE_VOICES_DIR`` (default ``~/.voicemode/voices``).
+Voices live in ``$YAKK_VOICES_DIR`` (default ``~/.yakk/voices``).
 Each subdirectory is a voice profile. For ``<name>/`` we look for a
 ``default.wav`` (or the first ``*.wav``) plus a sidecar transcript
 ``default.txt`` (or matching basename). SuperDirt-style: drop a folder in,
@@ -19,7 +19,7 @@ Voice expression syntax (``voice="<expr>"`` at converse time):
 * ``/abs/path.wav``      — absolute path passed straight to the TTS server
 
 Remote TTS servers (e.g. mlx-audio on ms2) need the ref_audio path that
-exists on *their* filesystem, not ours. Set ``VOICEMODE_REMOTE_VOICES_DIR``
+exists on *their* filesystem, not ours. Set ``YAKK_REMOTE_VOICES_DIR``
 to the path where the voices directory is mirrored on the TTS host; we
 rewrite the prefix when sending the request. If unset, the local
 absolute path is sent (only useful when the TTS server runs locally).
@@ -32,29 +32,29 @@ from dataclasses import dataclass, replace
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
-logger = logging.getLogger("voicemode")
+logger = logging.getLogger("yakk")
 
 VOICES_DIR = Path(os.path.expanduser(
-    os.environ.get("VOICEMODE_VOICES_DIR", "~/.voicemode/voices")
+    os.environ.get("YAKK_VOICES_DIR", "~/.yakk/voices")
 ))
 
 # Path on the remote TTS server where VOICES_DIR is mirrored. When set,
 # ref_audio paths sent to the server are rewritten with this prefix so
 # the server can find the file on its own filesystem.
-REMOTE_VOICES_DIR = os.environ.get("VOICEMODE_REMOTE_VOICES_DIR", "")
+REMOTE_VOICES_DIR = os.environ.get("YAKK_REMOTE_VOICES_DIR", "")
 
 # Default mlx-audio endpoint for clone voices (Qwen3-TTS).
 # Defaults to a local mlx-audio server. Override via env vars when you
 # want to point at a different host (e.g. a remote ms2 box on the LAN).
 DEFAULT_CLONE_BASE_URL = os.environ.get(
-    "VOICEMODE_CLONE_BASE_URL", "http://127.0.0.1:8890/v1"
+    "YAKK_CLONE_BASE_URL", "http://127.0.0.1:8890/v1"
 )
 # 1.7B-Base-4bit: ~2× realtime on M-series, clean audio, ~2.2GB on disk.
 # Picked as the default from the Apr 2026 quant matrix bench. The
-# auto-generated voicemode.env lists alternatives (5-bit, 6-bit, bf16,
+# auto-generated yakk.env lists alternatives (5-bit, 6-bit, bf16,
 # 0.6B-5bit).
 DEFAULT_CLONE_MODEL = os.environ.get(
-    "VOICEMODE_CLONE_MODEL", "mlx-community/Qwen3-TTS-12Hz-1.7B-Base-4bit"
+    "YAKK_CLONE_MODEL", "mlx-community/Qwen3-TTS-12Hz-1.7B-Base-4bit"
 )
 
 # Matches ``name[0]``, ``name[12]``. Captures (name, index).
@@ -216,7 +216,7 @@ def _list_samples(voice_dir: Path) -> List[Path]:
 def _translate_path(local_path: Path) -> str:
     """Translate a local voices-dir path into the path the TTS server sees.
 
-    If ``VOICEMODE_REMOTE_VOICES_DIR`` is set and ``local_path`` lives
+    If ``YAKK_REMOTE_VOICES_DIR`` is set and ``local_path`` lives
     under ``VOICES_DIR``, replace the prefix. Otherwise return the local
     absolute path (correct when the TTS server is the local machine).
     """

@@ -1,7 +1,7 @@
 """CLI commands for Claude Code integration.
 
-Provides `voicemode claude hooks add/remove/list` commands
-for managing VoiceMode hooks in Claude Code settings.
+Provides `yakk claude hooks add/remove/list` commands
+for managing Yakk hooks in Claude Code settings.
 """
 
 import copy
@@ -52,7 +52,7 @@ def get_available_hooks() -> dict:
 def get_installed_hook_names(scope: str) -> set[str]:
     """Return set of hook names (kebab-case) that are installed for the given scope.
 
-    Reads the settings file and checks which hook events have VoiceMode
+    Reads the settings file and checks which hook events have Yakk
     hooks present, then maps event names back to hook names.
     """
     event_to_name = {v: k for k, v in HOOK_NAME_TO_EVENT.items()}
@@ -63,7 +63,7 @@ def get_installed_hook_names(scope: str) -> set[str]:
     hooks_dict = settings.get('hooks', {})
     installed = set()
     for event, entries in hooks_dict.items():
-        if any(is_voicemode_hook(e) for e in entries):
+        if any(is_yakk_hook(e) for e in entries):
             if event in event_to_name:
                 installed.add(event_to_name[event])
     return installed
@@ -85,20 +85,20 @@ def hook_name_remove_completion(ctx, param, incomplete):
 
 
 def install_hook_receiver() -> Path:
-    """Install the bash hook-receiver script to ~/.voicemode/bin/.
+    """Install the bash hook-receiver script to ~/.yakk/bin/.
 
-    Copies the bundled voicemode-hook-receiver.sh from package data
-    to ~/.voicemode/bin/voicemode-hook-receiver and makes it executable.
+    Copies the bundled yakk-hook-receiver.sh from package data
+    to ~/.yakk/bin/yakk-hook-receiver and makes it executable.
 
     Returns:
         Path to the installed script.
     """
-    dest = Path.home() / '.voicemode' / 'bin' / 'voicemode-hook-receiver'
+    dest = Path.home() / '.yakk' / 'bin' / 'yakk-hook-receiver'
     dest.parent.mkdir(parents=True, exist_ok=True)
 
     # Read bundled script from package data
     hooks_data = files('voice_mode.data.hooks')
-    script_resource = hooks_data.joinpath('voicemode-hook-receiver.sh')
+    script_resource = hooks_data.joinpath('yakk-hook-receiver.sh')
     script_content = script_resource.read_text()
 
     # Write and make executable
@@ -111,10 +111,10 @@ def install_hook_receiver() -> Path:
 def resolve_hook_command() -> str:
     """Determine the correct command for hook entries."""
     # Check PATH
-    if shutil.which('voicemode-hook-receiver'):
-        return 'voicemode-hook-receiver || true'
-    # Check ~/.voicemode/bin/
-    home_bin = Path.home() / '.voicemode' / 'bin' / 'voicemode-hook-receiver'
+    if shutil.which('yakk-hook-receiver'):
+        return 'yakk-hook-receiver || true'
+    # Check ~/.yakk/bin/
+    home_bin = Path.home() / '.yakk' / 'bin' / 'yakk-hook-receiver'
     if home_bin.exists() and os.access(home_bin, os.X_OK):
         return f'{home_bin} || true'
     # Not found - install it
@@ -122,11 +122,11 @@ def resolve_hook_command() -> str:
     return f'{installed} || true'
 
 
-def is_voicemode_hook(hook_entry: dict) -> bool:
-    """Check if a hook entry belongs to VoiceMode."""
+def is_yakk_hook(hook_entry: dict) -> bool:
+    """Check if a hook entry belongs to Yakk."""
     for handler in hook_entry.get('hooks', []):
         cmd = handler.get('command', '')
-        if 'voicemode-hook-receiver' in cmd or 'voicemode hook-receiver' in cmd:
+        if 'yakk-hook-receiver' in cmd or 'yakk hook-receiver' in cmd:
             return True
     return False
 
@@ -182,8 +182,8 @@ def merge_hooks(existing: dict, new_hooks: dict, command: str) -> tuple[dict, li
             result['hooks'][event] = resolved_entries
             added.append(event)
         else:
-            # Check if VoiceMode hook already present
-            if not any(is_voicemode_hook(e) for e in result['hooks'][event]):
+            # Check if Yakk hook already present
+            if not any(is_yakk_hook(e) for e in result['hooks'][event]):
                 result['hooks'][event].extend(resolved_entries)
                 added.append(event)
 
@@ -191,7 +191,7 @@ def merge_hooks(existing: dict, new_hooks: dict, command: str) -> tuple[dict, li
 
 
 def remove_hooks(existing: dict, event_names: list[str] | None = None) -> tuple[dict, list[str]]:
-    """Remove VoiceMode hooks from settings.
+    """Remove Yakk hooks from settings.
 
     Args:
         existing: Current settings dict
@@ -213,7 +213,7 @@ def remove_hooks(existing: dict, event_names: list[str] | None = None) -> tuple[
             continue
         original_count = len(result['hooks'][event])
         result['hooks'][event] = [
-            e for e in result['hooks'][event] if not is_voicemode_hook(e)
+            e for e in result['hooks'][event] if not is_yakk_hook(e)
         ]
         if len(result['hooks'][event]) < original_count:
             removed.append(event)
@@ -243,9 +243,9 @@ def claude():
 @click.help_option('-h', '--help', help='Show this message and exit')
 @click.pass_context
 def hooks(ctx):
-    """Manage Claude Code hooks for VoiceMode.
+    """Manage Claude Code hooks for Yakk.
 
-    Install, remove, and inspect VoiceMode hooks in Claude Code settings.
+    Install, remove, and inspect Yakk hooks in Claude Code settings.
     Hooks enable audio feedback (soundfonts) during Claude Code sessions.
     """
     if ctx.invoked_subcommand is None:
@@ -255,10 +255,10 @@ def hooks(ctx):
 
 @hooks.command("add", epilog="""
 Examples:
-  voicemode claude hooks add                    # Add all hooks to user settings
-  voicemode claude hooks add pre-tool-use       # Add only PreToolUse hook
-  voicemode claude hooks add -s project         # Add to project settings
-  voicemode claude hooks add --scope local      # Add to local settings
+  yakk claude hooks add                    # Add all hooks to user settings
+  yakk claude hooks add pre-tool-use       # Add only PreToolUse hook
+  yakk claude hooks add -s project         # Add to project settings
+  yakk claude hooks add --scope local      # Add to local settings
 """)
 @click.help_option('-h', '--help', help='Show this message and exit')
 @click.argument('hook_name', required=False, default=None, shell_complete=hook_name_add_completion)
@@ -266,7 +266,7 @@ Examples:
               default='user', show_default=True,
               help='Settings scope to install hooks into')
 def hooks_add(hook_name, scope):
-    """Add VoiceMode hooks to Claude Code settings.
+    """Add Yakk hooks to Claude Code settings.
 
     Without HOOK_NAME, adds all available hooks. With HOOK_NAME,
     adds only the specified hook event.
@@ -303,7 +303,7 @@ def hooks_add(hook_name, scope):
 
     # Print summary
     settings_path = SETTINGS_PATHS[scope]
-    click.echo(f"Added VoiceMode hooks to {scope} settings ({settings_path}):")
+    click.echo(f"Added Yakk hooks to {scope} settings ({settings_path}):")
 
     for name in hooks_to_add.keys():
         event = HOOK_NAME_TO_EVENT.get(name, name)
@@ -320,9 +320,9 @@ def hooks_add(hook_name, scope):
 
 @hooks.command("remove", epilog="""
 Examples:
-  voicemode claude hooks remove                 # Remove all VoiceMode hooks from user settings
-  voicemode claude hooks remove pre-tool-use    # Remove only PreToolUse hook
-  voicemode claude hooks remove -s project      # Remove from project settings
+  yakk claude hooks remove                 # Remove all Yakk hooks from user settings
+  yakk claude hooks remove pre-tool-use    # Remove only PreToolUse hook
+  yakk claude hooks remove -s project      # Remove from project settings
 """)
 @click.help_option('-h', '--help', help='Show this message and exit')
 @click.argument('hook_name', required=False, default=None, shell_complete=hook_name_remove_completion)
@@ -330,9 +330,9 @@ Examples:
               default='user', show_default=True,
               help='Settings scope to remove hooks from')
 def hooks_remove(hook_name, scope):
-    """Remove VoiceMode hooks from Claude Code settings.
+    """Remove Yakk hooks from Claude Code settings.
 
-    Without HOOK_NAME, removes all VoiceMode hooks. With HOOK_NAME,
+    Without HOOK_NAME, removes all Yakk hooks. With HOOK_NAME,
     removes only the specified hook event.
     """
     # Validate hook name first (before reading settings)
@@ -360,7 +360,7 @@ def hooks_remove(hook_name, scope):
 
     # Print summary
     settings_path = SETTINGS_PATHS[scope]
-    click.echo(f"Removed VoiceMode hooks from {scope} settings ({settings_path}):")
+    click.echo(f"Removed Yakk hooks from {scope} settings ({settings_path}):")
 
     # Show all events we checked
     events_to_show = event_names if event_names else list(HOOK_NAME_TO_EVENT.values())
@@ -373,18 +373,18 @@ def hooks_remove(hook_name, scope):
 
 @hooks.command("list", epilog="""
 Examples:
-  voicemode claude hooks list                   # Show hooks in user settings
-  voicemode claude hooks list -s all            # Show hooks across all scopes
-  voicemode claude hooks list -s project        # Show hooks in project settings
+  yakk claude hooks list                   # Show hooks in user settings
+  yakk claude hooks list -s all            # Show hooks across all scopes
+  yakk claude hooks list -s project        # Show hooks in project settings
 """)
 @click.help_option('-h', '--help', help='Show this message and exit')
 @click.option('-s', '--scope', type=click.Choice(['user', 'project', 'local', 'all']),
               default='user', show_default=True,
               help='Settings scope to inspect')
 def hooks_list(scope):
-    """Show VoiceMode hook status in Claude Code settings.
+    """Show Yakk hook status in Claude Code settings.
 
-    Shows which VoiceMode hooks are installed and in which settings scope.
+    Shows which Yakk hooks are installed and in which settings scope.
     """
     def check_scope(scope_name):
         """Check hooks for a single scope."""
@@ -396,14 +396,14 @@ def hooks_list(scope):
             if event not in hooks_dict:
                 results[event] = False
             else:
-                # Check if VoiceMode hook is present
-                results[event] = any(is_voicemode_hook(e) for e in hooks_dict[event])
+                # Check if Yakk hook is present
+                results[event] = any(is_yakk_hook(e) for e in hooks_dict[event])
 
         return results
 
     if scope == 'all':
         # Show all scopes
-        click.echo("VoiceMode Hooks Status:")
+        click.echo("Yakk Hooks Status:")
         click.echo()
 
         for scope_name in ['user', 'project', 'local']:
@@ -414,7 +414,7 @@ def hooks_list(scope):
             any_installed = any(results.values())
 
             if not any_installed:
-                click.echo("  (no VoiceMode hooks)")
+                click.echo("  (no Yakk hooks)")
             else:
                 for event, installed in results.items():
                     if installed:
@@ -424,7 +424,7 @@ def hooks_list(scope):
     else:
         # Show single scope
         settings_path = SETTINGS_PATHS[scope]
-        click.echo(f"VoiceMode Hooks - {scope.capitalize()} ({settings_path}):")
+        click.echo(f"Yakk Hooks - {scope.capitalize()} ({settings_path}):")
 
         results = check_scope(scope)
         for event, installed in results.items():

@@ -7,7 +7,7 @@ import sounddevice as sd
 from voice_mode.server import mcp
 from voice_mode.shared import startup_initialization
 
-logger = logging.getLogger("voicemode")
+logger = logging.getLogger("yakk")
 
 
 @mcp.tool()

@@ -128,8 +128,8 @@ OpenAI voices work for any language but maintain American English accent:
 1. **Always specify both `voice` and `tts_provider`** when using non-English
 2. **Never use `coral` voice** - it's not supported
 3. Kokoro provides native pronunciation for each language
-4. STT (speech-to-text) auto-detects language by default. Set `VOICEMODE_WHISPER_LANGUAGE` to a specific language code (e.g., `it` for Italian) for better accuracy with non-English audio
+4. STT (speech-to-text) auto-detects language by default. Set `YAKK_WHISPER_LANGUAGE` to a specific language code (e.g., `it` for Italian) for better accuracy with non-English audio
 
 ## See Also
-- `voicemode-parameters` - Full parameter reference
-- `voicemode-quickstart` - Basic usage examples
+- `yakk-parameters` - Full parameter reference
+- `yakk-quickstart` - Basic usage examples

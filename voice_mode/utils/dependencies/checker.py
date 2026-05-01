@@ -159,7 +159,7 @@ def check_component_dependencies(
 
     results = {}
 
-    component_deps = dependencies_yaml["voicemode"].get(component, {})
+    component_deps = dependencies_yaml["yakk"].get(component, {})
 
     # Check common packages first (for installation component)
     common_deps = component_deps.get("common", {}).get("packages", [])

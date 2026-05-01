@@ -1,10 +1,10 @@
 # Tool Loading Architecture
 
-VoiceMode discovers all available tools from the filesystem, applies include/exclude filters based on configuration, then dynamically loads the filtered list at startup.
+Yakk discovers all available tools from the filesystem, applies include/exclude filters based on configuration, then dynamically loads the filtered list at startup.
 
 ## Overview
 
-VoiceMode's tool loading system provides automatic discovery and dynamic import of tools from the filesystem. This architecture enables:
+Yakk's tool loading system provides automatic discovery and dynamic import of tools from the filesystem. This architecture enables:
 - Zero-configuration tool registration
 - Service-specific tool organization
 - Selective loading for token optimization
@@ -77,17 +77,17 @@ Tools are excluded if they match:
 
 Three environment variables control tool loading:
 
-1. **`VOICEMODE_TOOLS_ENABLED`** (whitelist mode)
+1. **`YAKK_TOOLS_ENABLED`** (whitelist mode)
    - Comma-separated list of tools to load
    - Only listed tools are loaded
    - Highest priority
 
-2. **`VOICEMODE_TOOLS_DISABLED`** (blacklist mode)
+2. **`YAKK_TOOLS_DISABLED`** (blacklist mode)
    - Comma-separated list of tools to exclude
    - All tools except listed are loaded
    - Medium priority
 
-3. **`VOICEMODE_TOOLS`** (legacy, deprecated)
+3. **`YAKK_TOOLS`** (legacy, deprecated)
    - Backwards compatibility
    - Will be removed in v5.0
 
@@ -138,7 +138,7 @@ import voice_mode.tools
 
 # FastMCP server automatically discovers decorated tools
 mcp = fastmcp.FastMCP(
-    name="voicemode",
+    name="yakk",
     version=__version__
 )
 ```
@@ -269,17 +269,17 @@ except ImportError as e:
 Check loaded tools:
 ```bash
 # List all available tools
-voicemode list-tools
+yakk list-tools
 
 # Check specific tool loading
-VOICEMODE_DEBUG=1 voicemode
+YAKK_DEBUG=1 yakk
 ```
 
 ### Logging
 
 Enable debug logging to see tool loading details:
 ```bash
-export VOICEMODE_DEBUG=1
+export YAKK_DEBUG=1
 ```
 
 Log output shows:
@@ -304,18 +304,18 @@ If a regular tool has an underscore in its name:
 - Only falls back to service pattern if not found
 - This prevents misinterpretation
 
-## Migration from VOICEMODE_TOOLS
+## Migration from YAKK_TOOLS
 
-The legacy `VOICEMODE_TOOLS` variable is deprecated:
+The legacy `YAKK_TOOLS` variable is deprecated:
 - Still functional for backwards compatibility
 - Will be removed in v5.0
-- Migrate to `VOICEMODE_TOOLS_ENABLED` or `VOICEMODE_TOOLS_DISABLED`
+- Migrate to `YAKK_TOOLS_ENABLED` or `YAKK_TOOLS_DISABLED`
 
 Migration example:
 ```bash
 # Old (deprecated)
-export VOICEMODE_TOOLS=converse,statistics
+export YAKK_TOOLS=converse,statistics
 
 # New (preferred)
-export VOICEMODE_TOOLS_ENABLED=converse,statistics
+export YAKK_TOOLS_ENABLED=converse,statistics
 ```

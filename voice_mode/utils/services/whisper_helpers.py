@@ -14,16 +14,16 @@ from typing import Optional, List, Dict, Union
 
 from voice_mode.utils.download import download_with_progress_async
 
-logger = logging.getLogger("voicemode")
+logger = logging.getLogger("yakk")
 
 def find_whisper_server() -> Optional[str]:
     """Find the whisper-server binary."""
     # Check common installation paths
     paths_to_check = [
-        Path.home() / ".voicemode" / "services" / "whisper" / "build" / "bin" / "whisper-server",  # New location
-        Path.home() / ".voicemode" / "whisper.cpp" / "build" / "bin" / "whisper-server",  # Legacy location
-        Path.home() / ".voicemode" / "whisper.cpp" / "whisper-server",
-        Path.home() / ".voicemode" / "whisper.cpp" / "server",
+        Path.home() / ".yakk" / "services" / "whisper" / "build" / "bin" / "whisper-server",  # New location
+        Path.home() / ".yakk" / "whisper.cpp" / "build" / "bin" / "whisper-server",  # Legacy location
+        Path.home() / ".yakk" / "whisper.cpp" / "whisper-server",
+        Path.home() / ".yakk" / "whisper.cpp" / "server",
         Path("/usr/local/bin/whisper-server"),
         Path("/opt/homebrew/bin/whisper-server"),
     ]
@@ -41,10 +41,10 @@ def find_whisper_server() -> Optional[str]:
 
 
 def find_whisper_model() -> Optional[str]:
-    """Find the active whisper model file based on VOICEMODE_WHISPER_MODEL setting."""
+    """Find the active whisper model file based on YAKK_WHISPER_MODEL setting."""
     from voice_mode.config import WHISPER_MODEL_PATH, WHISPER_MODEL
     
-    # First try to find the specific model configured in VOICEMODE_WHISPER_MODEL
+    # First try to find the specific model configured in YAKK_WHISPER_MODEL
     model_name = WHISPER_MODEL  # This reads from env/config
     model_filename = f"ggml-{model_name}.bin"
     
@@ -62,8 +62,8 @@ def find_whisper_model() -> Optional[str]:
     
     # Check default installation paths
     default_paths = [
-        Path.home() / ".voicemode" / "services" / "whisper" / "models",
-        Path.home() / ".voicemode" / "whisper.cpp" / "models"  # legacy path
+        Path.home() / ".yakk" / "services" / "whisper" / "models",
+        Path.home() / ".yakk" / "whisper.cpp" / "models"  # legacy path
     ]
     
     for default_path in default_paths:
@@ -335,9 +335,9 @@ async def convert_to_coreml_legacy(
     
     # Find the Core ML conversion script
     # Try new location first, then fall back to old location
-    whisper_dir = Path.home() / ".voicemode" / "services" / "whisper"
+    whisper_dir = Path.home() / ".yakk" / "services" / "whisper"
     if not whisper_dir.exists():
-        whisper_dir = Path.home() / ".voicemode" / "whisper.cpp"
+        whisper_dir = Path.home() / ".yakk" / "whisper.cpp"
     
     # Use the uv wrapper script if it exists, otherwise fallback to original
     convert_script = whisper_dir / "models" / "generate-coreml-model-uv.sh"

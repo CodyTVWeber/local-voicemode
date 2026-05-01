@@ -110,7 +110,7 @@ class PackageInstaller:
             print("Error: dnf not found")
             return False
 
-    def install_voicemode(self, version: Optional[str] = None) -> bool:
+    def install_yakk(self, version: Optional[str] = None) -> bool:
         """
         Install or upgrade voice-mode using uv tool install --upgrade.
 
@@ -142,7 +142,7 @@ class PackageInstaller:
             )
             return result.returncode == 0
         except subprocess.CalledProcessError as e:
-            print(f"VoiceMode installation failed: {e}")
+            print(f"Yakk installation failed: {e}")
             return False
         except FileNotFoundError:
             print("Error: uv not found. Please install uv first:")

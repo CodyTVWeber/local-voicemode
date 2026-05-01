@@ -17,7 +17,7 @@ This glossary defines key terms and concepts used throughout the Voice Mode proj
 
 ---
 
-**Base Directory**: The root directory for all Voice Mode data, defaults to `~/.voicemode`.
+**Base Directory**: The root directory for all Voice Mode data, defaults to `~/.yakk`.
 
 **Conversation**: A group of related exchanges that form a complete interaction, typically with less than 5 minutes between exchanges.
 
@@ -61,6 +61,6 @@ This glossary defines key terms and concepts used throughout the Voice Mode proj
 
 **TTS (Text-to-Speech)**: Converting written text into spoken audio.
 
-**VoiceMode**: The project name and package that brings natural voice conversations to AI assistants through the Model Context Protocol (MCP). Written as one word with capital M in documentation, lowercase in code/paths.
+**Yakk**: The project name and package that brings natural voice conversations to AI assistants through the Model Context Protocol (MCP). Written as one word with capital M in documentation, lowercase in code/paths.
 
-**VoiceMode Home Directory**: The user's application data directory at `~/.voicemode/` that stores all VoiceMode data including audio recordings, logs, configuration, installed services, and downloaded models. Also referred to by the environment variable VOICEMODE_BASE_DIR.
+**Yakk Home Directory**: The user's application data directory at `~/.yakk/` that stores all Yakk data including audio recordings, logs, configuration, installed services, and downloaded models. Also referred to by the environment variable YAKK_BASE_DIR.

@@ -35,14 +35,14 @@ from typing import Any, Dict, List, Optional, Union
 
 from voice_mode.config import SERVICE_AUTO_ENABLE
 
-logger = logging.getLogger("voicemode")
+logger = logging.getLogger("yakk")
 
 
 MLX_AUDIO_DEFAULT_PORT = 8890
 MLX_AUDIO_PIP_PACKAGE = "mlx-audio"
 MLX_AUDIO_ENTRY_POINT = "mlx_audio.server"
 
-# Extras the bundled server.py + voicemode client need at runtime. These were
+# Extras the bundled server.py + yakk client need at runtime. These were
 # captured from Mike's working install on 2026-04-27. Order matters only for
 # reviewability -- ``uv tool install`` resolves them as a single set.
 MLX_AUDIO_EXTRAS: List[str] = [
@@ -72,7 +72,7 @@ PATCH_SENTINEL = "_inference_lock = asyncio.Lock()"
 _PATCH_RESOURCE = Path(__file__).resolve().parent.parent.parent / "data" / "patches" / "mlx_audio_server.patch"
 
 # Backup filename written next to the patched server.py.
-_BACKUP_NAME = "server.py.pre-voicemode.bak"
+_BACKUP_NAME = "server.py.pre-yakk.bak"
 
 
 def _is_apple_silicon() -> bool:
@@ -173,7 +173,7 @@ def _apply_server_patch(server_py: Path) -> Dict[str, Any]:
 
     1. If ``server.py`` already contains :data:`PATCH_SENTINEL`, treat it as
        already-patched and return success without touching anything.
-    2. Else, save a one-shot backup as ``server.py.pre-voicemode.bak`` (only
+    2. Else, save a one-shot backup as ``server.py.pre-yakk.bak`` (only
        if no backup exists yet) and run ``patch -p1`` from the package root.
     3. On failure, surface a clear error pointing at both the bundled patch
        and the installed mlx-audio version (best-effort) so the operator can
@@ -188,7 +188,7 @@ def _apply_server_patch(server_py: Path) -> Dict[str, Any]:
         result["success"] = False
         result["error"] = (
             f"Bundled patch is missing at {_PATCH_RESOURCE}. "
-            "This is a packaging bug -- reinstall voicemode."
+            "This is a packaging bug -- reinstall yakk."
         )
         return result
 
@@ -361,7 +361,7 @@ async def mlx_audio_install(
     force_reinstall: Union[bool, str] = False,
     auto_enable: Optional[Union[bool, str]] = None,
 ) -> Dict[str, Any]:
-    """Install mlx-audio as an opt-in Apple Silicon voicemode service.
+    """Install mlx-audio as an opt-in Apple Silicon yakk service.
 
     Installs the ``mlx-audio`` package via ``uv tool install`` along with
     the runtime extras list (Kokoro G2P, FastAPI, sounddevice, mlx-lm,
@@ -370,7 +370,7 @@ async def mlx_audio_install(
     then applied to the installed ``server.py`` (idempotent,
     sentinel-checked), and the launchd plist (or systemd unit) is
     rendered to call ``mlx_audio.server`` directly with config sourced
-    from ``~/.voicemode/voicemode.env``.
+    from ``~/.yakk/yakk.env``.
 
     No models are downloaded by this tool.
 
@@ -381,7 +381,7 @@ async def mlx_audio_install(
         force_reinstall: Pass ``--reinstall`` to ``uv tool install`` --
             forces a reinstall even if mlx-audio is already present.
         auto_enable: Enable the launchd service after install. ``None``
-            falls back to ``VOICEMODE_SERVICE_AUTO_ENABLE``.
+            falls back to ``YAKK_SERVICE_AUTO_ENABLE``.
 
     Returns:
         Dict with ``success``, ``install_path``, ``service_url``,
@@ -409,18 +409,18 @@ async def mlx_audio_install(
     force_bool = bool(_coerce_bool(force_reinstall))
     auto_enable_bool = _coerce_bool(auto_enable)
 
-    voicemode_dir = Path(
-        os.path.expanduser(os.environ.get("VOICEMODE_BASE_DIR", "~/.voicemode"))
+    yakk_dir = Path(
+        os.path.expanduser(os.environ.get("YAKK_BASE_DIR", "~/.yakk"))
     )
-    voicemode_dir.mkdir(parents=True, exist_ok=True)
+    yakk_dir.mkdir(parents=True, exist_ok=True)
 
-    install_path = voicemode_dir / "services" / "mlx-audio"
-    log_dir = voicemode_dir / "logs" / "mlx-audio"
+    install_path = yakk_dir / "services" / "mlx-audio"
+    log_dir = yakk_dir / "logs" / "mlx-audio"
     install_path.mkdir(parents=True, exist_ok=True)
     log_dir.mkdir(parents=True, exist_ok=True)
 
-    os.environ["VOICEMODE_MLX_AUDIO_PORT"] = str(port_int)
-    os.environ["VOICEMODE_MLX_AUDIO_HOST"] = "0.0.0.0" if bind_lan_bool else "127.0.0.1"
+    os.environ["YAKK_MLX_AUDIO_PORT"] = str(port_int)
+    os.environ["YAKK_MLX_AUDIO_HOST"] = "0.0.0.0" if bind_lan_bool else "127.0.0.1"
 
     uv_error = _ensure_uv_available()
     if uv_error:

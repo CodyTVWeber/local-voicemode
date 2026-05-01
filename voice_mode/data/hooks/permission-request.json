@@ -1,12 +1,12 @@
 {
-  "description": "VoiceMode PermissionRequest hook - audio feedback on permission requests",
+  "description": "Yakk PermissionRequest hook - audio feedback on permission requests",
   "hooks": {
     "PermissionRequest": [
       {
         "hooks": [
           {
             "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/.claude/scripts/voicemode-hook-receiver || true"
+            "command": "${CLAUDE_PLUGIN_ROOT}/.claude/scripts/yakk-hook-receiver || true"
           }
         ]
       }

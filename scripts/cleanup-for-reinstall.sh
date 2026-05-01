@@ -1,5 +1,5 @@
 #!/bin/bash
-# Cleanup script to prepare for fresh VoiceMode installation testing
+# Cleanup script to prepare for fresh Yakk installation testing
 # This script does NOT delete anything - it renames and disables instead
 #
 # Usage:
@@ -28,7 +28,7 @@ run_cmd() {
     fi
 }
 
-echo "=== VoiceMode Cleanup for Reinstall Testing ==="
+echo "=== Yakk Cleanup for Reinstall Testing ==="
 echo "Timestamp: $TIMESTAMP"
 if $DRY_RUN; then
     echo "Mode: DRY RUN (use --run to actually execute)"
@@ -58,7 +58,7 @@ fi
 if command -v launchctl &>/dev/null; then
     log "Checking launchd services..."
     for svc in whisper kokoro livekit; do
-        plist="$HOME/Library/LaunchAgents/com.voicemode.${svc}.plist"
+        plist="$HOME/Library/LaunchAgents/com.yakk.${svc}.plist"
         if [[ -f "$plist" ]]; then
             run_cmd "launchctl unload '$plist' 2>/dev/null || true"
             run_cmd "mv '$plist' '${plist}.backup.$TIMESTAMP'"
@@ -66,38 +66,38 @@ if command -v launchctl &>/dev/null; then
     done
 fi
 
-# 2. Uninstall voicemode package
-log "Checking voicemode package..."
+# 2. Uninstall yakk package
+log "Checking yakk package..."
 if command -v uv &>/dev/null; then
-    if uv tool list 2>/dev/null | grep -q voicemode; then
-        run_cmd "uv tool uninstall voicemode"
+    if uv tool list 2>/dev/null | grep -q yakk; then
+        run_cmd "uv tool uninstall yakk"
     else
-        log "voicemode not installed via uv tool"
+        log "yakk not installed via uv tool"
     fi
 else
     log "uv not found, skipping package uninstall"
 fi
 
-# 3. Rename ~/.voicemode directory (NEVER delete!)
-if [[ -d "$HOME/.voicemode" ]]; then
-    log "Renaming ~/.voicemode..."
-    run_cmd "mv '$HOME/.voicemode' '$HOME/.voicemode.backup.$TIMESTAMP'"
+# 3. Rename ~/.yakk directory (NEVER delete!)
+if [[ -d "$HOME/.yakk" ]]; then
+    log "Renaming ~/.yakk..."
+    run_cmd "mv '$HOME/.yakk' '$HOME/.yakk.backup.$TIMESTAMP'"
 else
-    log "~/.voicemode not found"
+    log "~/.yakk not found"
 fi
 
 # 4. Handle Claude Code MCP configuration
 log "Checking Claude Code MCP configuration..."
 CLAUDE_CONFIG="$HOME/.config/claude-code/settings.json"
 if [[ -f "$CLAUDE_CONFIG" ]]; then
-    if grep -q "voicemode\|voice-mode" "$CLAUDE_CONFIG"; then
-        log "Found VoiceMode in Claude Code config: $CLAUDE_CONFIG"
-        log "You may want to manually remove the voicemode MCP entry"
+    if grep -q "yakk\|voice-mode" "$CLAUDE_CONFIG"; then
+        log "Found Yakk in Claude Code config: $CLAUDE_CONFIG"
+        log "You may want to manually remove the yakk MCP entry"
         if ! $DRY_RUN; then
             echo ""
-            echo "WARNING: Claude Code config contains VoiceMode MCP entry."
+            echo "WARNING: Claude Code config contains Yakk MCP entry."
             echo "You should manually edit: $CLAUDE_CONFIG"
-            echo "And remove the voicemode/voice-mode MCP server entry."
+            echo "And remove the yakk/voice-mode MCP server entry."
             echo ""
         fi
     fi
@@ -106,9 +106,9 @@ fi
 # Also check ~/.claude.json (older location)
 CLAUDE_JSON="$HOME/.claude.json"
 if [[ -f "$CLAUDE_JSON" ]]; then
-    if grep -q "voicemode\|voice-mode" "$CLAUDE_JSON"; then
-        log "Found VoiceMode in ~/.claude.json"
-        log "You may want to manually remove the voicemode MCP entry"
+    if grep -q "yakk\|voice-mode" "$CLAUDE_JSON"; then
+        log "Found Yakk in ~/.claude.json"
+        log "You may want to manually remove the yakk MCP entry"
     fi
 fi
 
@@ -123,5 +123,5 @@ else
     echo "Backups created with suffix: .backup.$TIMESTAMP"
     echo ""
     echo "To restore if needed:"
-    echo "  mv ~/.voicemode.backup.$TIMESTAMP ~/.voicemode"
+    echo "  mv ~/.yakk.backup.$TIMESTAMP ~/.yakk"
 fi

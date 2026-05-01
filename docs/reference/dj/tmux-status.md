@@ -4,7 +4,7 @@ Display the currently playing track in your tmux status bar.
 
 ## Overview
 
-The `voicemode dj status --line` command outputs a compact, single-line format designed for tmux status bars. It includes:
+The `yakk dj status --line` command outputs a compact, single-line format designed for tmux status bars. It includes:
 
 - Track/chapter title (truncated to 40 chars)
 - Current position
@@ -34,7 +34,7 @@ Add this to your `~/.tmux.conf`:
 
 ```bash
 # DJ status in right status bar (updates every 5 seconds)
-set -g status-right '#(voicemode dj status --line 2>/dev/null)'
+set -g status-right '#(yakk dj status --line 2>/dev/null)'
 set -g status-interval 5
 ```
 
@@ -43,7 +43,7 @@ set -g status-interval 5
 If you already have content in your status-right, append the DJ status:
 
 ```bash
-set -g status-right '#(voicemode dj status --line 2>/dev/null) | %H:%M'
+set -g status-right '#(yakk dj status --line 2>/dev/null) | %H:%M'
 ```
 
 ### Conditional Display
@@ -51,7 +51,7 @@ set -g status-right '#(voicemode dj status --line 2>/dev/null) | %H:%M'
 Only show when music is playing (shows nothing when stopped):
 
 ```bash
-set -g status-right '#(voicemode dj status --line 2>/dev/null)#(date +%%H:%%M)'
+set -g status-right '#(yakk dj status --line 2>/dev/null)#(date +%%H:%%M)'
 ```
 
 The command outputs nothing when no music is playing, so it won't leave blank space.
@@ -83,16 +83,16 @@ Note: More frequent updates increase CPU usage slightly.
 
 ### Command not found
 
-Ensure `voicemode` is in your PATH. You may need to use the full path:
+Ensure `yakk` is in your PATH. You may need to use the full path:
 
 ```bash
-set -g status-right '#(~/.local/bin/voicemode dj status --line 2>/dev/null)'
+set -g status-right '#(~/.local/bin/yakk dj status --line 2>/dev/null)'
 ```
 
 Or if installed with uv:
 
 ```bash
-set -g status-right '#(uv run voicemode dj status --line 2>/dev/null)'
+set -g status-right '#(uv run yakk dj status --line 2>/dev/null)'
 ```
 
 ### Colors not showing

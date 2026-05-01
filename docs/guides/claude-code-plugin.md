@@ -1,12 +1,12 @@
 # Claude Code Plugin
 
-VoiceMode provides an official plugin for Claude Code that enables voice conversations directly within the CLI.
+Yakk provides an official plugin for Claude Code that enables voice conversations directly within the CLI.
 
 ## What the Plugin Provides
 
-The VoiceMode plugin includes:
+The Yakk plugin includes:
 
-- **MCP Server** - Full voice capabilities via the `voicemode-mcp` server
+- **MCP Server** - Full voice capabilities via the `yakk-mcp` server
 - **Slash Commands** - Quick access to common operations
 - **Skill File** - Documentation and usage patterns for Claude
 - **Hooks** - Sound feedback during tool execution
@@ -22,55 +22,55 @@ The plugin is published to the Claude Code plugin marketplace:
 claude plugin marketplace add https://github.com/mbailey/claude-plugins
 
 # Install the plugin
-claude plugin install voicemode@mbailey
+claude plugin install yakk@mbailey
 ```
 
 ## Prerequisites
 
-The plugin requires VoiceMode services to be installed and running. After installing the plugin, use the install command:
+The plugin requires Yakk services to be installed and running. After installing the plugin, use the install command:
 
 ```bash
-/voicemode:install
+/yakk:install
 ```
 
-This runs the VoiceMode installer which sets up:
+This runs the Yakk installer which sets up:
 
 - **Whisper.cpp** - Local speech-to-text
 - **Kokoro** - Local text-to-speech
 - **FFmpeg** - Audio processing (via Homebrew on macOS)
 
-Or install VoiceMode directly using uv:
+Or install Yakk directly using uv:
 
 ```bash
 uv tool install voice-mode
-voicemode whisper service install
-voicemode kokoro install
+yakk whisper service install
+yakk kokoro install
 ```
 
 ## Slash Commands
 
 | Command | Description |
 |---------|-------------|
-| `/voicemode:install` | Install VoiceMode and dependencies |
-| `/voicemode:converse` | Start a voice conversation |
-| `/voicemode:status` | Check service status |
-| `/voicemode:start` | Start voice services |
-| `/voicemode:stop` | Stop voice services |
+| `/yakk:install` | Install Yakk and dependencies |
+| `/yakk:converse` | Start a voice conversation |
+| `/yakk:status` | Check service status |
+| `/yakk:start` | Start voice services |
+| `/yakk:stop` | Stop voice services |
 
 ### Starting a Conversation
 
 ```bash
 # Start with a greeting
-/voicemode:converse Hello, how can I help you today?
+/yakk:converse Hello, how can I help you today?
 
 # Just start listening
-/voicemode:converse
+/yakk:converse
 ```
 
 ### Checking Status
 
 ```bash
-/voicemode:status
+/yakk:status
 ```
 
 Shows whether Whisper (STT) and Kokoro (TTS) services are running and healthy.
@@ -79,8 +79,8 @@ Shows whether Whisper (STT) and Kokoro (TTS) services are running and healthy.
 
 Once installed, Claude has access to these MCP tools:
 
-- `mcp__voicemode__converse` - Speak and listen for responses
-- `mcp__voicemode__service` - Manage voice services
+- `mcp__yakk__converse` - Speak and listen for responses
+- `mcp__yakk__service` - Manage voice services
 
 ### Converse Tool Parameters
 
@@ -99,7 +99,7 @@ The plugin includes a hook receiver that plays sounds during tool execution:
 - Sounds play when tools start and complete
 - Provides audio feedback during long operations
 - Uses configurable soundfonts
-- Toggle with `voicemode soundfonts on/off`
+- Toggle with `yakk soundfonts on/off`
 
 Hooks are automatically configured when the plugin is installed.
 
@@ -112,15 +112,15 @@ See the [Soundfonts Guide](soundfonts.md) for customization, sound lookup order,
 Check individual service status:
 
 ```bash
-voicemode whisper service status
-voicemode kokoro service status
+yakk whisper service status
+yakk kokoro service status
 ```
 
 View logs:
 
 ```bash
-voicemode whisper service logs
-voicemode kokoro service logs
+yakk whisper service logs
+yakk kokoro service logs
 ```
 
 ### No Audio Output
@@ -137,29 +137,29 @@ voicemode kokoro service logs
 
 ## Configuration
 
-VoiceMode respects configuration from `~/.voicemode/voicemode.env`:
+Yakk respects configuration from `~/.yakk/yakk.env`:
 
 ```bash
 # Default TTS voice
-VOICEMODE_TTS_VOICE=nova
+YAKK_TTS_VOICE=nova
 
 # Whisper model (base, small, medium, large)
-VOICEMODE_WHISPER_MODEL=base
+YAKK_WHISPER_MODEL=base
 
 # Override thread count for Whisper
-VOICEMODE_WHISPER_THREADS=4
+YAKK_WHISPER_THREADS=4
 ```
 
 Edit configuration:
 
 ```bash
-voicemode config edit
+yakk config edit
 ```
 
 ## Resources
 
-- [GitHub Repository](https://github.com/mbailey/voicemode)
-- [Plugin Source](https://github.com/mbailey/voicemode)
+- [GitHub Repository](https://github.com/mbailey/yakk)
+- [Plugin Source](https://github.com/mbailey/yakk)
 
 ## Development
 
@@ -167,8 +167,8 @@ For local development, add the plugin from your local clone:
 
 ```bash
 # Add plugin from local path
-claude plugin marketplace add /path/to/voicemode
+claude plugin marketplace add /path/to/yakk
 
 # Install the plugin
-claude plugin install voicemode@mbailey
+claude plugin install yakk@mbailey
 ```

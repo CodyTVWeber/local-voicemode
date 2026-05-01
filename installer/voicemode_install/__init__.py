@@ -1,4 +1,4 @@
-"""VoiceMode Installer - System dependency management and installation."""
+"""Yakk Installer - System dependency management and installation."""
 
 try:
     from importlib.metadata import version

@@ -28,8 +28,8 @@ class TestHomeIsolation:
         assert expanded == str(isolate_home_directory)
 
         # Also verify subpath expansion works correctly
-        expanded_path = os.path.expanduser("~/.voicemode")
-        assert expanded_path == str(isolate_home_directory / ".voicemode")
+        expanded_path = os.path.expanduser("~/.yakk")
+        assert expanded_path == str(isolate_home_directory / ".yakk")
 
         expanded_path = os.path.expanduser("~/Library/LaunchAgents")
         assert expanded_path == str(isolate_home_directory / "Library" / "LaunchAgents")
@@ -53,12 +53,12 @@ class TestHomeIsolation:
         assert systemd_dir.exists()
         assert systemd_dir.is_dir()
 
-    def test_voicemode_directories_exist(self, isolate_home_directory):
-        """Standard .voicemode directories should exist."""
+    def test_yakk_directories_exist(self, isolate_home_directory):
+        """Standard .yakk directories should exist."""
         for subdir in ["logs", "services", "config"]:
-            path = isolate_home_directory / ".voicemode" / subdir
-            assert path.exists(), f".voicemode/{subdir} should exist"
-            assert path.is_dir(), f".voicemode/{subdir} should be a directory"
+            path = isolate_home_directory / ".yakk" / subdir
+            assert path.exists(), f".yakk/{subdir} should exist"
+            assert path.is_dir(), f".yakk/{subdir} should be a directory"
 
     def test_can_write_to_fake_launchagents(self, isolate_home_directory):
         """Verify we can write files to the fake LaunchAgents directory."""
@@ -92,16 +92,16 @@ class TestIsolationWithPathHome:
     def test_plist_path_construction(self, isolate_home_directory):
         """Verify that plist path construction uses fake home."""
         # This mimics how service.py constructs paths
-        plist_path = Path.home() / "Library" / "LaunchAgents" / "com.voicemode.test.plist"
+        plist_path = Path.home() / "Library" / "LaunchAgents" / "com.yakk.test.plist"
 
         # The path should be in the fake home
         assert str(plist_path).startswith(str(isolate_home_directory))
         assert "Library/LaunchAgents" in str(plist_path)
 
-    def test_voicemode_config_path(self, isolate_home_directory):
-        """Verify that .voicemode config paths use fake home."""
-        config_path = Path.home() / ".voicemode" / "config" / "settings.yaml"
+    def test_yakk_config_path(self, isolate_home_directory):
+        """Verify that .yakk config paths use fake home."""
+        config_path = Path.home() / ".yakk" / "config" / "settings.yaml"
 
         # The path should be in the fake home
         assert str(config_path).startswith(str(isolate_home_directory))
-        assert ".voicemode/config" in str(config_path)
+        assert ".yakk/config" in str(config_path)

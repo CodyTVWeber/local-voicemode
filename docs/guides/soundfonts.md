@@ -7,44 +7,44 @@ Audio feedback during Claude Code sessions. Sounds play when tools start and fin
 Install Claude Code hooks:
 
 ```bash
-voicemode claude hooks add
+yakk claude hooks add
 ```
 
-This registers VoiceMode's hook receiver with Claude Code. The receiver runs on each tool event and plays the appropriate sound.
+This registers Yakk's hook receiver with Claude Code. The receiver runs on each tool event and plays the appropriate sound.
 
 ## Quick Toggle
 
 ```bash
-voicemode soundfonts off       # Disable (this session)
-voicemode soundfonts on        # Re-enable
-voicemode soundfonts status    # Show current state
+yakk soundfonts off       # Disable (this session)
+yakk soundfonts on        # Re-enable
+yakk soundfonts status    # Show current state
 ```
 
-To also update the persistent config in `voicemode.env`:
+To also update the persistent config in `yakk.env`:
 
 ```bash
-voicemode soundfonts off --config   # Disable + update voicemode.env
-voicemode soundfonts on --config    # Enable + update voicemode.env
+yakk soundfonts off --config   # Disable + update yakk.env
+yakk soundfonts on --config    # Enable + update yakk.env
 ```
 
 ## How It Works
 
-Claude Code fires hook events (`PreToolUse`, `PostToolUse`, `PreCompact`, `PermissionRequest`) during operation. VoiceMode's hook receiver:
+Claude Code fires hook events (`PreToolUse`, `PostToolUse`, `PreCompact`, `PermissionRequest`) during operation. Yakk's hook receiver:
 
 1. Checks if soundfonts are disabled (sentinel file or env var)
 2. Looks up the right sound file based on the tool and event
 3. Plays it asynchronously (non-blocking, won't slow down Claude)
 4. Skips playback during active voice conversations (except PermissionRequest, which always plays)
-5. Skips sounds for the voicemode converse tool (voice provides its own audio feedback)
+5. Skips sounds for the yakk converse tool (voice provides its own audio feedback)
 
 The hook receiver is a fast bash script (~20ms startup) that avoids Python overhead.
 
 ## Directory Structure
 
 ```
-~/.voicemode/soundfonts/
-  current -> voicemode          # Symlink to active soundfont pack
-  voicemode/                    # Default soundfont pack
+~/.yakk/soundfonts/
+  current -> yakk          # Symlink to active soundfont pack
+  yakk/                    # Default soundfont pack
     fallback.mp3                # Global fallback sound
     PreToolUse/
       default.mp3               # Before tool execution
@@ -74,7 +74,7 @@ When a tool event fires, the receiver searches for sounds from most specific to 
 
 | Priority | Path | When |
 |----------|------|------|
-| 1 | `{event}/mcp/{server}/{tool}/[01-99\|default].mp3` | MCP tool (e.g., voicemode converse) |
+| 1 | `{event}/mcp/{server}/{tool}/[01-99\|default].mp3` | MCP tool (e.g., yakk converse) |
 | 2 | `{event}/mcp/{server}/default.mp3` | Any tool from that MCP server |
 | 3 | `{event}/mcp/default.mp3` | Any MCP tool |
 | 4 | `{event}/{tool}/subagent/{subagent}.mp3` | Specific subagent type |
@@ -94,10 +94,10 @@ Create a `MUTE.txt` file in any tool directory to suppress sounds for that tool:
 
 ```bash
 # Silence the Bash tool's PreToolUse sound
-touch ~/.voicemode/soundfonts/current/PreToolUse/bash/MUTE.txt
+touch ~/.yakk/soundfonts/current/PreToolUse/bash/MUTE.txt
 ```
 
-Note: The voicemode converse tool is automatically muted — no MUTE.txt needed.
+Note: The yakk converse tool is automatically muted — no MUTE.txt needed.
 
 ## Customizing Sounds
 
@@ -107,7 +107,7 @@ Drop replacement `.mp3` or `.wav` files into the appropriate directory:
 
 ```bash
 # Custom sound for Bash tool completion
-cp my-sound.mp3 ~/.voicemode/soundfonts/voicemode/PostToolUse/bash/default.mp3
+cp my-sound.mp3 ~/.yakk/soundfonts/yakk/PostToolUse/bash/default.mp3
 ```
 
 ### Create a Custom Soundfont Pack
@@ -115,7 +115,7 @@ cp my-sound.mp3 ~/.voicemode/soundfonts/voicemode/PostToolUse/bash/default.mp3
 1. Copy the default pack:
 
 ```bash
-cp -r ~/.voicemode/soundfonts/voicemode ~/.voicemode/soundfonts/my-pack
+cp -r ~/.yakk/soundfonts/yakk ~/.yakk/soundfonts/my-pack
 ```
 
 2. Replace sounds in your new pack
@@ -123,7 +123,7 @@ cp -r ~/.voicemode/soundfonts/voicemode ~/.voicemode/soundfonts/my-pack
 3. Switch to it:
 
 ```bash
-ln -sfn my-pack ~/.voicemode/soundfonts/current
+ln -sfn my-pack ~/.yakk/soundfonts/current
 ```
 
 ## Disabling Soundfonts
@@ -132,24 +132,24 @@ Two mechanisms control soundfont playback:
 
 | Mechanism | How to set | Scope |
 |-----------|-----------|-------|
-| Sentinel file | `voicemode soundfonts off` | Quick toggle |
-| Environment variable | `VOICEMODE_SOUNDFONTS_ENABLED=false` in `~/.voicemode/voicemode.env` | Persistent config |
+| Sentinel file | `yakk soundfonts off` | Quick toggle |
+| Environment variable | `YAKK_SOUNDFONTS_ENABLED=false` in `~/.yakk/yakk.env` | Persistent config |
 
-The sentinel file (`~/.voicemode/soundfonts-disabled`) is checked first as a fast-path circuit breaker. When absent, the environment variable decides. Default is enabled.
+The sentinel file (`~/.yakk/soundfonts-disabled`) is checked first as a fast-path circuit breaker. When absent, the environment variable decides. Default is enabled.
 
-Use `voicemode soundfonts status` to see which mechanisms are active.
+Use `yakk soundfonts status` to see which mechanisms are active.
 
 ## Troubleshooting
 
 ### No sounds playing
 
-1. Check hooks are installed: `voicemode claude hooks list`
-2. Check soundfonts status: `voicemode soundfonts status`
-3. Check the soundfont directory exists: `ls ~/.voicemode/soundfonts/current/`
+1. Check hooks are installed: `yakk claude hooks list`
+2. Check soundfonts status: `yakk soundfonts status`
+3. Check the soundfont directory exists: `ls ~/.yakk/soundfonts/current/`
 4. Enable debug mode and run a Claude Code session:
 
 ```bash
-export VOICEMODE_HOOK_DEBUG=1
+export YAKK_HOOK_DEBUG=1
 ```
 
 Debug output goes to stderr and shows which sound file was selected (or why none was found).
@@ -166,4 +166,4 @@ mv default-quiet.mp3 default.mp3
 
 ### Hook receiver log
 
-The receiver writes to `~/.voicemode/soundfonts/hook-receiver.log` (when not in debug mode). Check this for playback errors.
+The receiver writes to `~/.yakk/soundfonts/hook-receiver.log` (when not in debug mode). Check this for playback errors.

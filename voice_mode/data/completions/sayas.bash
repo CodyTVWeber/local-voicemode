@@ -1,7 +1,7 @@
 # bash completion for sayas
 # Source this file or copy to /etc/bash_completion.d/sayas
 #
-# Installed by: pip install voicemode
+# Installed by: pip install yakk
 # To activate:  eval "$(sayas --completion)"
 #   or:         source $(python3 -c "from voice_mode.data.completions import get_completion_path; print(get_completion_path('sayas.bash'))")
 
@@ -10,7 +10,7 @@ _sayas_completion() {
     COMPREPLY=()
     cur="${COMP_WORDS[COMP_CWORD]}"
     prev="${COMP_WORDS[COMP_CWORD-1]}"
-    voices_json="${VOICEMODE_VOICES_JSON:-$HOME/.voicemode/voices.json}"
+    voices_json="${YAKK_VOICES_JSON:-$HOME/.yakk/voices.json}"
 
     # After -o, complete filenames
     if [[ "$prev" == "-o" ]]; then

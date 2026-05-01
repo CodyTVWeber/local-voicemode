@@ -8,13 +8,13 @@ Usage:
     python test_silence_detection_manual.py
     
     # Test with silence detection disabled for comparison
-    VOICEMODE_ENABLE_SILENCE_DETECTION=false python test_silence_detection_manual.py
+    YAKK_ENABLE_SILENCE_DETECTION=false python test_silence_detection_manual.py
     
     # Test with different VAD aggressiveness (0-3)
-    VOICEMODE_VAD_AGGRESSIVENESS=3 python test_silence_detection_manual.py
+    YAKK_VAD_AGGRESSIVENESS=3 python test_silence_detection_manual.py
     
     # Test with different silence threshold (ms)
-    VOICEMODE_SILENCE_THRESHOLD_MS=500 python test_silence_detection_manual.py
+    YAKK_SILENCE_THRESHOLD_MS=500 python test_silence_detection_manual.py
 """
 
 import os
@@ -28,8 +28,8 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 # Set up test environment
-os.environ.setdefault("VOICEMODE_DEBUG", "true")
-os.environ.setdefault("VOICEMODE_ENABLE_SILENCE_DETECTION", "true")
+os.environ.setdefault("YAKK_DEBUG", "true")
+os.environ.setdefault("YAKK_ENABLE_SILENCE_DETECTION", "true")
 
 from voice_mode.tools.converse import (
     record_audio_with_silence_detection,

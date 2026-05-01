@@ -14,7 +14,7 @@ from .config import TTS_BASE_URLS, STT_BASE_URLS, STT_PROMPT, WHISPER_LANGUAGE
 from .provider_discovery import detect_provider_type, EndpointInfo
 from .providers import _select_stt_model_for_endpoint
 
-logger = logging.getLogger("voicemode")
+logger = logging.getLogger("yakk")
 
 
 async def simple_tts_failover(

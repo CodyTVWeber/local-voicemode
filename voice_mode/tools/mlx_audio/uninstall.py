@@ -2,7 +2,7 @@
 
 Cleans up the launchd plist (or systemd unit), the ``uv tool``
 installation, and -- on ``remove_all_data`` -- the log directory.
-User-cloned voice profiles in ``~/.voicemode/voices/`` are *always*
+User-cloned voice profiles in ``~/.yakk/voices/`` are *always*
 preserved -- losing those would silently delete user data.
 """
 
@@ -20,7 +20,7 @@ from voice_mode.utils.services.common import find_process_by_port
 
 MLX_AUDIO_PIP_PACKAGE = "mlx-audio"
 
-logger = logging.getLogger("voicemode")
+logger = logging.getLogger("yakk")
 
 
 def _coerce_bool(value: Union[bool, str, None]) -> bool:
@@ -43,8 +43,8 @@ async def mlx_audio_uninstall(
             Default ``False`` -- the cache is shared with other Hugging
             Face tools, so this only touches the mlx-community subset.
         remove_all_data: Remove logs and the install dir under
-            ``~/.voicemode/services/mlx-audio``. User-cloned voice
-            profiles in ``~/.voicemode/voices/`` are *always* preserved
+            ``~/.yakk/services/mlx-audio``. User-cloned voice
+            profiles in ``~/.yakk/voices/`` are *always* preserved
             regardless of this flag.
 
     Returns:
@@ -77,7 +77,7 @@ async def mlx_audio_uninstall(
     # cleanup is needed here.
     if system == "Darwin":
         plist_path = (
-            Path.home() / "Library" / "LaunchAgents" / "com.voicemode.mlx-audio.plist"
+            Path.home() / "Library" / "LaunchAgents" / "com.yakk.mlx-audio.plist"
         )
         if plist_path.exists():
             try:
@@ -115,7 +115,7 @@ async def mlx_audio_uninstall(
         logger.debug("uv not on PATH; skipping `uv tool uninstall`")
 
     # 4. Remove the service install directory (logs/state under
-    #    ``~/.voicemode/services/mlx-audio``).
+    #    ``~/.yakk/services/mlx-audio``).
     install_dir = BASE_DIR / "services" / "mlx-audio"
     if install_dir.exists():
         try:

@@ -55,7 +55,7 @@ class SocketBackend:
         """Initialize the socket backend.
 
         Args:
-            socket_path: Path to mpv's IPC socket (e.g., /tmp/voicemode-mpv.sock)
+            socket_path: Path to mpv's IPC socket (e.g., /tmp/yakk-mpv.sock)
         """
         self.socket_path = socket_path
 
@@ -127,7 +127,7 @@ class MpvPlayer:
     The backend can be injected for testing purposes.
     """
 
-    DEFAULT_SOCKET_PATH = "/tmp/voicemode-mpv.sock"
+    DEFAULT_SOCKET_PATH = "/tmp/yakk-mpv.sock"
 
     def __init__(
         self,
@@ -137,7 +137,7 @@ class MpvPlayer:
         """Initialize the player.
 
         Args:
-            socket_path: Path to mpv's IPC socket. Defaults to /tmp/voicemode-mpv.sock
+            socket_path: Path to mpv's IPC socket. Defaults to /tmp/yakk-mpv.sock
             backend: Optional backend for testing. If None, uses SocketBackend.
         """
         self.socket_path = socket_path or self.DEFAULT_SOCKET_PATH

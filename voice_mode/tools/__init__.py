@@ -9,10 +9,10 @@ import logging
 # This must be here (not in cli.py or server.py) because numpy/scipy imports
 # add their own warning filters, which can push our filters down the list.
 # By setting the filter here, it's applied right before converse.py imports pydub.
-if not os.environ.get('VOICEMODE_DEBUG', '').lower() in ('true', '1', 'yes'):
+if not os.environ.get('YAKK_DEBUG', '').lower() in ('true', '1', 'yes'):
     warnings.filterwarnings("ignore", message="'audioop' is deprecated", category=DeprecationWarning)
 
-logger = logging.getLogger("voicemode")
+logger = logging.getLogger("yakk")
 
 # Get the directory containing this file
 tools_dir = Path(__file__).parent
@@ -64,11 +64,11 @@ def determine_tools_to_load() -> tuple[set[str], str]:
         Tuple of (tools_to_load, mode_description)
     """
     # Check for new environment variables
-    enabled_tools = os.environ.get("VOICEMODE_TOOLS_ENABLED", "").strip()
-    disabled_tools = os.environ.get("VOICEMODE_TOOLS_DISABLED", "").strip()
+    enabled_tools = os.environ.get("YAKK_TOOLS_ENABLED", "").strip()
+    disabled_tools = os.environ.get("YAKK_TOOLS_DISABLED", "").strip()
 
     # Check for legacy variable
-    legacy_tools = os.environ.get("VOICEMODE_TOOLS", "").strip()
+    legacy_tools = os.environ.get("YAKK_TOOLS", "").strip()
 
     # Get all available tools
     all_tools = get_all_available_tools()
@@ -100,8 +100,8 @@ def determine_tools_to_load() -> tuple[set[str], str]:
     elif legacy_tools:
         # Legacy support with deprecation warning
         logger.warning(
-            "VOICEMODE_TOOLS is deprecated and will be removed in v5.0. "
-            "Please use VOICEMODE_TOOLS_ENABLED or VOICEMODE_TOOLS_DISABLED instead."
+            "YAKK_TOOLS is deprecated and will be removed in v5.0. "
+            "Please use YAKK_TOOLS_ENABLED or YAKK_TOOLS_DISABLED instead."
         )
         requested = parse_tool_list(legacy_tools)
         tools_to_load = requested & all_tools

@@ -191,7 +191,7 @@ class TestPatchAlreadyApplied:
     def test_skip_patch_when_sentinel_present(self, tmp_path: Path):
         server = tmp_path / "server.py"
         server.write_text(
-            f"import asyncio\n# voicemode-patched\n{PATCH_SENTINEL}\n"
+            f"import asyncio\n# yakk-patched\n{PATCH_SENTINEL}\n"
         )
         with patch(
             "voice_mode.tools.mlx_audio.install.subprocess.run"
@@ -202,7 +202,7 @@ class TestPatchAlreadyApplied:
         # Critical: no `patch` invocation -- already patched.
         assert mock_run.call_count == 0
         # Backup must NOT be created when nothing was patched.
-        assert not (server.parent / "server.py.pre-voicemode.bak").exists()
+        assert not (server.parent / "server.py.pre-yakk.bak").exists()
 
 
 class TestPatchBackupCreation:
@@ -228,7 +228,7 @@ class TestPatchBackupCreation:
 
         assert result["success"] is True
         assert result["already_patched"] is False
-        backup = fake_server_py.parent / "server.py.pre-voicemode.bak"
+        backup = fake_server_py.parent / "server.py.pre-yakk.bak"
         assert backup.exists()
         # Backup snapshots the *pre-patch* content (no sentinel).
         assert install_mod.PATCH_SENTINEL not in backup.read_text()
@@ -237,7 +237,7 @@ class TestPatchBackupCreation:
         from voice_mode.tools.mlx_audio import install as install_mod
 
         # Pre-seed an "older" backup.
-        backup = fake_server_py.parent / "server.py.pre-voicemode.bak"
+        backup = fake_server_py.parent / "server.py.pre-yakk.bak"
         backup.write_text("ORIGINAL UNTOUCHABLE PRE-PATCH SNAPSHOT")
         original_backup_bytes = backup.read_bytes()
 
@@ -385,9 +385,9 @@ class TestServiceFileNameMapping:
     def test_mlx_audio_maps_to_kebab(self):
         assert _service_file_name("mlx_audio") == "mlx-audio"
 
-    def test_voicemode_maps_to_serve(self):
+    def test_yakk_maps_to_serve(self):
         # Existing convention preserved by the same helper.
-        assert _service_file_name("voicemode") == "serve"
+        assert _service_file_name("yakk") == "serve"
 
     def test_passthrough_for_other_services(self):
         assert _service_file_name("whisper") == "whisper"
@@ -422,13 +422,13 @@ class TestMlxAudioTemplates:
         return Path(__file__).parent.parent / "voice_mode" / "templates"
 
     def test_launchd_plist_exists(self):
-        template = self.templates_dir / "launchd" / "com.voicemode.mlx-audio.plist"
+        template = self.templates_dir / "launchd" / "com.yakk.mlx-audio.plist"
         assert template.exists(), f"Launchd template missing: {template}"
 
     def test_no_systemd_unit_ships(self):
         # mlx-audio is Apple-Silicon-only; the install gate rejects Linux
         # before any service-rendering code runs, so no systemd unit ships.
-        template = self.templates_dir / "systemd" / "voicemode-mlx-audio.service"
+        template = self.templates_dir / "systemd" / "yakk-mlx-audio.service"
         assert not template.exists(), (
             f"Linux systemd unit must not ship for mlx-audio: {template}"
         )
@@ -444,24 +444,24 @@ class TestMlxAudioTemplates:
                 load_service_template("mlx_audio")
 
     def test_launchd_plist_calls_local_bin_entry_point(self):
-        template = self.templates_dir / "launchd" / "com.voicemode.mlx-audio.plist"
+        template = self.templates_dir / "launchd" / "com.yakk.mlx-audio.plist"
         content = template.read_text()
-        assert "com.voicemode.mlx-audio" in content
+        assert "com.yakk.mlx-audio" in content
         # Direct entry-point exec, no service-local start script.
         assert "$HOME/.local/bin/mlx_audio.server" in content
-        assert "VOICEMODE_MLX_AUDIO_HOST" in content
-        assert "VOICEMODE_MLX_AUDIO_PORT" in content
+        assert "YAKK_MLX_AUDIO_HOST" in content
+        assert "YAKK_MLX_AUDIO_PORT" in content
 
-    def test_launchd_plist_logs_to_voicemode_logs_dir(self):
-        template = self.templates_dir / "launchd" / "com.voicemode.mlx-audio.plist"
+    def test_launchd_plist_logs_to_yakk_logs_dir(self):
+        template = self.templates_dir / "launchd" / "com.yakk.mlx-audio.plist"
         content = template.read_text()
-        assert "/.voicemode/logs/mlx-audio" in content
+        assert "/.yakk/logs/mlx-audio" in content
 
     def test_old_clone_templates_are_gone(self):
-        # Belt-and-braces: PR #346 shipped a com.voicemode.clone.plist.
+        # Belt-and-braces: PR #346 shipped a com.yakk.clone.plist.
         # After VM-1108 it must not exist alongside the new one.
-        assert not (self.templates_dir / "launchd" / "com.voicemode.clone.plist").exists()
-        assert not (self.templates_dir / "systemd" / "voicemode-clone.service").exists()
+        assert not (self.templates_dir / "launchd" / "com.yakk.clone.plist").exists()
+        assert not (self.templates_dir / "systemd" / "yakk-clone.service").exists()
         assert not (self.templates_dir / "scripts" / "start-clone-server.sh").exists()
 
 

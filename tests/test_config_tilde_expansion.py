@@ -44,11 +44,11 @@ class TestConfigTildeExpansion(unittest.TestCase):
         """Test that configuration paths properly expand tilde."""
         # Set environment variables with tilde
         test_env = {
-            "VOICEMODE_BASE_DIR": "~/test-voicemode",
-            "VOICEMODE_MODELS_DIR": "~/models",
-            "VOICEMODE_WHISPER_MODEL_PATH": "~/whisper",
-            "VOICEMODE_KOKORO_MODELS_DIR": "~/kokoro/models",
-            "VOICEMODE_KOKORO_CACHE_DIR": "~/kokoro/cache"
+            "YAKK_BASE_DIR": "~/test-yakk",
+            "YAKK_MODELS_DIR": "~/models",
+            "YAKK_WHISPER_MODEL_PATH": "~/whisper",
+            "YAKK_KOKORO_MODELS_DIR": "~/kokoro/models",
+            "YAKK_KOKORO_CACHE_DIR": "~/kokoro/cache"
         }
         
         with patch.dict(os.environ, test_env, clear=False):
@@ -59,7 +59,7 @@ class TestConfigTildeExpansion(unittest.TestCase):
             
             # Check that all paths are properly expanded
             home = Path.home()
-            self.assertEqual(config.BASE_DIR, home / "test-voicemode")
+            self.assertEqual(config.BASE_DIR, home / "test-yakk")
             self.assertEqual(config.MODELS_DIR, home / "models")
             self.assertEqual(config.WHISPER_MODEL_PATH, home / "whisper")
             self.assertEqual(config.KOKORO_MODELS_DIR, home / "kokoro" / "models")
@@ -70,8 +70,8 @@ class TestConfigTildeExpansion(unittest.TestCase):
         # Use a temp directory that actually exists
         with tempfile.TemporaryDirectory() as tmpdir:
             test_env = {
-                "VOICEMODE_BASE_DIR": tmpdir,
-                "VOICEMODE_MODELS_DIR": f"{tmpdir}/models"
+                "YAKK_BASE_DIR": tmpdir,
+                "YAKK_MODELS_DIR": f"{tmpdir}/models"
             }
             
             with patch.dict(os.environ, test_env, clear=False):

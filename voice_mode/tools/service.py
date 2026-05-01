@@ -15,20 +15,20 @@ from voice_mode.server import mcp
 from voice_mode.config import WHISPER_PORT, KOKORO_PORT, MLX_AUDIO_PORT, SERVICE_AUTO_ENABLE
 from voice_mode.utils.services.common import find_process_by_port, check_service_status
 
-# Default port for VoiceMode serve command (HTTP MCP server)
-VOICEMODE_SERVE_PORT = 8765
+# Default port for Yakk serve command (HTTP MCP server)
+YAKK_SERVE_PORT = 8765
 from voice_mode.utils.services.whisper_helpers import find_whisper_server, find_whisper_model
 from voice_mode.utils.services.kokoro_helpers import find_kokoro_fastapi, has_gpu_support, is_kokoro_starting_up
 
-logger = logging.getLogger("voicemode")
+logger = logging.getLogger("yakk")
 
 
 # Map Python-friendly service identifiers to the on-disk file-name stem
 # used in plist labels, systemd unit filenames, and log directories.
-# voicemode -> serve   (HTTP MCP server has the legacy "serve" naming)
+# yakk -> serve   (HTTP MCP server has the legacy "serve" naming)
 # mlx_audio -> mlx-audio (kebab-case matches the deployed plist label)
 _SERVICE_FILE_NAMES: Dict[str, str] = {
-    "voicemode": "serve",
+    "yakk": "serve",
     "mlx_audio": "mlx-audio",
 }
 
@@ -46,14 +46,14 @@ def get_service_config_vars(service_name: str) -> Dict[str, Any]:
     - START_SCRIPT: Path to the service start script
     - Service-specific binaries/dirs as needed
 
-    Config like ports/models is now handled by start scripts via voicemode.env
+    Config like ports/models is now handled by start scripts via yakk.env
     """
-    voicemode_dir = os.path.expanduser(os.environ.get("VOICEMODE_BASE_DIR", "~/.voicemode"))
+    yakk_dir = os.path.expanduser(os.environ.get("YAKK_BASE_DIR", "~/.yakk"))
     home = os.path.expanduser("~")
 
     if service_name == "whisper":
         # Find whisper start script
-        whisper_dir = os.path.join(voicemode_dir, "services", "whisper")
+        whisper_dir = os.path.join(yakk_dir, "services", "whisper")
         start_script = os.path.join(whisper_dir, "bin", "start-whisper-server.sh")
 
         return {
@@ -63,7 +63,7 @@ def get_service_config_vars(service_name: str) -> Dict[str, Any]:
     elif service_name == "kokoro":
         kokoro_dir = find_kokoro_fastapi()
         if not kokoro_dir:
-            kokoro_dir = os.path.join(voicemode_dir, "services", "kokoro")
+            kokoro_dir = os.path.join(yakk_dir, "services", "kokoro")
 
         # Find start script
         start_script = None
@@ -98,14 +98,14 @@ def get_service_config_vars(service_name: str) -> Dict[str, Any]:
     elif service_name == "mlx_audio":
         # mlx-audio is installed via ``uv tool install`` -- no service-local
         # venv or start script. The plist exec's ``mlx_audio.server``
-        # directly from ~/.local/bin and reads VOICEMODE_MLX_AUDIO_HOST /
-        # VOICEMODE_MLX_AUDIO_PORT from voicemode.env at startup.
+        # directly from ~/.local/bin and reads YAKK_MLX_AUDIO_HOST /
+        # YAKK_MLX_AUDIO_PORT from yakk.env at startup.
         return {
             "HOME": home,
         }
-    elif service_name == "voicemode":
-        # VoiceMode serve service - runs the HTTP MCP server
-        start_script = os.path.join(voicemode_dir, "services", "voicemode", "bin", "start-voicemode-serve.sh")
+    elif service_name == "yakk":
+        # Yakk serve service - runs the HTTP MCP server
+        start_script = os.path.join(yakk_dir, "services", "yakk", "bin", "start-yakk-serve.sh")
 
         return {
             "HOME": home,
@@ -115,26 +115,26 @@ def get_service_config_vars(service_name: str) -> Dict[str, Any]:
         raise ValueError(f"Unknown service: {service_name}")
 
 
-async def install_voicemode_start_script() -> Dict[str, Any]:
-    """Install the VoiceMode start script to the expected location.
+async def install_yakk_start_script() -> Dict[str, Any]:
+    """Install the Yakk start script to the expected location.
 
-    Unlike whisper/kokoro which require compilation, voicemode is built into
+    Unlike whisper/kokoro which require compilation, yakk is built into
     the package. This function copies the start script template to the
-    ~/.voicemode/services/voicemode/bin/ directory.
+    ~/.yakk/services/yakk/bin/ directory.
 
     Returns:
         Dict with success status and start_script path
     """
-    voicemode_dir = os.path.expanduser(os.environ.get("VOICEMODE_BASE_DIR", "~/.voicemode"))
-    bin_dir = os.path.join(voicemode_dir, "services", "voicemode", "bin")
-    start_script_path = os.path.join(bin_dir, "start-voicemode-serve.sh")
+    yakk_dir = os.path.expanduser(os.environ.get("YAKK_BASE_DIR", "~/.yakk"))
+    bin_dir = os.path.join(yakk_dir, "services", "yakk", "bin")
+    start_script_path = os.path.join(bin_dir, "start-yakk-serve.sh")
 
     try:
         # Create bin directory if it doesn't exist
         os.makedirs(bin_dir, exist_ok=True)
 
         # Load template script from package
-        template_path = Path(__file__).parent.parent / "templates" / "scripts" / "start-voicemode-serve.sh"
+        template_path = Path(__file__).parent.parent / "templates" / "scripts" / "start-yakk-serve.sh"
         if not template_path.exists():
             return {"success": False, "error": f"Template not found: {template_path}"}
 
@@ -147,11 +147,11 @@ async def install_voicemode_start_script() -> Dict[str, Any]:
         # Make executable
         os.chmod(start_script_path, 0o755)
 
-        logger.info(f"Installed VoiceMode start script at {start_script_path}")
+        logger.info(f"Installed Yakk start script at {start_script_path}")
         return {"success": True, "start_script": start_script_path}
 
     except Exception as e:
-        logger.error(f"Error installing VoiceMode start script: {e}")
+        logger.error(f"Error installing Yakk start script: {e}")
         return {"success": False, "error": str(e)}
 
 
@@ -167,14 +167,14 @@ def load_service_template(service_name: str) -> str:
             "no systemd template is shipped."
         )
 
-    # Map service name to template-file stem (voicemode -> serve,
+    # Map service name to template-file stem (yakk -> serve,
     # mlx_audio -> mlx-audio, others passthrough).
     template_name = _service_file_name(service_name)
 
     if system == "Darwin":
-        template_path = templates_dir / "launchd" / f"com.voicemode.{template_name}.plist"
+        template_path = templates_dir / "launchd" / f"com.yakk.{template_name}.plist"
     else:
-        template_path = templates_dir / "systemd" / f"voicemode-{template_name}.service"
+        template_path = templates_dir / "systemd" / f"yakk-{template_name}.service"
 
     if not template_path.exists():
         raise FileNotFoundError(f"Service template not found: {template_path}")
@@ -186,10 +186,10 @@ def create_service_file(service_name: str) -> tuple[Path, str]:
     """Create service file content from template with config vars.
 
     This is the single source of truth for generating service files.
-    Templates are simplified - start scripts handle config via voicemode.env.
+    Templates are simplified - start scripts handle config via yakk.env.
 
     Args:
-        service_name: Name of the service (whisper, kokoro, voicemode)
+        service_name: Name of the service (whisper, kokoro, yakk)
 
     Returns:
         Tuple of (destination_path, file_content)
@@ -206,17 +206,17 @@ def create_service_file(service_name: str) -> tuple[Path, str]:
     # Format template with config vars
     content = template.format(**config_vars)
 
-    # Map service name to file name (voicemode -> serve, mlx_audio -> mlx-audio).
+    # Map service name to file name (yakk -> serve, mlx_audio -> mlx-audio).
     file_name = _service_file_name(service_name)
 
     # Determine destination path
     if system == "Darwin":
-        dest_path = Path(home) / "Library" / "LaunchAgents" / f"com.voicemode.{file_name}.plist"
+        dest_path = Path(home) / "Library" / "LaunchAgents" / f"com.yakk.{file_name}.plist"
     else:
-        dest_path = Path(home) / ".config" / "systemd" / "user" / f"voicemode-{file_name}.service"
+        dest_path = Path(home) / ".config" / "systemd" / "user" / f"yakk-{file_name}.service"
 
     # Ensure log directory exists
-    log_dir = Path(home) / ".voicemode" / "logs" / file_name
+    log_dir = Path(home) / ".yakk" / "logs" / file_name
     log_dir.mkdir(parents=True, exist_ok=True)
 
     return dest_path, content
@@ -233,8 +233,8 @@ async def status_service(service_name: str) -> str:
     elif service_name == "mlx_audio":
         port = MLX_AUDIO_PORT
         process_name = None
-    elif service_name == "voicemode":
-        port = VOICEMODE_SERVE_PORT
+    elif service_name == "yakk":
+        port = YAKK_SERVE_PORT
         process_name = None
     else:
         port = 3000
@@ -337,8 +337,8 @@ async def status_service(service_name: str) -> str:
                     extra_info_parts.append(f"Version: {version_info['version']}")
             except:
                 pass
-        elif service_name == "voicemode":
-            # VoiceMode HTTP server info
+        elif service_name == "yakk":
+            # Yakk HTTP server info
             # Extract transport and host from command line
             transport = "streamable-http"  # default
             host = "127.0.0.1"  # default
@@ -382,8 +382,8 @@ async def start_service(service_name: str) -> str:
         port = KOKORO_PORT
     elif service_name == "mlx_audio":
         port = MLX_AUDIO_PORT
-    elif service_name == "voicemode":
-        port = VOICEMODE_SERVE_PORT
+    elif service_name == "yakk":
+        port = YAKK_SERVE_PORT
     else:
         port = 3000
     if find_process_by_port(port):
@@ -391,7 +391,7 @@ async def start_service(service_name: str) -> str:
 
     system = platform.system()
 
-    # Map service name to file name (voicemode -> serve, mlx_audio -> mlx-audio).
+    # Map service name to file name (yakk -> serve, mlx_audio -> mlx-audio).
     file_name = _service_file_name(service_name)
 
     # Helper to check if service is running
@@ -400,7 +400,7 @@ async def start_service(service_name: str) -> str:
 
     # Check if managed by service manager
     if system == "Darwin":
-        plist_path = Path.home() / "Library" / "LaunchAgents" / f"com.voicemode.{file_name}.plist"
+        plist_path = Path.home() / "Library" / "LaunchAgents" / f"com.yakk.{file_name}.plist"
         if plist_path.exists():
             # Use launchctl load
             result = subprocess.run(
@@ -420,7 +420,7 @@ async def start_service(service_name: str) -> str:
                 if "already loaded" in error.lower():
                     # Service is loaded but maybe not running - try to start it
                     # This can happen if the service crashed
-                    subprocess.run(["launchctl", "kickstart", "-k", f"gui/{os.getuid()}/com.voicemode.{file_name}"], capture_output=True)
+                    subprocess.run(["launchctl", "kickstart", "-k", f"gui/{os.getuid()}/com.yakk.{file_name}"], capture_output=True)
                     await asyncio.sleep(2)
                     if is_service_running():
                         return f"✅ {service_name.capitalize()} restarted"
@@ -428,7 +428,7 @@ async def start_service(service_name: str) -> str:
                 return f"❌ Failed to start {service_name}: {error}"
 
     elif system == "Linux":
-        service_unit = f"voicemode-{file_name}.service"
+        service_unit = f"yakk-{file_name}.service"
         service_file = Path.home() / ".config" / "systemd" / "user" / service_unit
         if service_file.exists():
             # Use systemctl start
@@ -507,9 +507,9 @@ async def start_service(service_name: str) -> str:
         if not entry_point.exists():
             return (
                 "❌ mlx_audio.server not found at "
-                f"{entry_point}. Please run `voicemode service install mlx-audio` first."
+                f"{entry_point}. Please run `yakk service install mlx-audio` first."
             )
-        log_dir = Path.home() / ".voicemode" / "logs" / "mlx-audio"
+        log_dir = Path.home() / ".yakk" / "logs" / "mlx-audio"
         log_dir.mkdir(parents=True, exist_ok=True)
         cmd = [
             str(entry_point),
@@ -518,8 +518,8 @@ async def start_service(service_name: str) -> str:
             "--log-dir", str(log_dir),
         ]
 
-    elif service_name == "voicemode":
-        # Start voicemode serve command directly
+    elif service_name == "yakk":
+        # Start yakk serve command directly
         # Use sys.executable to ensure we use the same Python that's running this script
         import sys
         cmd = [sys.executable, "-m", "voice_mode", "serve", "--port", str(port)]
@@ -569,18 +569,18 @@ async def stop_service(service_name: str) -> str:
         port = KOKORO_PORT
     elif service_name == "mlx_audio":
         port = MLX_AUDIO_PORT
-    elif service_name == "voicemode":
-        port = VOICEMODE_SERVE_PORT
+    elif service_name == "yakk":
+        port = YAKK_SERVE_PORT
     else:
         port = 3000
     system = platform.system()
 
-    # Map service name to file name (voicemode -> serve, mlx_audio -> mlx-audio).
+    # Map service name to file name (yakk -> serve, mlx_audio -> mlx-audio).
     file_name = _service_file_name(service_name)
 
     # Check if managed by service manager
     if system == "Darwin":
-        plist_path = Path.home() / "Library" / "LaunchAgents" / f"com.voicemode.{file_name}.plist"
+        plist_path = Path.home() / "Library" / "LaunchAgents" / f"com.yakk.{file_name}.plist"
         if plist_path.exists():
             # Use launchctl unload (without -w to preserve enable state)
             result = subprocess.run(
@@ -598,7 +598,7 @@ async def stop_service(service_name: str) -> str:
                 return f"❌ Failed to stop {service_name}: {error}"
 
     elif system == "Linux":
-        service_unit = f"voicemode-{file_name}.service"
+        service_unit = f"yakk-{file_name}.service"
         service_file = Path.home() / ".config" / "systemd" / "user" / service_unit
         if service_file.exists():
             # Use systemctl stop
@@ -680,18 +680,18 @@ async def enable_service(service_name: str) -> str:
             if not entry_point.exists():
                 return (
                     "❌ mlx_audio.server not found at "
-                    f"{entry_point}. Run `voicemode service install mlx-audio` first."
+                    f"{entry_point}. Run `yakk service install mlx-audio` first."
                 )
 
-        elif service_name == "voicemode":
+        elif service_name == "yakk":
             start_script = config_vars.get("START_SCRIPT", "")
             if not start_script or not Path(start_script).exists():
-                # Auto-install the start script for voicemode since it's built-in
-                install_result = await install_voicemode_start_script()
+                # Auto-install the start script for yakk since it's built-in
+                install_result = await install_yakk_start_script()
                 if not install_result.get("success"):
-                    return f"❌ Failed to install VoiceMode start script: {install_result.get('error', 'Unknown error')}"
+                    return f"❌ Failed to install Yakk start script: {install_result.get('error', 'Unknown error')}"
                 start_script = install_result.get("start_script", "")
-                logger.info(f"Auto-installed VoiceMode start script at {start_script}")
+                logger.info(f"Auto-installed Yakk start script at {start_script}")
 
         # Create parent directories
         service_path.parent.mkdir(parents=True, exist_ok=True)
@@ -714,9 +714,9 @@ async def enable_service(service_name: str) -> str:
                 return f"❌ Failed to enable {service_name} service: {error}"
 
         else:  # Linux
-            # Map service name to file name (voicemode uses "serve" in file names)
-            file_name = "serve" if service_name == "voicemode" else service_name
-            service_unit = f"voicemode-{file_name}.service"
+            # Map service name to file name (yakk uses "serve" in file names)
+            file_name = "serve" if service_name == "yakk" else service_name
+            service_unit = f"yakk-{file_name}.service"
 
             # Reload and enable systemd
             subprocess.run(["systemctl", "--user", "daemon-reload"], check=True)
@@ -743,12 +743,12 @@ async def disable_service(service_name: str) -> str:
     """Disable a service from starting at boot/login."""
     system = platform.system()
 
-    # Map service name to file name (voicemode uses "serve" in file names)
-    file_name = "serve" if service_name == "voicemode" else service_name
+    # Map service name to file name (yakk uses "serve" in file names)
+    file_name = "serve" if service_name == "yakk" else service_name
 
     try:
         if system == "Darwin":
-            plist_path = Path.home() / "Library" / "LaunchAgents" / f"com.voicemode.{file_name}.plist"
+            plist_path = Path.home() / "Library" / "LaunchAgents" / f"com.yakk.{file_name}.plist"
 
             if not plist_path.exists():
                 return f"{service_name.capitalize()} service is not installed"
@@ -773,7 +773,7 @@ async def disable_service(service_name: str) -> str:
                 return f"❌ Failed to disable {service_name} service: {error}"
 
         else:  # Linux
-            service_unit = f"voicemode-{file_name}.service"
+            service_unit = f"yakk-{file_name}.service"
 
             # Stop and disable
             subprocess.run(["systemctl", "--user", "stop", service_unit], check=True)
@@ -807,14 +807,14 @@ async def view_logs(service_name: str, lines: Optional[int] = None) -> str:
     system = platform.system()
     lines = lines or 50
 
-    # Map service name to file/log name (voicemode uses "serve" in file names)
-    log_name = "serve" if service_name == "voicemode" else service_name
+    # Map service name to file/log name (yakk uses "serve" in file names)
+    log_name = "serve" if service_name == "yakk" else service_name
 
     try:
         if system == "Darwin":
             # Use log show command
-            if service_name == "voicemode":
-                process_name = "voicemode-serve"
+            if service_name == "yakk":
+                process_name = "yakk-serve"
             else:
                 process_name = f"{service_name}-server"
             cmd = [
@@ -829,8 +829,8 @@ async def view_logs(service_name: str, lines: Optional[int] = None) -> str:
             if result.returncode == 0 and result.stdout.strip():
                 return f"=== Last {lines} log entries for {service_name} ===\n{result.stdout}"
             else:
-                # Fallback to log files (voicemode logs to serve/ directory)
-                log_dir = Path.home() / ".voicemode" / "logs" / log_name
+                # Fallback to log files (yakk logs to serve/ directory)
+                log_dir = Path.home() / ".yakk" / "logs" / log_name
                 out_log = log_dir / f"{log_name}.out.log"
                 err_log = log_dir / f"{log_name}.err.log"
 
@@ -860,7 +860,7 @@ async def view_logs(service_name: str, lines: Optional[int] = None) -> str:
             # Use journalctl
             cmd = [
                 "journalctl", "--user",
-                "-u", f"voicemode-{log_name}.service",
+                "-u", f"yakk-{log_name}.service",
                 "-n", str(lines),
                 "--no-pager"
             ]
@@ -879,16 +879,16 @@ async def view_logs(service_name: str, lines: Optional[int] = None) -> str:
 
 @mcp.tool()
 async def service(
-    service_name: Literal["whisper", "kokoro", "mlx_audio", "voicemode"],
+    service_name: Literal["whisper", "kokoro", "mlx_audio", "yakk"],
     action: Literal["status", "start", "stop", "restart", "enable", "disable", "logs"] = "status",
     lines: Optional[Union[int, str]] = None
 ) -> str:
     """Unified service management tool for voice mode services.
 
-    Manage Whisper (STT), Kokoro (TTS), and VoiceMode (HTTP MCP server) services.
+    Manage Whisper (STT), Kokoro (TTS), and Yakk (HTTP MCP server) services.
 
     Args:
-        service_name: The service to manage ("whisper", "kokoro", or "voicemode")
+        service_name: The service to manage ("whisper", "kokoro", or "yakk")
         action: The action to perform (default: "status")
             - status: Show if service is running and resource usage
             - start: Start the service
@@ -905,8 +905,8 @@ async def service(
     Examples:
         service("whisper", "status")  # Check if Whisper is running
         service("kokoro", "start")    # Start Kokoro service
-        service("voicemode", "start") # Start VoiceMode HTTP MCP server
-        service("voicemode", "enable") # Enable VoiceMode HTTP MCP server
+        service("yakk", "start") # Start Yakk HTTP MCP server
+        service("yakk", "enable") # Enable Yakk HTTP MCP server
         service("whisper", "logs", 100)  # View last 100 lines of Whisper logs
     """
     # Convert lines to integer if provided as string
@@ -949,18 +949,18 @@ async def install_service(service_name: str) -> Dict[str, Any]:
         for key, value in config_vars.items():
             template_content = template_content.replace(f"{{{key}}}", str(value))
 
-        # Map service name to file name (voicemode uses "serve" in file names)
-        file_name = "serve" if service_name == "voicemode" else service_name
+        # Map service name to file name (yakk uses "serve" in file names)
+        file_name = "serve" if service_name == "yakk" else service_name
 
         if system == "Darwin":
             # Install launchd plist
-            plist_path = Path.home() / "Library" / "LaunchAgents" / f"com.voicemode.{file_name}.plist"
+            plist_path = Path.home() / "Library" / "LaunchAgents" / f"com.yakk.{file_name}.plist"
             plist_path.parent.mkdir(parents=True, exist_ok=True)
             plist_path.write_text(template_content)
             return {"success": True, "service_file": str(plist_path)}
         else:
             # Install systemd service
-            service_path = Path.home() / ".config" / "systemd" / "user" / f"voicemode-{file_name}.service"
+            service_path = Path.home() / ".config" / "systemd" / "user" / f"yakk-{file_name}.service"
             service_path.parent.mkdir(parents=True, exist_ok=True)
             service_path.write_text(template_content)
 
@@ -978,18 +978,18 @@ async def uninstall_service(service_name: str) -> Dict[str, Any]:
     try:
         system = platform.system()
 
-        # Map service name to file name (voicemode uses "serve" in file names)
-        file_name = "serve" if service_name == "voicemode" else service_name
+        # Map service name to file name (yakk uses "serve" in file names)
+        file_name = "serve" if service_name == "yakk" else service_name
 
         if system == "Darwin":
-            plist_path = Path.home() / "Library" / "LaunchAgents" / f"com.voicemode.{file_name}.plist"
+            plist_path = Path.home() / "Library" / "LaunchAgents" / f"com.yakk.{file_name}.plist"
             if plist_path.exists():
                 plist_path.unlink()
                 return {"success": True, "message": f"Removed {plist_path}"}
             else:
                 return {"success": True, "message": "Service file not found"}
         else:
-            service_path = Path.home() / ".config" / "systemd" / "user" / f"voicemode-{file_name}.service"
+            service_path = Path.home() / ".config" / "systemd" / "user" / f"yakk-{file_name}.service"
             if service_path.exists():
                 service_path.unlink()
                 # Reload systemd

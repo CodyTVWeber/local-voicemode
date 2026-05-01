@@ -23,12 +23,12 @@ class TestConfigurationManagement:
         
         # Should return a formatted string with config keys
         assert isinstance(result, str)
-        assert "VOICEMODE_" in result
+        assert "YAKK_" in result
         
         # Should include common config keys
-        assert "VOICEMODE_BASE_DIR" in result
-        assert "VOICEMODE_DEBUG" in result
-        assert "VOICEMODE_" in result
+        assert "YAKK_BASE_DIR" in result
+        assert "YAKK_DEBUG" in result
+        assert "YAKK_" in result
         
         # Should include descriptions
         assert "provider" in result.lower() or "TTS" in result
@@ -115,13 +115,13 @@ class TestConfigurationManagement:
         assert len(lines) > 10  # Should have many config keys
         
         # Should have consistent formatting
-        config_lines = [l for l in lines if 'VOICEMODE_' in l]
+        config_lines = [l for l in lines if 'YAKK_' in l]
         assert len(config_lines) > 0
         
         # Each config line should have key and description
         for line in config_lines[:5]:  # Check first few
-            if 'VOICEMODE_' in line and ':' in line:
-                # Should have format like "VOICEMODE_KEY: description"
+            if 'YAKK_' in line and ':' in line:
+                # Should have format like "YAKK_KEY: description"
                 assert line.count(':') >= 1
 
 
@@ -135,13 +135,13 @@ class TestWriteEnvFileCommentedDefaults:
             # Write a file with a commented default
             with os.fdopen(fd, 'w') as f:
                 f.write("# Core Config\n")
-                f.write("# VOICEMODE_WHISPER_MODEL=base\n")
+                f.write("# YAKK_WHISPER_MODEL=base\n")
                 f.write("OTHER_KEY=value\n")
 
             temp_file = Path(temp_path)
 
             # Set the commented key to a new value
-            write_env_file(temp_file, {"VOICEMODE_WHISPER_MODEL": "large"})
+            write_env_file(temp_file, {"YAKK_WHISPER_MODEL": "large"})
 
             # Read back and verify
             content = temp_file.read_text()
@@ -150,11 +150,11 @@ class TestWriteEnvFileCommentedDefaults:
             # Should have 3 lines: comment, active value (replacing commented), other key
             assert len(lines) == 3
             assert lines[0] == "# Core Config"
-            assert lines[1] == "VOICEMODE_WHISPER_MODEL=large"
+            assert lines[1] == "YAKK_WHISPER_MODEL=large"
             assert lines[2] == "OTHER_KEY=value"
 
             # Should NOT have the commented version anymore
-            assert "# VOICEMODE_WHISPER_MODEL" not in content
+            assert "# YAKK_WHISPER_MODEL" not in content
 
         finally:
             os.unlink(temp_path)
@@ -166,12 +166,12 @@ class TestWriteEnvFileCommentedDefaults:
             # Write a file with an active config
             with os.fdopen(fd, 'w') as f:
                 f.write("# Core Config\n")
-                f.write("VOICEMODE_TTS_VOICE=alloy\n")
+                f.write("YAKK_TTS_VOICE=alloy\n")
 
             temp_file = Path(temp_path)
 
             # Update the active key
-            write_env_file(temp_file, {"VOICEMODE_TTS_VOICE": "nova"})
+            write_env_file(temp_file, {"YAKK_TTS_VOICE": "nova"})
 
             # Read back and verify
             content = temp_file.read_text()
@@ -179,7 +179,7 @@ class TestWriteEnvFileCommentedDefaults:
 
             assert len(lines) == 2
             assert lines[0] == "# Core Config"
-            assert lines[1] == "VOICEMODE_TTS_VOICE=nova"
+            assert lines[1] == "YAKK_TTS_VOICE=nova"
 
         finally:
             os.unlink(temp_path)
@@ -218,14 +218,14 @@ class TestWriteEnvFileCommentedDefaults:
             with os.fdopen(fd, 'w') as f:
                 f.write("# This is a section header\n")
                 f.write("# Description of what this section does\n")
-                f.write("VOICEMODE_DEBUG=false\n")
+                f.write("YAKK_DEBUG=false\n")
                 f.write("\n")
                 f.write("# Another comment\n")
 
             temp_file = Path(temp_path)
 
             # Update a value
-            write_env_file(temp_file, {"VOICEMODE_DEBUG": "true"})
+            write_env_file(temp_file, {"YAKK_DEBUG": "true"})
 
             # Read back and verify
             content = temp_file.read_text()
@@ -235,7 +235,7 @@ class TestWriteEnvFileCommentedDefaults:
             assert "# Description of what this section does" in content
             assert "# Another comment" in content
             # Value should be updated
-            assert "VOICEMODE_DEBUG=true" in content
+            assert "YAKK_DEBUG=true" in content
 
         finally:
             os.unlink(temp_path)
@@ -245,13 +245,13 @@ class TestWriteEnvFileCommentedDefaults:
         fd, temp_path = tempfile.mkstemp(suffix='.env')
         try:
             with os.fdopen(fd, 'w') as f:
-                f.write("# VOICEMODE_KOKORO_PORT=8880\n")
+                f.write("# YAKK_KOKORO_PORT=8880\n")
 
             temp_file = Path(temp_path)
-            write_env_file(temp_file, {"VOICEMODE_KOKORO_PORT": "9999"})
+            write_env_file(temp_file, {"YAKK_KOKORO_PORT": "9999"})
 
             content = temp_file.read_text()
-            assert content.strip() == "VOICEMODE_KOKORO_PORT=9999"
+            assert content.strip() == "YAKK_KOKORO_PORT=9999"
 
         finally:
             os.unlink(temp_path)
@@ -261,13 +261,13 @@ class TestWriteEnvFileCommentedDefaults:
         fd, temp_path = tempfile.mkstemp(suffix='.env')
         try:
             with os.fdopen(fd, 'w') as f:
-                f.write("#VOICEMODE_KOKORO_PORT=8880\n")
+                f.write("#YAKK_KOKORO_PORT=8880\n")
 
             temp_file = Path(temp_path)
-            write_env_file(temp_file, {"VOICEMODE_KOKORO_PORT": "9999"})
+            write_env_file(temp_file, {"YAKK_KOKORO_PORT": "9999"})
 
             content = temp_file.read_text()
-            assert content.strip() == "VOICEMODE_KOKORO_PORT=9999"
+            assert content.strip() == "YAKK_KOKORO_PORT=9999"
 
         finally:
             os.unlink(temp_path)
@@ -278,16 +278,16 @@ class TestWriteEnvFileCommentedDefaults:
         try:
             with os.fdopen(fd, 'w') as f:
                 f.write("# Whisper settings\n")
-                f.write("# VOICEMODE_WHISPER_MODEL=base\n")
-                f.write("# VOICEMODE_WHISPER_PORT=2022\n")
+                f.write("# YAKK_WHISPER_MODEL=base\n")
+                f.write("# YAKK_WHISPER_PORT=2022\n")
                 f.write("\n")
                 f.write("# Kokoro settings\n")
-                f.write("# VOICEMODE_KOKORO_PORT=8880\n")
+                f.write("# YAKK_KOKORO_PORT=8880\n")
 
             temp_file = Path(temp_path)
             write_env_file(temp_file, {
-                "VOICEMODE_WHISPER_MODEL": "large-v3",
-                "VOICEMODE_KOKORO_PORT": "9000"
+                "YAKK_WHISPER_MODEL": "large-v3",
+                "YAKK_KOKORO_PORT": "9000"
             })
 
             content = temp_file.read_text()
@@ -297,11 +297,11 @@ class TestWriteEnvFileCommentedDefaults:
             assert "# Kokoro settings" in content
 
             # Values replaced
-            assert "VOICEMODE_WHISPER_MODEL=large-v3" in content
-            assert "VOICEMODE_KOKORO_PORT=9000" in content
+            assert "YAKK_WHISPER_MODEL=large-v3" in content
+            assert "YAKK_KOKORO_PORT=9000" in content
 
             # Unchanged commented default preserved
-            assert "# VOICEMODE_WHISPER_PORT=2022" in content
+            assert "# YAKK_WHISPER_PORT=2022" in content
 
         finally:
             os.unlink(temp_path)
@@ -314,7 +314,7 @@ class TestMultilineValueHandling:
         fd, temp_path = tempfile.mkstemp(suffix='.env')
         try:
             with os.fdopen(fd, 'w') as f:
-                f.write('VOICEMODE_PRONOUNCE="\n')
+                f.write('YAKK_PRONOUNCE="\n')
                 f.write('TTS \\bJSON\\b jason\n')
                 f.write('TTS \\bYAML\\b yammel\n')
                 f.write('"\n')
@@ -323,12 +323,12 @@ class TestMultilineValueHandling:
             config = parse_env_file(Path(temp_path))
 
             # Should have both keys
-            assert "VOICEMODE_PRONOUNCE" in config
+            assert "YAKK_PRONOUNCE" in config
             assert "OTHER_KEY" in config
 
             # Multiline value should be preserved
-            assert "TTS \\bJSON\\b jason" in config["VOICEMODE_PRONOUNCE"]
-            assert "TTS \\bYAML\\b yammel" in config["VOICEMODE_PRONOUNCE"]
+            assert "TTS \\bJSON\\b jason" in config["YAKK_PRONOUNCE"]
+            assert "TTS \\bYAML\\b yammel" in config["YAKK_PRONOUNCE"]
 
             # Simple value should work
             assert config["OTHER_KEY"] == "simple_value"
@@ -341,16 +341,16 @@ class TestMultilineValueHandling:
         fd, temp_path = tempfile.mkstemp(suffix='.env')
         try:
             with os.fdopen(fd, 'w') as f:
-                f.write("VOICEMODE_PRONOUNCE='\n")
+                f.write("YAKK_PRONOUNCE='\n")
                 f.write("TTS pattern1 replacement1\n")
                 f.write("TTS pattern2 replacement2\n")
                 f.write("'\n")
 
             config = parse_env_file(Path(temp_path))
 
-            assert "VOICEMODE_PRONOUNCE" in config
-            assert "pattern1" in config["VOICEMODE_PRONOUNCE"]
-            assert "pattern2" in config["VOICEMODE_PRONOUNCE"]
+            assert "YAKK_PRONOUNCE" in config
+            assert "pattern1" in config["YAKK_PRONOUNCE"]
+            assert "pattern2" in config["YAKK_PRONOUNCE"]
 
         finally:
             os.unlink(temp_path)
@@ -379,7 +379,7 @@ class TestMultilineValueHandling:
         try:
             # Write a file with a multiline value
             with os.fdopen(fd, 'w') as f:
-                f.write('VOICEMODE_PRONOUNCE="\n')
+                f.write('YAKK_PRONOUNCE="\n')
                 f.write('TTS \\bJSON\\b jason\n')
                 f.write('TTS \\bYAML\\b yammel\n')
                 f.write('"\n')
@@ -387,13 +387,13 @@ class TestMultilineValueHandling:
 
             temp_file = Path(temp_path)
 
-            # Update only OTHER_KEY, not VOICEMODE_PRONOUNCE
+            # Update only OTHER_KEY, not YAKK_PRONOUNCE
             write_env_file(temp_file, {"OTHER_KEY": "new_value"})
 
             content = temp_file.read_text()
 
             # Multiline value should be preserved
-            assert 'VOICEMODE_PRONOUNCE="' in content
+            assert 'YAKK_PRONOUNCE="' in content
             assert "TTS \\bJSON\\b jason" in content
             assert "TTS \\bYAML\\b yammel" in content
             # Updated value should be there
@@ -408,7 +408,7 @@ class TestMultilineValueHandling:
         try:
             # Write a file with a multiline value
             with os.fdopen(fd, 'w') as f:
-                f.write('VOICEMODE_PRONOUNCE="\n')
+                f.write('YAKK_PRONOUNCE="\n')
                 f.write('old content\n')
                 f.write('"\n')
 
@@ -416,19 +416,19 @@ class TestMultilineValueHandling:
 
             # Update the multiline value
             new_value = "new line 1\nnew line 2"
-            write_env_file(temp_file, {"VOICEMODE_PRONOUNCE": new_value})
+            write_env_file(temp_file, {"YAKK_PRONOUNCE": new_value})
 
             content = temp_file.read_text()
 
             # New multiline value should be properly quoted
-            assert "VOICEMODE_PRONOUNCE=" in content
+            assert "YAKK_PRONOUNCE=" in content
             assert "new line 1" in content
             assert "new line 2" in content
 
             # Verify it can be parsed back
             config = parse_env_file(temp_file)
-            assert "new line 1" in config["VOICEMODE_PRONOUNCE"]
-            assert "new line 2" in config["VOICEMODE_PRONOUNCE"]
+            assert "new line 1" in config["YAKK_PRONOUNCE"]
+            assert "new line 2" in config["YAKK_PRONOUNCE"]
 
         finally:
             os.unlink(temp_path)
@@ -439,32 +439,32 @@ class TestMultilineValueHandling:
         try:
             # Write a file with a multiline value and another key
             with os.fdopen(fd, 'w') as f:
-                f.write('VOICEMODE_PRONOUNCE="\n')
+                f.write('YAKK_PRONOUNCE="\n')
                 f.write('TTS \\bJSON\\b jason\n')
                 f.write('"\n')
-                f.write('VOICEMODE_WHISPER_MODEL=base\n')
+                f.write('YAKK_WHISPER_MODEL=base\n')
 
             temp_file = Path(temp_path)
 
-            # Update only VOICEMODE_WHISPER_MODEL
+            # Update only YAKK_WHISPER_MODEL
             with patch("voice_mode.tools.configuration_management.USER_CONFIG_PATH", temp_file):
-                result = asyncio.run(update_config.fn("VOICEMODE_WHISPER_MODEL", "large-v1"))
+                result = asyncio.run(update_config.fn("YAKK_WHISPER_MODEL", "large-v1"))
 
             # Should succeed
             assert "success" in result.lower() or "updated" in result.lower()
 
             # Verify multiline value is preserved
             content = temp_file.read_text()
-            assert 'VOICEMODE_PRONOUNCE="' in content
+            assert 'YAKK_PRONOUNCE="' in content
             assert "TTS \\bJSON\\b jason" in content
 
             # Verify updated value
-            assert "VOICEMODE_WHISPER_MODEL=large-v1" in content
+            assert "YAKK_WHISPER_MODEL=large-v1" in content
 
             # Verify it can still be parsed correctly
             config = parse_env_file(temp_file)
-            assert "TTS \\bJSON\\b jason" in config.get("VOICEMODE_PRONOUNCE", "")
-            assert config.get("VOICEMODE_WHISPER_MODEL") == "large-v1"
+            assert "TTS \\bJSON\\b jason" in config.get("YAKK_PRONOUNCE", "")
+            assert config.get("YAKK_WHISPER_MODEL") == "large-v1"
 
         finally:
             os.unlink(temp_path)

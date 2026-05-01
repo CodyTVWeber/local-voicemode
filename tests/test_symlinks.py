@@ -14,7 +14,7 @@ def patch_audio_dir(isolate_home_directory, monkeypatch):
     baked in from whichever test first triggers the import. This fixture
     patches it to use the current test's isolated home directory.
     """
-    correct_audio_dir = isolate_home_directory / ".voicemode" / "audio"
+    correct_audio_dir = isolate_home_directory / ".yakk" / "audio"
     monkeypatch.setattr("voice_mode.config.AUDIO_DIR", correct_audio_dir)
     monkeypatch.setattr("voice_mode.utils.symlinks.AUDIO_DIR", correct_audio_dir)
 

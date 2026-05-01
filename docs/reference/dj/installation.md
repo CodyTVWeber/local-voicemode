@@ -38,10 +38,10 @@ socat -V
 
 ## Scripts Location
 
-The DJ mode scripts are in the VoiceMode skill:
+The DJ mode scripts are in the Yakk skill:
 
 ```
-skills/voicemode/bin/
+skills/yakk/bin/
 ├── mpv-dj           # Main DJ control script
 └── cue-to-chapters  # CUE to FFmpeg converter
 ```
@@ -51,13 +51,13 @@ For the scripts to work, ensure they're in your PATH or call them with full path
 ## Configuration
 
 DJ mode uses:
-- **Socket**: `/tmp/voicemode-mpv.sock` for IPC
-- **Chapters**: `~/.voicemode/chapters/` for chapter files
+- **Socket**: `/tmp/yakk-mpv.sock` for IPC
+- **Chapters**: `~/.yakk/chapters/` for chapter files
 
 Create the chapters directory:
 
 ```bash
-mkdir -p ~/.voicemode/chapters
+mkdir -p ~/.yakk/chapters
 ```
 
 ## Troubleshooting

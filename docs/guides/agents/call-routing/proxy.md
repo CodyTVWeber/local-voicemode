@@ -6,7 +6,7 @@ Relay voice conversations for agents without direct audio access.
 
 The voice proxy pattern allows one agent to speak on behalf of another. This is useful when:
 
-- A **worker agent** doesn't have the voicemode skill loaded
+- A **worker agent** doesn't have the yakk skill loaded
 - An agent is running on a **remote machine** without audio devices
 - You want to **centralize voice** through a single agent
 - An agent's response needs **human review** before speaking
@@ -20,7 +20,7 @@ The voice proxy pattern allows one agent to speak on behalf of another. This is 
 +------------------+            +------------------+            +--------+
                                        |
                                        v
-                               voicemode:converse()
+                               yakk:converse()
 ```
 
 The proxy agent:
@@ -32,7 +32,7 @@ The proxy agent:
 
 ### 1. Worker Without Voice Skill
 
-A worker focused on a specific task doesn't need voicemode overhead:
+A worker focused on a specific task doesn't need yakk overhead:
 
 ```python
 # Spawn worker for code review (no voice) - mechanism depends on your setup
@@ -46,7 +46,7 @@ spawn_agent(
 while True:
     output = read_file("/tmp/review-output.txt")
     if output:
-        voicemode:converse(f"The reviewer says: {output}")
+        yakk:converse(f"The reviewer says: {output}")
         clear_file("/tmp/review-output.txt")
 ```
 
@@ -59,7 +59,7 @@ An agent on a remote server can't access local audio devices:
 remote_response = Bash(command='ssh server "claude --query \"What is the status?\""')
 
 # Assistant speaks the response locally
-voicemode:converse(f"The remote agent reports: {remote_response}")
+yakk:converse(f"The remote agent reports: {remote_response}")
 ```
 
 ### 3. Human Review Before Speaking
@@ -73,7 +73,7 @@ worker_output = get_worker_output()
 # Human can review in console before it's spoken
 print(f"Worker wants to say: {worker_output}")
 if user_approves():
-    voicemode:converse(worker_output)
+    yakk:converse(worker_output)
 ```
 
 ## Implementation Patterns
@@ -103,7 +103,7 @@ def relay_loop():
         if exists(OUTBOX):
             message = read_file(OUTBOX)
             delete_file(OUTBOX)
-            response = voicemode:converse(message)
+            response = yakk:converse(message)
             write_file(INBOX, response)
         sleep(0.5)
 ```
@@ -120,7 +120,7 @@ print("SPEAK: I've finished the analysis")
 for line in monitor_agent_output("worker"):
     if line.startswith("SPEAK: "):
         message = line[7:]  # Remove prefix
-        voicemode:converse(message, wait_for_response=False)
+        yakk:converse(message, wait_for_response=False)
 ```
 
 ### Message Queue
@@ -147,7 +147,7 @@ def enqueue_speech(message, wait_for_response=False):
 def process_queue():
     queue = read_json(QUEUE) or []
     for item in queue:
-        response = voicemode:converse(
+        response = yakk:converse(
             item["message"],
             wait_for_response=item["wait"]
         )
@@ -163,14 +163,14 @@ When proxying for multiple agents, indicate who's speaking:
 ```python
 def relay_with_attribution(agent_name, message):
     # Option 1: Announce the speaker
-    voicemode:converse(f"{agent_name} says: {message}")
+    yakk:converse(f"{agent_name} says: {message}")
 
     # Option 2: Use different voice per agent
     voices = {"worker-1": "alloy", "worker-2": "echo"}
-    voicemode:converse(message, voice=voices.get(agent_name, "nova"))
+    yakk:converse(message, voice=voices.get(agent_name, "nova"))
 
     # Option 3: Both
-    voicemode:converse(
+    yakk:converse(
         f"{agent_name}: {message}",
         voice=voices.get(agent_name)
     )
@@ -190,7 +190,7 @@ def bidirectional_relay(worker_outbox, worker_inbox):
             delete_file(worker_outbox)
 
             # Speak and get response
-            user_response = voicemode:converse(message, wait_for_response=True)
+            user_response = yakk:converse(message, wait_for_response=True)
 
             # Relay response back to worker
             write_file(worker_inbox, user_response)

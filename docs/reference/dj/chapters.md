@@ -66,10 +66,10 @@ The converter handles this automatically.
 
 ## Chapter Storage
 
-Music For Programming chapters are stored in `~/.voicemode/music-for-programming/`:
+Music For Programming chapters are stored in `~/.yakk/music-for-programming/`:
 
 ```
-~/.voicemode/music-for-programming/
+~/.yakk/music-for-programming/
 ├── music_for_programming_49-julien_mier.ffmeta       # Episode 49
 ├── music_for_programming_51-mücha.ffmeta             # Episode 51
 └── ...
@@ -96,14 +96,14 @@ Query chapters via raw IPC:
 
 ```bash
 # List all chapters
-echo '{"command": ["get_property", "chapter-list"]}' | socat - /tmp/voicemode-mpv.sock
+echo '{"command": ["get_property", "chapter-list"]}' | socat - /tmp/yakk-mpv.sock
 
 # Get current chapter metadata
-echo '{"command": ["get_property", "chapter-metadata"]}' | socat - /tmp/voicemode-mpv.sock
+echo '{"command": ["get_property", "chapter-metadata"]}' | socat - /tmp/yakk-mpv.sock
 
 # Get current chapter index
-echo '{"command": ["get_property", "chapter"]}' | socat - /tmp/voicemode-mpv.sock
+echo '{"command": ["get_property", "chapter"]}' | socat - /tmp/yakk-mpv.sock
 
 # Jump to chapter by index
-echo '{"command": ["set_property", "chapter", 3]}' | socat - /tmp/voicemode-mpv.sock
+echo '{"command": ["set_property", "chapter", 3]}' | socat - /tmp/yakk-mpv.sock
 ```

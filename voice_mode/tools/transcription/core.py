@@ -23,7 +23,7 @@ async def transcribe_audio(
     """
     Transcribe audio with optional word-level timestamps.
     
-    This is the main API entry point for VoiceMode transcription.
+    This is the main API entry point for Yakk transcription.
     
     Args:
         audio_file: Path to audio file or file-like object

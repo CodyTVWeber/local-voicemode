@@ -1,6 +1,6 @@
-"""Unified status command for VoiceMode.
+"""Unified status command for Yakk.
 
-Shows complete state of VoiceMode - how it's running, which services are available,
+Shows complete state of Yakk - how it's running, which services are available,
 and their configuration in a single view.
 """
 
@@ -190,8 +190,8 @@ def check_whisper_service() -> ServiceInfo:
     status, proc = check_service_status(WHISPER_PORT, process_name="whisper-server")
 
     # Check if installed - try multiple paths
-    voicemode_dir = Path.home() / ".voicemode"
-    whisper_dir = voicemode_dir / "services" / "whisper"
+    yakk_dir = Path.home() / ".yakk"
+    whisper_dir = yakk_dir / "services" / "whisper"
     whisper_bin_paths = [
         whisper_dir / "build" / "bin" / "whisper-server",  # Direct build
         whisper_dir / "whisper.cpp" / "build" / "bin" / "whisper-server",  # Subdir build
@@ -201,10 +201,10 @@ def check_whisper_service() -> ServiceInfo:
     # Check auto-start configuration
     auto_start = False
     if platform.system() == "Darwin":
-        plist_path = Path.home() / "Library" / "LaunchAgents" / "com.voicemode.whisper.plist"
+        plist_path = Path.home() / "Library" / "LaunchAgents" / "com.yakk.whisper.plist"
         auto_start = plist_path.exists()
     else:
-        service_path = Path.home() / ".config" / "systemd" / "user" / "voicemode-whisper.service"
+        service_path = Path.home() / ".config" / "systemd" / "user" / "yakk-whisper.service"
         auto_start = service_path.exists()
 
     if not is_installed:
@@ -299,17 +299,17 @@ def check_kokoro_service() -> ServiceInfo:
     status, proc = check_service_status(KOKORO_PORT)
 
     # Check if installed
-    voicemode_dir = Path.home() / ".voicemode"
-    kokoro_dir = voicemode_dir / "services" / "kokoro"
+    yakk_dir = Path.home() / ".yakk"
+    kokoro_dir = yakk_dir / "services" / "kokoro"
     is_installed = kokoro_dir.exists() and any(kokoro_dir.iterdir())
 
     # Check auto-start configuration
     auto_start = False
     if platform.system() == "Darwin":
-        plist_path = Path.home() / "Library" / "LaunchAgents" / "com.voicemode.kokoro.plist"
+        plist_path = Path.home() / "Library" / "LaunchAgents" / "com.yakk.kokoro.plist"
         auto_start = plist_path.exists()
     else:
-        service_path = Path.home() / ".config" / "systemd" / "user" / "voicemode-kokoro.service"
+        service_path = Path.home() / ".config" / "systemd" / "user" / "yakk-kokoro.service"
         auto_start = service_path.exists()
 
     if not is_installed:
@@ -394,10 +394,10 @@ def get_active_providers(whisper: ServiceInfo, kokoro: ServiceInfo) -> Dict[str,
 
 def get_config_info() -> Dict[str, Any]:
     """Get configuration information."""
-    config_file = Path.home() / ".voicemode" / "voicemode.env"
+    config_file = Path.home() / ".yakk" / "yakk.env"
 
     voices = TTS_VOICES if TTS_VOICES else ["af_sky"]
-    audio_feedback = env_bool("VOICEMODE_AUDIO_FEEDBACK", True)
+    audio_feedback = env_bool("YAKK_AUDIO_FEEDBACK", True)
 
     return {
         "file": str(config_file) if config_file.exists() else None,
@@ -481,7 +481,7 @@ def format_terminal_output(data: Dict[str, Any], use_colors: bool = True) -> str
     lines = []
 
     # Header
-    lines.append(f"VoiceMode Status (v{data['version']})")
+    lines.append(f"Yakk Status (v{data['version']})")
     lines.append("=" * 25)
     lines.append("")
     lines.append(f"Runtime: MCP Server (via {data['runtime']['command']})")
@@ -581,7 +581,7 @@ def format_terminal_output(data: Dict[str, Any], use_colors: bool = True) -> str
     if config.get("file"):
         lines.append(f"  Config: {config['file']}")
     else:
-        lines.append("  Config: ~/.voicemode/voicemode.env (not found)")
+        lines.append("  Config: ~/.yakk/yakk.env (not found)")
     lines.append(f"  Voices: {', '.join(config.get('voices', ['af_sky']))}")
     lines.append(f"  Audio feedback: {'enabled' if config.get('audio_feedback') else 'disabled'}")
 
@@ -592,7 +592,7 @@ def format_markdown_output(data: Dict[str, Any]) -> str:
     """Format status data as markdown."""
     lines = []
 
-    lines.append("# VoiceMode Status")
+    lines.append("# Yakk Status")
     lines.append("")
     lines.append("## Runtime")
     lines.append(f"- Mode: MCP Server (via {data['runtime']['command']})")
@@ -631,7 +631,7 @@ def format_markdown_output(data: Dict[str, Any]) -> str:
 
     lines.append("## Configuration")
     config = data["config"]
-    lines.append(f"- Config file: {config.get('file', '~/.voicemode/voicemode.env')}")
+    lines.append(f"- Config file: {config.get('file', '~/.yakk/yakk.env')}")
     lines.append(f"- Voices: {', '.join(config.get('voices', ['af_sky']))}")
     lines.append(f"- Audio feedback: {'enabled' if config.get('audio_feedback') else 'disabled'}")
     lines.append("")
@@ -661,19 +661,19 @@ def format_json_output(data: Dict[str, Any]) -> str:
 @click.option('--no-color', is_flag=True,
               help='Disable colored output')
 def status(output_format: Optional[str], no_color: bool):
-    """Show unified VoiceMode status.
+    """Show unified Yakk status.
 
-    Displays the complete state of VoiceMode including:
+    Displays the complete state of Yakk including:
     - Service status (Whisper STT, Kokoro TTS)
     - Active providers
     - System dependencies
     - Configuration
 
     Examples:
-        voicemode status              # Terminal output with colors
-        voicemode status --format json   # JSON output for automation
-        voicemode status --format markdown  # Markdown for documentation
-        voicemode status --no-color   # Plain text without colors
+        yakk status              # Terminal output with colors
+        yakk status --format json   # JSON output for automation
+        yakk status --format markdown  # Markdown for documentation
+        yakk status --no-color   # Plain text without colors
     """
     # Collect status data
     data = collect_status_data()

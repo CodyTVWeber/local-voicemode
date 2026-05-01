@@ -1,10 +1,10 @@
-"""Unit tests for the VoiceMode serve command.
+"""Unit tests for the Yakk serve command.
 
 Tests for:
 - Default transport is streamable-http
 - --transport sse selects SSE
 - Deprecation warning appears for SSE
-- Environment variable VOICEMODE_SERVE_TRANSPORT is respected
+- Environment variable YAKK_SERVE_TRANSPORT is respected
 - CLI --transport overrides environment variable
 """
 
@@ -33,11 +33,11 @@ class TestServeTransportOption:
     def test_default_transport_is_streamable_http(self):
         """Test that default transport is streamable-http."""
         # Clear any existing env var to test the default
-        env_backup = os.environ.get("VOICEMODE_SERVE_TRANSPORT")
+        env_backup = os.environ.get("YAKK_SERVE_TRANSPORT")
         try:
             # Remove env var if it exists
-            if "VOICEMODE_SERVE_TRANSPORT" in os.environ:
-                del os.environ["VOICEMODE_SERVE_TRANSPORT"]
+            if "YAKK_SERVE_TRANSPORT" in os.environ:
+                del os.environ["YAKK_SERVE_TRANSPORT"]
 
             # Need to reimport to get fresh config values
             import importlib
@@ -48,13 +48,13 @@ class TestServeTransportOption:
         finally:
             # Restore env var
             if env_backup is not None:
-                os.environ["VOICEMODE_SERVE_TRANSPORT"] = env_backup
+                os.environ["YAKK_SERVE_TRANSPORT"] = env_backup
 
     def test_env_var_changes_default(self):
-        """Test that VOICEMODE_SERVE_TRANSPORT env var is respected."""
-        env_backup = os.environ.get("VOICEMODE_SERVE_TRANSPORT")
+        """Test that YAKK_SERVE_TRANSPORT env var is respected."""
+        env_backup = os.environ.get("YAKK_SERVE_TRANSPORT")
         try:
-            os.environ["VOICEMODE_SERVE_TRANSPORT"] = "sse"
+            os.environ["YAKK_SERVE_TRANSPORT"] = "sse"
             import importlib
             import voice_mode.config
             importlib.reload(voice_mode.config)
@@ -63,9 +63,9 @@ class TestServeTransportOption:
         finally:
             # Restore env var
             if env_backup is not None:
-                os.environ["VOICEMODE_SERVE_TRANSPORT"] = env_backup
-            elif "VOICEMODE_SERVE_TRANSPORT" in os.environ:
-                del os.environ["VOICEMODE_SERVE_TRANSPORT"]
+                os.environ["YAKK_SERVE_TRANSPORT"] = env_backup
+            elif "YAKK_SERVE_TRANSPORT" in os.environ:
+                del os.environ["YAKK_SERVE_TRANSPORT"]
             # Reload to reset
             import importlib
             import voice_mode.config
@@ -164,9 +164,9 @@ class TestServeTransportOption:
         runner = CliRunner()
 
         # Set env var to streamable-http but use CLI to specify sse
-        env_backup = os.environ.get("VOICEMODE_SERVE_TRANSPORT")
+        env_backup = os.environ.get("YAKK_SERVE_TRANSPORT")
         try:
-            os.environ["VOICEMODE_SERVE_TRANSPORT"] = "streamable-http"
+            os.environ["YAKK_SERVE_TRANSPORT"] = "streamable-http"
 
             mock_mcp = MagicMock()
             mock_app = MagicMock()
@@ -183,9 +183,9 @@ class TestServeTransportOption:
                     assert '/sse' in result.output
         finally:
             if env_backup is not None:
-                os.environ["VOICEMODE_SERVE_TRANSPORT"] = env_backup
-            elif "VOICEMODE_SERVE_TRANSPORT" in os.environ:
-                del os.environ["VOICEMODE_SERVE_TRANSPORT"]
+                os.environ["YAKK_SERVE_TRANSPORT"] = env_backup
+            elif "YAKK_SERVE_TRANSPORT" in os.environ:
+                del os.environ["YAKK_SERVE_TRANSPORT"]
 
     def test_short_option_t_works(self):
         """Test that -t short option works for transport."""

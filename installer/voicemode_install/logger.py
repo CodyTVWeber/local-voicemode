@@ -11,9 +11,9 @@ class InstallLogger:
 
     def __init__(self, log_path: Path = None):
         if log_path is None:
-            voicemode_dir = Path.home() / '.voicemode'
-            voicemode_dir.mkdir(exist_ok=True)
-            log_path = voicemode_dir / 'install.log'
+            yakk_dir = Path.home() / '.yakk'
+            yakk_dir.mkdir(exist_ok=True)
+            log_path = yakk_dir / 'install.log'
 
         self.log_path = log_path
         self.session_id = datetime.now().strftime('%Y%m%d_%H%M%S')
@@ -74,14 +74,14 @@ class InstallLogger:
 
         self.log_event('error', message, details)
 
-    def log_complete(self, success: bool, voicemode_installed: bool):
+    def log_complete(self, success: bool, yakk_installed: bool):
         """Log installation completion."""
         self.log_event(
             'complete',
             'Installation completed' if success else 'Installation failed',
             {
                 'success': success,
-                'voicemode_installed': voicemode_installed
+                'yakk_installed': yakk_installed
             }
         )
 

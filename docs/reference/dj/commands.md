@@ -1,22 +1,22 @@
 # DJ Mode
 
-Background music control during VoiceMode sessions, powered by mpv with IPC.
+Background music control during Yakk sessions, powered by mpv with IPC.
 
 ## Quick Start
 
 ```bash
 # Play Music For Programming (default content)
-voicemode dj mfp play 49                   # Episode 49
+yakk dj mfp play 49                   # Episode 49
 
 # Play any audio with chapters
-voicemode dj play file.mp3 --chapters file.txt   # Local file
-voicemode dj play "https://..." --chapters f.txt # HTTP stream
+yakk dj play file.mp3 --chapters file.txt   # Local file
+yakk dj play "https://..." --chapters f.txt # HTTP stream
 
 # Control playback
-voicemode dj status    # What's playing
-voicemode dj next      # Skip to next track
-voicemode dj volume 50 # Set volume (0-100)
-voicemode dj stop      # Stop playback
+yakk dj status    # What's playing
+yakk dj next      # Skip to next track
+yakk dj volume 50 # Set volume (0-100)
+yakk dj stop      # Stop playback
 ```
 
 ## Commands
@@ -25,30 +25,30 @@ voicemode dj stop      # Stop playback
 
 | Command | Description |
 |---------|-------------|
-| `voicemode dj play <source> [--chapters <file>]` | Start playback |
-| `voicemode dj status [--line]` | Show current track, position, volume |
-| `voicemode dj pause` / `resume` | Pause or resume playback |
-| `voicemode dj next` / `prev` | Navigate chapters |
-| `voicemode dj volume [0-100]` | Get or set volume |
-| `voicemode dj stop` | Stop playback |
+| `yakk dj play <source> [--chapters <file>]` | Start playback |
+| `yakk dj status [--line]` | Show current track, position, volume |
+| `yakk dj pause` / `resume` | Pause or resume playback |
+| `yakk dj next` / `prev` | Navigate chapters |
+| `yakk dj volume [0-100]` | Get or set volume |
+| `yakk dj stop` | Stop playback |
 
 ### Music For Programming
 
 | Command | Description |
 |---------|-------------|
-| `voicemode dj mfp list [--all]` | List episodes with chapters |
-| `voicemode dj mfp play <episode>` | Play episode by number |
-| `voicemode dj mfp sync [--force]` | Convert CUE files to FFmetadata |
+| `yakk dj mfp list [--all]` | List episodes with chapters |
+| `yakk dj mfp play <episode>` | Play episode by number |
+| `yakk dj mfp sync [--force]` | Convert CUE files to FFmetadata |
 
 ### Music Library
 
 | Command | Description |
 |---------|-------------|
-| `voicemode dj find <query>` | Search library by artist/album/title |
-| `voicemode dj library scan [--path]` | Index music folder |
-| `voicemode dj library stats` | Show library statistics |
-| `voicemode dj history [--limit]` | Show play history |
-| `voicemode dj favorite` | Toggle favorite on current track |
+| `yakk dj find <query>` | Search library by artist/album/title |
+| `yakk dj library scan [--path]` | Index music folder |
+| `yakk dj library stats` | Show library statistics |
+| `yakk dj history [--limit]` | Show play history |
+| `yakk dj favorite` | Toggle favorite on current track |
 
 ## Documentation
 
@@ -60,10 +60,10 @@ voicemode dj stop      # Stop playback
 
 ## Configuration
 
-Set default startup volume in `~/.voicemode/voicemode.env`:
+Set default startup volume in `~/.yakk/yakk.env`:
 
 ```bash
-VOICEMODE_DJ_VOLUME=50   # Default: 50%
+YAKK_DJ_VOLUME=50   # Default: 50%
 ```
 
 The DJ starts at 50% volume by default, which works well during voice conversations.
@@ -77,7 +77,7 @@ The DJ starts at 50% volume by default, which works well during voice conversati
 - Music For Programming episode playback
 - RSS-based episode URL lookup with offline caching
 - Volume, pause, skip, status commands
-- Configurable default volume (VOICEMODE_DJ_VOLUME)
+- Configurable default volume (YAKK_DJ_VOLUME)
 - IPC socket for programmatic control
 - Play history tracking (last 100 sessions)
 - Favorites system (save/list/remove tracks)
@@ -96,20 +96,20 @@ The DJ starts at 50% volume by default, which works well during voice conversati
 Tracks played from the indexed music library are recorded:
 
 ```bash
-voicemode dj history            # Show last 20 plays
-voicemode dj history --limit 50 # Show last 50 plays
+yakk dj history            # Show last 20 plays
+yakk dj history --limit 50 # Show last 50 plays
 ```
 
-History is stored in the music library database (`~/.voicemode/dj/library.db`).
+History is stored in the music library database (`~/.yakk/dj/library.db`).
 
 ### Favorites
 
 Toggle favorite status on the currently playing track:
 
 ```bash
-voicemode dj favorite    # Toggle favorite on current track
-voicemode dj find "*"    # Favorites marked with *
+yakk dj favorite    # Toggle favorite on current track
+yakk dj find "*"    # Favorites marked with *
 ```
 
 Note: History and favorites require tracks to be indexed in the music library.
-Run `voicemode dj library scan` to index your music folder first.
+Run `yakk dj library scan` to index your music folder first.

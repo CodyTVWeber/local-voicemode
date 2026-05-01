@@ -24,7 +24,7 @@ Voice Mode supports multiple TTS providers with different voices. This guide hel
 
 Voice Mode uses a **voice-first selection algorithm**:
 
-1. **Try each preferred voice** in order from `VOICEMODE_VOICES`
+1. **Try each preferred voice** in order from `YAKK_VOICES`
 2. **Find first healthy endpoint** that supports that voice
 3. **Use that voice and endpoint** for TTS
 
@@ -33,32 +33,32 @@ This ensures you get your preferred voice when possible, regardless of which pro
 ## Configuring Voice Preferences
 
 ### Quick Setup
-Add to your `.voicemode.env`:
+Add to your `.yakk.env`:
 ```bash
 # Try Kokoro first, fallback to OpenAI
-VOICEMODE_VOICES=af_sky,nova,alloy
+YAKK_VOICES=af_sky,nova,alloy
 ```
 
 ### Voice-First Examples
 
 **Prefer expressive female voices:**
 ```bash
-VOICEMODE_VOICES=shimmer,nova,af_sky
+YAKK_VOICES=shimmer,nova,af_sky
 ```
 
 **Prefer male voices:**
 ```bash
-VOICEMODE_VOICES=am_adam,onyx,echo
+YAKK_VOICES=am_adam,onyx,echo
 ```
 
 **Local-first setup:**
 ```bash
-VOICEMODE_VOICES=af_sky,am_adam,nova
+YAKK_VOICES=af_sky,am_adam,nova
 ```
 
 **Cloud-first setup:**
 ```bash
-VOICEMODE_VOICES=nova,shimmer,af_sky
+YAKK_VOICES=nova,shimmer,af_sky
 ```
 
 ## Provider Considerations
@@ -77,9 +77,9 @@ VOICEMODE_VOICES=nova,shimmer,af_sky
 
 Voice preferences follow this priority order:
 
-1. **Environment variables** (`VOICEMODE_VOICES=voice1,voice2`)
-2. **Project `.voicemode.env`** files (searched up directory tree)
-3. **Global `~/.voicemode/voicemode.env`**
+1. **Environment variables** (`YAKK_VOICES=voice1,voice2`)
+2. **Project `.yakk.env`** files (searched up directory tree)
+3. **Global `~/.yakk/yakk.env`**
 4. **Built-in defaults** (`af_sky,alloy`)
 
 ## Testing Voice Selection
@@ -87,7 +87,7 @@ Voice preferences follow this priority order:
 You can test specific voices:
 
 ```bash
-VOICEMODE_VOICES=af_sky voicemode converse
+YAKK_VOICES=af_sky yakk converse
 ```
 
 ## Troubleshooting

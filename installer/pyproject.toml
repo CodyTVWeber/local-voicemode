@@ -5,14 +5,14 @@ build-backend = "hatchling.build"
 [project]
 name = "voice-mode-install"
 version = "8.6.1"
-description = "Installer for VoiceMode - handles system dependencies and installation"
+description = "Installer for Yakk - handles system dependencies and installation"
 readme = "README.md"
 requires-python = ">=3.10"
 license = {text = "MIT"}
 authors = [
     {name = "mbailey", email = "mbailey@example.com"},
 ]
-keywords = ["voicemode", "installer", "mcp", "voice", "setup"]
+keywords = ["yakk", "installer", "mcp", "voice", "setup"]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
@@ -33,18 +33,18 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/mbailey/voicemode"
-Repository = "https://github.com/mbailey/voicemode"
-Issues = "https://github.com/mbailey/voicemode/issues"
+Homepage = "https://github.com/mbailey/yakk"
+Repository = "https://github.com/mbailey/yakk"
+Issues = "https://github.com/mbailey/yakk/issues"
 
 [project.scripts]
-voice-mode-install = "voicemode_install.cli:main"
+voice-mode-install = "yakk_install.cli:main"
 
 [tool.hatch.build.targets.wheel]
-packages = ["voicemode_install"]
+packages = ["yakk_install"]
 include = [
-  "voicemode_install/**/*.py",
-  "voicemode_install/**/*.yaml",
+  "yakk_install/**/*.py",
+  "yakk_install/**/*.yaml",
 ]
 exclude = [
   "**/__pycache__",
@@ -56,7 +56,7 @@ exclude = [
 
 [tool.hatch.build.targets.sdist]
 include = [
-  "/voicemode_install",
+  "/yakk_install",
   "/README.md",
   "/pyproject.toml",
 ]

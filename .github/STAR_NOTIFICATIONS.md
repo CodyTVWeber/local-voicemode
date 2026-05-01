@@ -17,17 +17,17 @@ This repository is configured to send push notifications to your phone when some
 
 ### 2. Choose Your ntfy Topic
 
-Pick a unique topic name (e.g., `voicemode-stars-mike-bailey-xyz123`). This will be your notification channel.
+Pick a unique topic name (e.g., `yakk-stars-mike-bailey-xyz123`). This will be your notification channel.
 
 **Important**: Use a unique, hard-to-guess topic name to prevent others from spamming your notifications.
 
 ### 3. Configure GitHub Secret
 
-1. Go to your repository: https://github.com/mbailey/voicemode
+1. Go to your repository: https://github.com/mbailey/yakk
 2. Navigate to **Settings** → **Secrets and variables** → **Actions**
 3. Click **New repository secret**
 4. Name: `NTFY_TOPIC`
-5. Value: Your chosen topic name (e.g., `voicemode-stars-mike-bailey-xyz123`)
+5. Value: Your chosen topic name (e.g., `yakk-stars-mike-bailey-xyz123`)
 6. Click **Add secret**
 
 ### 4. Subscribe in ntfy App
@@ -54,8 +54,8 @@ Replace `your-topic-name` with your actual topic.
 When someone stars the repository, you'll receive a notification like:
 
 ```
-Title: VoiceMode ⭐ New Star!
-Message: 🎉 username just starred voicemode! Total stars: 400
+Title: Yakk ⭐ New Star!
+Message: 🎉 username just starred yakk! Total stars: 400
 ```
 
 ## Customization

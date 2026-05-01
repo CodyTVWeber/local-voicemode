@@ -6,7 +6,7 @@ import os
 import logging
 from typing import Dict, List, Tuple, Optional
 
-logger = logging.getLogger("voicemode")
+logger = logging.getLogger("yakk")
 
 
 def check_system_audio_packages() -> Dict[str, bool]:

@@ -163,17 +163,17 @@ class TestConchConfig:
         import voice_mode.config
 
         # Test with false
-        os.environ["VOICEMODE_CONCH_ENABLED"] = "false"
+        os.environ["YAKK_CONCH_ENABLED"] = "false"
         importlib.reload(voice_mode.config)
         assert voice_mode.config.CONCH_ENABLED is False
 
         # Test with true
-        os.environ["VOICEMODE_CONCH_ENABLED"] = "true"
+        os.environ["YAKK_CONCH_ENABLED"] = "true"
         importlib.reload(voice_mode.config)
         assert voice_mode.config.CONCH_ENABLED is True
 
         # Clean up
-        del os.environ["VOICEMODE_CONCH_ENABLED"]
+        del os.environ["YAKK_CONCH_ENABLED"]
         importlib.reload(voice_mode.config)
 
     def test_conch_timeout_env_var(self):
@@ -182,12 +182,12 @@ class TestConchConfig:
         import importlib
         import voice_mode.config
 
-        os.environ["VOICEMODE_CONCH_TIMEOUT"] = "120"
+        os.environ["YAKK_CONCH_TIMEOUT"] = "120"
         importlib.reload(voice_mode.config)
         assert voice_mode.config.CONCH_TIMEOUT == 120.0
 
         # Clean up
-        del os.environ["VOICEMODE_CONCH_TIMEOUT"]
+        del os.environ["YAKK_CONCH_TIMEOUT"]
         importlib.reload(voice_mode.config)
 
 
@@ -375,7 +375,7 @@ class TestConchAtomicLocking:
         """release() on non-holder must NOT delete the lock file.
 
         Regression test: Previously, release() would unconditionally delete
-        ~/.voicemode/conch even when the caller never acquired the lock. This
+        ~/.yakk/conch even when the caller never acquired the lock. This
         destroyed the flock held by the actual owner (on a different inode),
         allowing multiple agents to speak simultaneously.
         """

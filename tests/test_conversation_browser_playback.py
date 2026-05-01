@@ -25,7 +25,7 @@ except ImportError:
 
 def create_test_environment():
     """Create a temporary test environment with sample data."""
-    temp_dir = tempfile.mkdtemp(prefix="voicemode_test_")
+    temp_dir = tempfile.mkdtemp(prefix="yakk_test_")
     base_dir = Path(temp_dir)
     
     # Create directories
@@ -100,7 +100,7 @@ def test_playback_ui():
     test_dir = create_test_environment()
     
     # Set environment variable
-    os.environ["VOICEMODE_BASE_DIR"] = str(test_dir)
+    os.environ["YAKK_BASE_DIR"] = str(test_dir)
     
     try:
         # Import after setting env var

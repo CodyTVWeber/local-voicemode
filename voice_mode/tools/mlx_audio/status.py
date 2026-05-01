@@ -10,7 +10,7 @@ from typing import Any, Dict
 
 from voice_mode.config import MLX_AUDIO_PORT
 
-logger = logging.getLogger("voicemode")
+logger = logging.getLogger("yakk")
 
 
 async def mlx_audio_status() -> Dict[str, Any]:
@@ -53,7 +53,7 @@ async def mlx_audio_status() -> Dict[str, Any]:
         result["healthy"] = False
         result["message"] = (
             f"mlx-audio service is not running on port {port}. "
-            "Run 'voicemode service install mlx-audio' to set it up."
+            "Run 'yakk service install mlx-audio' to set it up."
         )
     except Exception as exc:  # noqa: BLE001
         result["status"] = "error"

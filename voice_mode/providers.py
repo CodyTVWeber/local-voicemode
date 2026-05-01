@@ -12,7 +12,7 @@ from openai import AsyncOpenAI
 from .config import TTS_VOICES, TTS_MODELS, TTS_BASE_URLS, STT_BASE_URLS, STT_MODEL, STT_MODELS, get_voice_preferences
 from .provider_discovery import provider_registry, EndpointInfo, is_local_provider
 
-logger = logging.getLogger("voicemode")
+logger = logging.getLogger("yakk")
 
 
 async def get_tts_client_and_voice(

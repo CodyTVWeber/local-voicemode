@@ -19,7 +19,7 @@ class TestConfigEditCommand:
         assert result.exit_code == 0
         assert 'Open the configuration file' in result.output
         assert '--editor' in result.output
-        assert 'voicemode.env' in result.output
+        assert 'yakk.env' in result.output
 
     def test_config_edit_help_short_option(self):
         """Test that -h works for help."""

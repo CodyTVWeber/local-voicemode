@@ -75,11 +75,11 @@ async def test_stt_with_file(audio_file: Path):
 async def main():
     """Main test function."""
     # Get the latest audio file
-    audio_dir = Path.home() / "voicemode_audio"
+    audio_dir = Path.home() / "yakk_audio"
     audio_files = sorted(audio_dir.glob("*-stt.wav"), key=lambda p: p.stat().st_mtime, reverse=True)
     
     if not audio_files:
-        logger.error("No audio files found in ~/voicemode_audio/")
+        logger.error("No audio files found in ~/yakk_audio/")
         return
     
     # Test the most recent file

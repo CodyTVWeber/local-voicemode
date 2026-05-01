@@ -135,14 +135,14 @@ class PronounceManager:
     def _load_from_env_vars(self) -> List[str]:
         """Load pronunciation rules from environment variables.
 
-        Looks for VOICEMODE_PRONOUNCE and VOICEMODE_PRONOUNCE_* variables.
+        Looks for YAKK_PRONOUNCE and YAKK_PRONOUNCE_* variables.
         Returns list of rule texts to parse.
         """
         rule_texts = []
 
-        # Collect all VOICEMODE_PRONOUNCE* environment variables
+        # Collect all YAKK_PRONOUNCE* environment variables
         for key, value in os.environ.items():
-            if key == 'VOICEMODE_PRONOUNCE' or key.startswith('VOICEMODE_PRONOUNCE_'):
+            if key == 'YAKK_PRONOUNCE' or key.startswith('YAKK_PRONOUNCE_'):
                 if value.strip():
                     # Strip surrounding quotes if present (from .env file parsing)
                     value = value.strip()
@@ -180,7 +180,7 @@ class PronounceManager:
         Returns:
             Modified text with pronunciation improvements
         """
-        log_substitutions = os.environ.get('VOICEMODE_PRONUNCIATION_LOG_SUBSTITUTIONS', '').lower() == 'true'
+        log_substitutions = os.environ.get('YAKK_PRONUNCIATION_LOG_SUBSTITUTIONS', '').lower() == 'true'
 
         for rule in self.rules['tts']:
             original = text
@@ -200,7 +200,7 @@ class PronounceManager:
         Returns:
             Corrected text
         """
-        log_substitutions = os.environ.get('VOICEMODE_PRONUNCIATION_LOG_SUBSTITUTIONS', '').lower() == 'true'
+        log_substitutions = os.environ.get('YAKK_PRONUNCIATION_LOG_SUBSTITUTIONS', '').lower() == 'true'
 
         for rule in self.rules['stt']:
             original = text
@@ -267,4 +267,4 @@ def get_manager() -> PronounceManager:
 
 def is_enabled() -> bool:
     """Check if pronunciation middleware is enabled."""
-    return os.environ.get('VOICEMODE_PRONUNCIATION_ENABLED', 'true').lower() == 'true'
+    return os.environ.get('YAKK_PRONUNCIATION_ENABLED', 'true').lower() == 'true'

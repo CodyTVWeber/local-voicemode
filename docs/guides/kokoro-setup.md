@@ -1,18 +1,18 @@
 # Kokoro Text-to-Speech Setup
 
-Kokoro is a high-quality local text-to-speech service that provides natural-sounding voices in multiple languages. It offers an OpenAI-compatible API that VoiceMode can use as an alternative to cloud-based TTS services.
+Kokoro is a high-quality local text-to-speech service that provides natural-sounding voices in multiple languages. It offers an OpenAI-compatible API that Yakk can use as an alternative to cloud-based TTS services.
 
 ## Quick Start
 
 ```bash
 # Install kokoro service
-voicemode kokoro install
+yakk kokoro install
 
 # Start the service
-voicemode kokoro start
+yakk kokoro start
 
 # Check status
-voicemode kokoro status
+yakk kokoro status
 ```
 
 Default endpoint: `http://127.0.0.1:8880/v1`
@@ -21,18 +21,18 @@ Default endpoint: `http://127.0.0.1:8880/v1`
 
 ### Automatic Installation (Recommended)
 
-VoiceMode includes an installation tool that handles everything:
+Yakk includes an installation tool that handles everything:
 
 ```bash
 # Install kokoro with default settings
-voicemode kokoro install
+yakk kokoro install
 
 # Or using Claude Code
 claude converse "Please install kokoro-fastapi"
 ```
 
 This will:
-- Clone the kokoro-fastapi repository to `~/.voicemode/kokoro-fastapi`
+- Clone the kokoro-fastapi repository to `~/.yakk/kokoro-fastapi`
 - Install UV package manager if needed
 - Set up automatic startup (systemd on Linux, launchd on macOS)
 - Start the service on port 8880
@@ -84,13 +84,13 @@ Models download automatically from [Hugging Face](https://huggingface.co/hexgrad
 
 ### Environment Variables
 
-Configure in `~/.voicemode/voicemode.env`:
+Configure in `~/.yakk/yakk.env`:
 
 ```bash
-VOICEMODE_KOKORO_PORT=8880
-VOICEMODE_KOKORO_MODELS_DIR=~/Models/kokoro
-VOICEMODE_KOKORO_CACHE_DIR=~/.voicemode/cache/kokoro
-VOICEMODE_KOKORO_DEFAULT_VOICE=af_sky
+YAKK_KOKORO_PORT=8880
+YAKK_KOKORO_MODELS_DIR=~/Models/kokoro
+YAKK_KOKORO_CACHE_DIR=~/.yakk/cache/kokoro
+YAKK_KOKORO_DEFAULT_VOICE=af_sky
 ```
 
 ### Service Management
@@ -99,12 +99,12 @@ VOICEMODE_KOKORO_DEFAULT_VOICE=af_sky
 
 ```bash
 # Start/stop service
-launchctl load ~/Library/LaunchAgents/com.voicemode.kokoro.plist
-launchctl unload ~/Library/LaunchAgents/com.voicemode.kokoro.plist
+launchctl load ~/Library/LaunchAgents/com.yakk.kokoro.plist
+launchctl unload ~/Library/LaunchAgents/com.yakk.kokoro.plist
 
 # Enable/disable at startup
-launchctl load -w ~/Library/LaunchAgents/com.voicemode.kokoro.plist
-launchctl unload -w ~/Library/LaunchAgents/com.voicemode.kokoro.plist
+launchctl load -w ~/Library/LaunchAgents/com.yakk.kokoro.plist
+launchctl unload -w ~/Library/LaunchAgents/com.yakk.kokoro.plist
 
 # Check status
 launchctl list | grep kokoro
@@ -126,9 +126,9 @@ systemctl --user status kokoro
 journalctl --user -u kokoro -f
 ```
 
-## Integration with VoiceMode
+## Integration with Yakk
 
-VoiceMode automatically detects Kokoro when available:
+Yakk automatically detects Kokoro when available:
 
 1. **First**: Checks for Kokoro on `http://127.0.0.1:8880/v1`
 2. **Fallback**: Uses OpenAI API (requires `OPENAI_API_KEY`)
@@ -144,7 +144,7 @@ export TTS_VOICE=af_sky  # Optional: specify voice
 
 Or in MCP configuration:
 ```json
-"voicemode": {
+"yakk": {
   ...
   "env": {
     "TTS_BASE_URL": "http://127.0.0.1:8880/v1",
@@ -167,7 +167,7 @@ export TTS_VOICE=af_sky                       # Kokoro voice
 
 ### macOS LaunchAgent
 
-Create `~/Library/LaunchAgents/com.voicemode.kokoro.plist`:
+Create `~/Library/LaunchAgents/com.yakk.kokoro.plist`:
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -175,7 +175,7 @@ Create `~/Library/LaunchAgents/com.voicemode.kokoro.plist`:
 <plist version="1.0">
 <dict>
     <key>Label</key>
-    <string>com.voicemode.kokoro</string>
+    <string>com.yakk.kokoro</string>
     <key>ProgramArguments</key>
     <array>
         <string>/usr/local/bin/uvx</string>
@@ -261,9 +261,9 @@ For better performance:
 
 ## File Locations
 
-- **Models**: `~/Models/kokoro/` or `~/.voicemode/services/kokoro/models/`
-- **Cache**: `~/.voicemode/cache/kokoro/`
+- **Models**: `~/Models/kokoro/` or `~/.yakk/services/kokoro/models/`
+- **Cache**: `~/.yakk/cache/kokoro/`
 - **Service Files**:
-  - macOS: `~/Library/LaunchAgents/com.voicemode.kokoro.plist`
+  - macOS: `~/Library/LaunchAgents/com.yakk.kokoro.plist`
   - Linux: `~/.config/systemd/user/kokoro.service`
-- **Installation**: `~/.voicemode/kokoro-fastapi/`
+- **Installation**: `~/.yakk/kokoro-fastapi/`

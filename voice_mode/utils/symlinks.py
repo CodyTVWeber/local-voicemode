@@ -1,4 +1,4 @@
-"""Symlink utilities for VoiceMode audio files.
+"""Symlink utilities for Yakk audio files.
 
 Provides functions to maintain 'latest' symlinks that always point to the most recent
 audio files, making it easy to quickly access the last recording or TTS output.
@@ -10,7 +10,7 @@ from typing import Optional, Literal
 
 from ..config import AUDIO_DIR
 
-logger = logging.getLogger("voicemode")
+logger = logging.getLogger("yakk")
 
 AudioType = Literal["stt", "tts"]
 
@@ -37,8 +37,8 @@ def update_latest_symlinks(
         Tuple of (type_symlink_path, latest_symlink_path) or (None, None) on error
 
     Example:
-        >>> update_latest_symlinks("/home/user/.voicemode/audio/2026/02/123_conv_stt.wav", "stt")
-        (Path('~/.voicemode/audio/latest-stt.wav'), Path('~/.voicemode/audio/latest.wav'))
+        >>> update_latest_symlinks("/home/user/.yakk/audio/2026/02/123_conv_stt.wav", "stt")
+        (Path('~/.yakk/audio/latest-stt.wav'), Path('~/.yakk/audio/latest.wav'))
     """
     file_path = Path(file_path)
 

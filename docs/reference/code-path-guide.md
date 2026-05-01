@@ -1,7 +1,7 @@
-# VoiceMode Converse Code Path Guide
+# Yakk Converse Code Path Guide
 
 ## Overview
-This guide traces the code path from running `voicemode converse` through all the relevant files.
+This guide traces the code path from running `yakk converse` through all the relevant files.
 
 ## Code Path
 
@@ -11,7 +11,7 @@ This guide traces the code path from running `voicemode converse` through all th
 ```toml
 [project.scripts]
 voice-mode = "voice_mode.cli:voice_mode"
-voicemode = "voice_mode.cli:voice_mode"
+yakk = "voice_mode.cli:voice_mode"
 ```
 Both commands map to the `voice_mode()` function in the CLI module.
 
@@ -21,7 +21,7 @@ Both commands map to the `voice_mode()` function in the CLI module.
 **Lines:** 74-76
 ```python
 def voice_mode() -> None:
-    """Entry point for voicemode command - starts the MCP server or runs subcommands."""
+    """Entry point for yakk command - starts the MCP server or runs subcommands."""
     voice_mode_main_cli()
 ```
 This calls the main CLI group.
@@ -172,10 +172,10 @@ look  # Confirm visible
 While showing each file, use voice to narrate:
 
 ```python
-converse("Let's trace the voicemode converse command. First, the entry point is in pyproject.toml.", wait_for_response=False)
+converse("Let's trace the yakk converse command. First, the entry point is in pyproject.toml.", wait_for_response=False)
 # Then show pyproject.toml
 
-converse("When you run voicemode converse, it calls voice_mode function in cli.py", wait_for_response=False)
+converse("When you run yakk converse, it calls voice_mode function in cli.py", wait_for_response=False)
 # Then show cli.py entry
 
 converse("This routes to the converse subcommand, which is a Click command", wait_for_response=False)
@@ -196,7 +196,7 @@ converse("Provider discovery finds available TTS and STT services", wait_for_res
 ## Summary Flow
 
 ```
-User runs: voicemode converse
+User runs: yakk converse
     ↓
 pyproject.toml (scripts) → voice_mode.cli:voice_mode
     ↓

@@ -29,7 +29,7 @@ async def list_whisper_models() -> str:
         
         # If config path doesn't exist, check service installation
         if not models_dir.exists():
-            service_models = Path.home() / ".voicemode/services/whisper/models"
+            service_models = Path.home() / ".yakk/services/whisper/models"
             if service_models.exists():
                 models_dir = service_models
         
@@ -62,7 +62,7 @@ async def list_whisper_models() -> str:
             "total_models": len(models),
             "current_model": current_model,
             "default_model": DEFAULT_WHISPER_MODEL,
-            "environment_variable": "VOICEMODE_WHISPER_MODEL",
+            "environment_variable": "YAKK_WHISPER_MODEL",
             "total_size_mb": round(sum(m["size_mb"] for m in models), 1) if models else 0
         }
         

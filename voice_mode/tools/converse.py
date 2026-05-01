@@ -13,7 +13,6 @@ import numpy as np
 import sounddevice as sd
 from scipy.io.wavfile import write
 from pydub import AudioSegment
-from openai import AsyncOpenAI
 import httpx
 
 # Optional webrtcvad for silence detection
@@ -92,7 +91,7 @@ from voice_mode.utils import (
 )
 from voice_mode.pronounce import get_manager as get_pronounce_manager, is_enabled as pronounce_enabled
 
-logger = logging.getLogger("voicemode")
+logger = logging.getLogger("yakk")
 
 # Log silence detection config at module load time
 logger.info(f"Module loaded with DISABLE_SILENCE_DETECTION={DISABLE_SILENCE_DETECTION}")
@@ -106,16 +105,16 @@ def is_tmux() -> bool:
 def _is_focus_held() -> bool:
     """Check if another tool recently took visual focus (the 'visual conch').
 
-    Returns True if ~/.voicemode/focus-hold exists and was modified within
+    Returns True if ~/.yakk/focus-hold exists and was modified within
     the hold period, meaning auto-focus should be suppressed to let the
     user view what was shown (e.g. a file opened by show-me).
 
     The hold duration is read from the file contents (written by show-me's
-    --hold flag), falling back to VOICEMODE_FOCUS_HOLD_SECONDS env var,
+    --hold flag), falling back to YAKK_FOCUS_HOLD_SECONDS env var,
     then 30 seconds.
     """
-    hold_file = os.path.expanduser("~/.voicemode/focus-hold")
-    default_hold = float(os.environ.get("VOICEMODE_FOCUS_HOLD_SECONDS", "30"))
+    hold_file = os.path.expanduser("~/.yakk/focus-hold")
+    default_hold = float(os.environ.get("YAKK_FOCUS_HOLD_SECONDS", "30"))
     try:
         age = time.time() - os.path.getmtime(hold_file)
         # Read hold duration from file (written by show-me --hold)
@@ -198,8 +197,8 @@ def focus_tmux_pane() -> None:
 
 
 # DJ Ducking Configuration
-DJ_SOCKET_PATH = "/tmp/voicemode-mpv.sock"
-DJ_VOLUME_DUCK_AMOUNT = int(os.environ.get("VOICEMODE_DJ_DUCK_AMOUNT", "20"))  # Volume reduction during TTS
+DJ_SOCKET_PATH = "/tmp/yakk-mpv.sock"
+DJ_VOLUME_DUCK_AMOUNT = int(os.environ.get("YAKK_DJ_DUCK_AMOUNT", "20"))  # Volume reduction during TTS
 
 
 def _dj_command(cmd: str) -> Optional[str]:
@@ -927,7 +926,7 @@ def record_audio_with_silence_detection(max_duration: float, disable_silence_det
         if disable_silence_detection:
             logger.info("Silence detection disabled for this interaction by request")
         else:
-            logger.info("Silence detection disabled globally via VOICEMODE_DISABLE_SILENCE_DETECTION")
+            logger.info("Silence detection disabled globally via YAKK_DISABLE_SILENCE_DETECTION")
         # For fallback, assume speech is present since we can't detect
         return (record_audio(max_duration), True)
     
@@ -1220,11 +1219,11 @@ Example: If user says "search for tasks created yesterday", check for and invoke
    /v1/audio/transcriptions and /v1/audio/speech
 
 📚 DOCUMENTATION: See MCP resources for detailed information:
-   - voicemode://docs/quickstart - Basic usage and common examples
-   - voicemode://docs/parameters - Complete parameter reference
-   - voicemode://docs/languages - Non-English language support guide
-   - voicemode://docs/patterns - Best practices and conversation patterns
-   - voicemode://docs/troubleshooting - Audio, VAD, and connectivity issues
+   - yakk://docs/quickstart - Basic usage and common examples
+   - yakk://docs/parameters - Complete parameter reference
+   - yakk://docs/languages - Non-English language support guide
+   - yakk://docs/patterns - Best practices and conversation patterns
+   - yakk://docs/troubleshooting - Audio, VAD, and connectivity issues
 
 KEY PARAMETERS:
 • message (required): The message to speak
@@ -1248,7 +1247,7 @@ KEY PARAMETERS:
 TIMING PARAMETERS (usually leave at defaults):
   Silence detection handles most cases automatically. Only override these if
   silence detection is disabled or the user reports being cut off.
-  Defaults are configurable by the user via ~/.voicemode/voicemode.env.
+  Defaults are configurable by the user via ~/.yakk/yakk.env.
 • listen_duration_max (number, default: 120): Max listen time in seconds
 • listen_duration_min (number, default: 2.0): Min recording time before silence detection
 
@@ -1256,7 +1255,7 @@ PRIVACY: Microphone access required when wait_for_response=true.
          Audio processed via STT service, not stored.
 
 RECOGNITION TIP: If specific words are consistently misrecognized, configure
-   VOICEMODE_STT_PROMPT for vocabulary biasing - see voicemode://docs/parameters
+   YAKK_STT_PROMPT for vocabulary biasing - see yakk://docs/parameters
 
 For complete parameter list, advanced options, and detailed examples,
 consult the MCP resources listed above.
@@ -1306,7 +1305,7 @@ consult the MCP resources listed above.
     # Validate speed parameter range
     if speed is not None:
         if not (0.25 <= speed <= 4.0):
-            source = " from VOICEMODE_TTS_SPEED environment variable" if speed_from_config else ""
+            source = " from YAKK_TTS_SPEED environment variable" if speed_from_config else ""
             return f"❌ Error: speed must be between 0.25 and 4.0 (got {speed}{source})"
 
     # Determine effective metrics level (parameter overrides config)
@@ -1532,7 +1531,7 @@ consult the MCP resources listed above.
 
                         result = "\n".join(error_lines)
                     else:
-                        result = "Error: Could not speak message. All TTS providers failed. Check that Kokoro is running (voicemode service start kokoro)."
+                        result = "Error: Could not speak message. All TTS providers failed. Check that Kokoro is running (yakk service start kokoro)."
                     return result
 
                 # If speak-only mode, return success after TTS
@@ -2028,7 +2027,7 @@ consult the MCP resources listed above.
         # We intentionally DO NOT re-raise. Under FastMCP 2.x stdio transport,
         # an uncaught CancelledError escaping the tool handler tears down the
         # MCP server process, leaving the client with a failed connection that
-        # requires `/mcp` reconnect. That surfaces to the user as VoiceMode
+        # requires `/mcp` reconnect. That surfaces to the user as Yakk
         # "disappearing" after every ESC (see VM-1026 / GH issue #337).
         #
         # Swallowing cancellation here is safe because this function is a leaf

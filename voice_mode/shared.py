@@ -1,4 +1,4 @@
-"""Shared initialization for voicemode."""
+"""Shared initialization for yakk."""
 
 import asyncio
 import logging

@@ -1,11 +1,11 @@
 ---
-description: Install VoiceMode, FFmpeg, and local voice services
-allowed-tools: Bash(uvx:*), Bash(voicemode:*), Bash(brew:*), Bash(uname:*), Bash(which:*)
+description: Install Yakk, FFmpeg, and local voice services
+allowed-tools: Bash(uvx:*), Bash(yakk:*), Bash(brew:*), Bash(uname:*), Bash(which:*)
 ---
 
-# /voicemode:install
+# /yakk:install
 
-Install VoiceMode and all dependencies needed for voice conversations.
+Install Yakk and all dependencies needed for voice conversations.
 
 ## Quick Install (Non-Interactive)
 
@@ -13,8 +13,8 @@ For a fast, fully automated install on Apple Silicon:
 
 ```bash
 uvx voice-mode-install --yes
-voicemode service install whisper
-voicemode service install kokoro
+yakk service install whisper
+yakk service install kokoro
 ```
 
 ## What Gets Installed
@@ -22,7 +22,7 @@ voicemode service install kokoro
 | Component | Size | Purpose |
 |-----------|------|---------|
 | FFmpeg | ~50MB | Audio processing (via Homebrew) |
-| VoiceMode CLI | ~10MB | Command-line tools |
+| Yakk CLI | ~10MB | Command-line tools |
 | Whisper (base) | ~150MB | Speech-to-text |
 | Kokoro | ~350MB | Text-to-speech |
 
@@ -32,29 +32,29 @@ voicemode service install kokoro
 
 2. **Check what's already installed:**
    ```bash
-   which voicemode  # VoiceMode CLI
+   which yakk  # Yakk CLI
    which ffmpeg     # Audio processing
    ```
 
 3. **Install missing components:**
    ```bash
-   # Full install (installs ffmpeg, voicemode, and checks dependencies)
+   # Full install (installs ffmpeg, yakk, and checks dependencies)
    uvx voice-mode-install --yes
 
    # Install local services
-   voicemode service install whisper
-   voicemode service install kokoro
+   yakk service install whisper
+   yakk service install kokoro
    ```
 
 4. **Verify services are running:**
    ```bash
-   voicemode service status whisper
-   voicemode service status kokoro
+   yakk service status whisper
+   yakk service status kokoro
    ```
 
 5. **Reconnect MCP server:**
-   After installation, the VoiceMode MCP server needs to reconnect:
-   - Run `/mcp` and select voicemode, then click "Reconnect", OR
+   After installation, the Yakk MCP server needs to reconnect:
+   - Run `/mcp` and select yakk, then click "Reconnect", OR
    - Restart Claude Code
 
 ## Whisper Model Selection
@@ -70,7 +70,7 @@ For Apple Silicon Macs with 16GB+ RAM, the large-v2 model is recommended:
 
 To install the recommended model:
 ```bash
-voicemode whisper install --model large-v2
+yakk whisper install --model large-v2
 ```
 
 ## Prerequisites
@@ -79,6 +79,6 @@ This install process assumes:
 - **UV** - Python package manager (install: `curl -LsSf https://astral.sh/uv/install.sh | sh`)
 - **Homebrew** - macOS package manager (install: `brew.sh`)
 
-The VoiceMode installer will install Homebrew if missing on macOS.
+The Yakk installer will install Homebrew if missing on macOS.
 
-For complete documentation, load the `voicemode` skill.
+For complete documentation, load the `yakk` skill.

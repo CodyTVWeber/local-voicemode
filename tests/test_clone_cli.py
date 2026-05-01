@@ -1,8 +1,8 @@
-"""Unit tests for the voicemode clone CLI subcommand group.
+"""Unit tests for the yakk clone CLI subcommand group.
 
 Note: as of VM-1108 the clone group only manages voice profiles
 (add/list/remove). Service install/status/uninstall moved to
-``voicemode service install mlx-audio`` -- those branches live in
+``yakk service install mlx-audio`` -- those branches live in
 test_mlx_audio_install.py.
 """
 
@@ -29,7 +29,7 @@ class TestCloneGroupRegistered:
     """Verify the clone group is registered and accessible."""
 
     def test_clone_group_in_main_cli(self, runner):
-        """The 'clone' subcommand should appear in voicemode --help."""
+        """The 'clone' subcommand should appear in yakk --help."""
         result = runner.invoke(voice_mode_main_cli, ["clone", "--help"])
         assert result.exit_code == 0
         assert "Voice cloning profile management" in result.output
@@ -42,15 +42,15 @@ class TestCloneGroupRegistered:
             assert cmd in result.output, f"Missing subcommand '{cmd}' in clone --help"
 
     def test_clone_no_longer_has_service_subcommands(self, runner):
-        """install/status/uninstall live under `voicemode service` now -- they
-        must not be invokable as `voicemode clone <op>`."""
+        """install/status/uninstall live under `yakk service` now -- they
+        must not be invokable as `yakk clone <op>`."""
         for op in ("install", "status", "uninstall"):
             result = runner.invoke(voice_mode_main_cli, ["clone", op, "--help"])
             # Click returns nonzero with "No such command" when the subcommand
             # is absent from the group.
             assert result.exit_code != 0, (
-                f"`voicemode clone {op}` still resolves -- it should have "
-                "moved to `voicemode service install mlx-audio`."
+                f"`yakk clone {op}` still resolves -- it should have "
+                "moved to `yakk service install mlx-audio`."
             )
 
 
@@ -120,7 +120,7 @@ class TestCloneAdd:
         mock_add.return_value = {
             "success": False,
             "error": "Cannot reach Whisper STT",
-            "hint": "Start Whisper with: voicemode whisper service install",
+            "hint": "Start Whisper with: yakk whisper service install",
         }
         result = runner.invoke(voice_mode_main_cli, [
             "clone", "add", "testvoice", str(audio_file),

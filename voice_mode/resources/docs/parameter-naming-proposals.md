@@ -1,6 +1,6 @@
 # Parameter Naming Proposals
 
-This document proposes better parameter names for the voicemode converse tool to improve clarity and reduce the need for extensive documentation.
+This document proposes better parameter names for the yakk converse tool to improve clarity and reduce the need for extensive documentation.
 
 ## Context
 

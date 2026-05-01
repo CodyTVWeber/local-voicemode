@@ -24,9 +24,9 @@ class TestAudioFormatConfiguration:
         assert STT_AUDIO_FORMAT == "mp3"  # PCM not supported by OpenAI Whisper, defaults to mp3
     
     @patch.dict(os.environ, {
-        'VOICEMODE_AUDIO_FORMAT': 'mp3',
-        'VOICEMODE_TTS_AUDIO_FORMAT': 'flac',
-        'VOICEMODE_STT_AUDIO_FORMAT': 'wav'
+        'YAKK_AUDIO_FORMAT': 'mp3',
+        'YAKK_TTS_AUDIO_FORMAT': 'flac',
+        'YAKK_STT_AUDIO_FORMAT': 'wav'
     })
     def test_custom_audio_formats(self):
         """Test custom audio format configuration"""
@@ -124,7 +124,7 @@ class TestAudioFormatConfiguration:
         assert flac_params["format"] == "flac"
         assert "bitrate" not in flac_params
     
-    @patch.dict(os.environ, {'VOICEMODE_AUDIO_FORMAT': 'invalid_format'})
+    @patch.dict(os.environ, {'YAKK_AUDIO_FORMAT': 'invalid_format'})
     def test_invalid_format_fallback(self):
         """Test that invalid formats fall back to pcm"""
         # Need to reload the module to pick up new env vars
@@ -147,8 +147,8 @@ class TestAudioFormatConfiguration:
         assert AAC_BITRATE == "64k"
     
     @patch.dict(os.environ, {
-        'VOICEMODE_OPUS_BITRATE': '48000',
-        'VOICEMODE_MP3_BITRATE': '128k'
+        'YAKK_OPUS_BITRATE': '48000',
+        'YAKK_MP3_BITRATE': '128k'
     })
     def test_custom_bitrate_settings(self):
         """Test custom bitrate configuration"""

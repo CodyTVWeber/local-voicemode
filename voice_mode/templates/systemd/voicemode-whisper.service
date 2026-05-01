@@ -1,6 +1,6 @@
-# voicemode-whisper.service v1.2.0
+# yakk-whisper.service v1.2.0
 # Last updated: 2025-12-01
-# Simplified: start script handles config via voicemode.env
+# Simplified: start script handles config via yakk.env
 
 [Unit]
 Description=Whisper.cpp Speech Recognition Server
@@ -12,13 +12,13 @@ ExecStart={START_SCRIPT}
 Restart=on-failure
 RestartSec=10
 
-# Environment - start script sources voicemode.env for port/model config
+# Environment - start script sources yakk.env for port/model config
 Environment="PATH=%h/.local/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/cuda/bin"
 
 # Logging
 StandardOutput=journal
 StandardError=journal
-SyslogIdentifier=voicemode-whisper
+SyslogIdentifier=yakk-whisper
 
 [Install]
 WantedBy=default.target

@@ -1,14 +1,14 @@
 {
   "mcpServers": {
-    "voicemode": {
+    "yakk": {
       "type": "stdio",
       "command": "uv",
       "args": [
         "run",
-        "voicemode"
+        "yakk"
       ],
       "env": {
-        "#VOICEMODE_SAVE_ALL": "true"
+        "#YAKK_SAVE_ALL": "true"
       }
     }
   }

@@ -300,7 +300,7 @@ Examples:
     print("1. Create a GitHub release with changelog")
     print("2. Publish packages to PyPI")
     print()
-    print("Monitor progress at: https://github.com/mbailey/voicemode/actions")
+    print("Monitor progress at: https://github.com/mbailey/yakk/actions")
 
     return 0
 

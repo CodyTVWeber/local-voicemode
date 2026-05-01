@@ -1,10 +1,10 @@
-# VoiceMode Architecture
+# Yakk Architecture
 
-Understanding how VoiceMode components work together to enable voice conversations.
+Understanding how Yakk components work together to enable voice conversations.
 
 ## System Overview
 
-VoiceMode is built as a Model Context Protocol (MCP) server that provides voice capabilities to AI assistants. It follows a modular architecture with clear separation between voice services, audio processing, and client interfaces.
+Yakk is built as a Model Context Protocol (MCP) server that provides voice capabilities to AI assistants. It follows a modular architecture with clear separation between voice services, audio processing, and client interfaces.
 
 ```
 ┌─────────────────────────────────────────────┐
@@ -12,7 +12,7 @@ VoiceMode is built as a Model Context Protocol (MCP) server that provides voice 
 └─────────────────┬───────────────────────────┘
                   │ MCP Protocol
 ┌─────────────────┴───────────────────────────┐
-│           VoiceMode MCP Server              │
+│           Yakk MCP Server              │
 ├──────────────────────────────────────────────┤
 │              Core Components                 │
 │  ┌──────────┐  ┌──────────┐  ┌──────────┐  │
@@ -71,8 +71,8 @@ Provider selection priority:
 Multi-layered configuration system (`config.py`):
 
 1. **Environment Variables**: Highest priority
-2. **Project Config**: `.voicemode.env` in working directory
-3. **User Config**: `~/.voicemode/voicemode.env`
+2. **Project Config**: `.yakk.env` in working directory
+3. **User Config**: `~/.yakk/yakk.env`
 4. **Defaults**: Built-in sensible defaults
 
 ## Voice Services
@@ -124,7 +124,7 @@ Text → TTS Service → Audio Stream → Format Conversion → Speaker
 1. **Installation**: Download binaries, create configs
 2. **Registration**: systemd/launchd service files
 3. **Startup**: Health checks, port binding
-4. **Discovery**: Auto-detection by VoiceMode
+4. **Discovery**: Auto-detection by Yakk
 5. **Monitoring**: Status checks, log rotation
 
 ### Service Communication

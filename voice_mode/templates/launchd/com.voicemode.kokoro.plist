@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<!-- com.voicemode.kokoro.plist v1.4.0 -->
+<!-- com.yakk.kokoro.plist v1.4.0 -->
 <!-- Last updated: 2026-02-18 -->
 <!-- Compatible with: kokoro-fastapi v1.0.0+ -->
-<!-- Simplified: start script handles config via voicemode.env -->
+<!-- Simplified: start script handles config via yakk.env -->
 <plist version="1.0">
 <dict>
     <key>Label</key>
-    <string>com.voicemode.kokoro</string>
+    <string>com.yakk.kokoro</string>
     <key>ProgramArguments</key>
     <array>
         <string>{START_SCRIPT}</string>
@@ -19,9 +19,9 @@
     <key>KeepAlive</key>
     <true/>
     <key>StandardOutPath</key>
-    <string>{HOME}/.voicemode/logs/kokoro/kokoro.out.log</string>
+    <string>{HOME}/.yakk/logs/kokoro/kokoro.out.log</string>
     <key>StandardErrorPath</key>
-    <string>{HOME}/.voicemode/logs/kokoro/kokoro.err.log</string>
+    <string>{HOME}/.yakk/logs/kokoro/kokoro.err.log</string>
     <key>EnvironmentVariables</key>
     <dict>
         <key>PATH</key>

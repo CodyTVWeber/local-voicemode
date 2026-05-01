@@ -27,8 +27,8 @@ The host doesn't disappear during a specialist segment - they step back and let 
 Always tell the user what's happening before transferring:
 
 ```python
-voicemode:converse(
-    "Transferring you now to a foreman for the VoiceMode project.",
+yakk:converse(
+    "Transferring you now to a foreman for the Yakk project.",
     wait_for_response=False
 )
 ```
@@ -46,13 +46,13 @@ Start a new agent instance with explicit instructions to use voice. The spawning
 Spawn an agent for [project] with these instructions:
 
 "The user has been transferred to you to help with [task context].
-Load the voicemode skill with /voicemode:voicemode.
+Load the yakk skill with /yakk:yakk.
 Then use the converse tool to greet them and ask how you can help."
 ```
 
 **Key elements in the spawn prompt:**
 - **Context**: Why the user is being transferred
-- **Skill loading**: Explicit instruction to load voicemode
+- **Skill loading**: Explicit instruction to load yakk
 - **Action**: Tell them to use converse to speak
 - **Greeting**: Have them introduce themselves
 - **Return path**: Who to transfer back to (see below)
@@ -89,7 +89,7 @@ After spawning the new agent, **stop using the converse tool**:
 
 ```python
 # DON'T do this after handoff:
-# voicemode:converse("Let me know if you need anything else!")  # BAD
+# yakk:converse("Let me know if you need anything else!")  # BAD
 
 # DO: Stay silent and let the new agent take over
 ```
@@ -126,7 +126,7 @@ When the receiving agent's work is complete, they must:
 Use the originator's name (passed during handoff):
 
 ```python
-voicemode:converse(
+yakk:converse(
     "I've finished reviewing the task. Transferring you back to Cora.",
     wait_for_response=False
 )
@@ -152,7 +152,7 @@ write_file("/tmp/handback-ready", "done")
 while not exists("/tmp/handback-ready"):
     sleep(1)
 delete_file("/tmp/handback-ready")
-voicemode:converse("I'm back! How did it go with the project agent?")
+yakk:converse("I'm back! How did it go with the project agent?")
 ```
 
 **Example: Process-based (simplest)**
@@ -160,7 +160,7 @@ voicemode:converse("I'm back! How did it go with the project agent?")
 # Originating agent spawns and waits
 process = spawn_agent(...)
 process.wait()  # Blocks until receiving agent exits
-voicemode:converse("Welcome back! The project agent has finished.")
+yakk:converse("Welcome back! The project agent has finished.")
 ```
 
 ### Step 3: Go Quiet and Exit
@@ -183,38 +183,38 @@ After signaling, stop using converse immediately:
 user_request = "I want to work on the voice handoff documentation"
 
 # Announce transfer
-voicemode:converse(
-    "Great! Let me transfer you to a project agent for VoiceMode.",
+yakk:converse(
+    "Great! Let me transfer you to a project agent for Yakk.",
     wait_for_response=False
 )
 
 # Spawn project agent with different voice (mechanism depends on your setup)
 # Key: include handoff context in the prompt
 spawn_agent(
-    project="~/Code/voicemode",
+    project="~/Code/yakk",
     prompt="""The user wants to work on voice handoff documentation.
 
     HANDOFF CONTEXT:
     - You were called by: Cora (the personal assistant)
     - When finished: Announce "Transferring you back to Cora" then exit
 
-    Load the voicemode skill with /voicemode:voicemode.
+    Load the yakk skill with /yakk:yakk.
     Use converse to greet the user and ask which aspect of handoff docs they'd like to focus on.""",
-    env={"VOICEMODE_TTS_VOICE": "alloy"}  # Different voice
+    env={"YAKK_TTS_VOICE": "alloy"}  # Different voice
 )
 
 # Go quiet while project agent works
 # Wait for project agent to exit, then resume
 process.wait()
-voicemode:converse("Welcome back! How did it go with the project agent?")
+yakk:converse("Welcome back! How did it go with the project agent?")
 ```
 
 ### Project Agent Greeting and Working
 
 ```python
 # Project agent's first action after loading skill
-voicemode:converse(
-    "Hey! I'm the VoiceMode project agent. I understand you want to work on handoff documentation. Would you like to focus on the hand-off process, hand-back process, or the examples section?",
+yakk:converse(
+    "Hey! I'm the Yakk project agent. I understand you want to work on handoff documentation. Would you like to focus on the hand-off process, hand-back process, or the examples section?",
     wait_for_response=True
 )
 
@@ -226,7 +226,7 @@ voicemode:converse(
 
 ```python
 # Work complete - use originator name from handoff context
-voicemode:converse(
+yakk:converse(
     "I've updated the handoff documentation and committed the changes. Transferring you back to Cora.",
     wait_for_response=False
 )
@@ -251,26 +251,26 @@ Make handoffs audible by using distinct voices:
 
 **Via environment variable (when spawning):**
 ```bash
-VOICEMODE_TTS_VOICE=alloy  # Set before spawning agent
+YAKK_TTS_VOICE=alloy  # Set before spawning agent
 ```
 
-**Via project .voicemode file:**
+**Via project .yakk file:**
 ```bash
 # In project root
-echo "VOICEMODE_TTS_VOICE=onyx" > .voicemode
+echo "YAKK_TTS_VOICE=onyx" > .yakk
 ```
 
 **Via converse parameter:**
 ```python
-voicemode:converse("Hello!", voice="alloy", tts_provider="kokoro")
+yakk:converse("Hello!", voice="alloy", tts_provider="kokoro")
 ```
 
 ### Voice Fallback Chain
 
-VoiceMode uses `VOICEMODE_VOICES` for fallback:
+Yakk uses `YAKK_VOICES` for fallback:
 ```bash
 # Try Kokoro's af_alloy first, fall back to OpenAI's alloy
-export VOICEMODE_VOICES=af_alloy,alloy
+export YAKK_VOICES=af_alloy,alloy
 ```
 
 ## Troubleshooting
@@ -278,7 +278,7 @@ export VOICEMODE_VOICES=af_alloy,alloy
 ### New Agent Doesn't Speak
 
 1. **Check skill loaded**: Look for "Successfully loaded skill" in output
-2. **Verify services**: `voicemode:service("whisper", "status")`
+2. **Verify services**: `yakk:service("whisper", "status")`
 3. **Check prompt**: Ensure instructions say to use converse
 
 ### Audio Conflicts
@@ -289,7 +289,7 @@ export VOICEMODE_VOICES=af_alloy,alloy
 
 ### User Can't Hear New Agent
 
-1. **Check TTS service**: `voicemode:service("kokoro", "status")`
+1. **Check TTS service**: `yakk:service("kokoro", "status")`
 2. **Verify audio output**: Same device as before handoff?
 3. **Check voice setting**: Is the voice available?
 

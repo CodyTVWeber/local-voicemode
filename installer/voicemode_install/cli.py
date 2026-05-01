@@ -1,4 +1,4 @@
-"""Main CLI for VoiceMode installer."""
+"""Main CLI for Yakk installer."""
 
 import json
 import os
@@ -34,14 +34,14 @@ LOGO = """
     ║   ██║ ╚═╝ ██║╚██████╔╝██████╔╝███████╗     ║
     ║   ╚═╝     ╚═╝ ╚═════╝ ╚═════╝ ╚══════╝     ║
     ║                                            ║
-    ║            VoiceMode Installer             ║
+    ║            Yakk Installer             ║
     ║                                            ║
     ╚════════════════════════════════════════════╝
 """
 
 
 def print_logo():
-    """Display the VoiceMode logo in Claude Code orange."""
+    """Display the Yakk logo in Claude Code orange."""
     # Use ANSI 256-color code 208 (dark orange) which matches Claude Code orange (RGB 208, 128, 0)
     # This works on xterm-256color and other 256-color terminals
     click.echo('\033[38;5;208m' + '\033[1m' + LOGO + '\033[0m')
@@ -69,16 +69,16 @@ def print_error(message: str):
 
 
 def get_installed_version() -> str | None:
-    """Get the currently installed VoiceMode version."""
+    """Get the currently installed Yakk version."""
     try:
         result = subprocess.run(
-            ['voicemode', '--version'],
+            ['yakk', '--version'],
             capture_output=True,
             text=True,
             timeout=5
         )
         if result.returncode == 0:
-            # Output is like "VoiceMode version 6.0.1" or just "6.0.1"
+            # Output is like "Yakk version 6.0.1" or just "6.0.1"
             version = result.stdout.strip().split()[-1]
             return version
     except (subprocess.CalledProcessError, FileNotFoundError, subprocess.TimeoutExpired):
@@ -87,7 +87,7 @@ def get_installed_version() -> str | None:
 
 
 def get_latest_version() -> str | None:
-    """Get the latest VoiceMode version from PyPI."""
+    """Get the latest Yakk version from PyPI."""
     try:
         # Use PyPI JSON API to get latest version
         result = subprocess.run(
@@ -105,8 +105,8 @@ def get_latest_version() -> str | None:
 
 
 def check_existing_installation() -> bool:
-    """Check if VoiceMode is already installed."""
-    return check_command_exists('voicemode')
+    """Check if Yakk is already installed."""
+    return check_command_exists('yakk')
 
 
 def ensure_homebrew_on_macos(platform_info, dry_run: bool, non_interactive: bool) -> bool:
@@ -203,14 +203,14 @@ Examples:
 
 @click.command(epilog=EPILOG, context_settings={'help_option_names': ['-h', '--help']})
 @click.option('-d', '--dry-run', is_flag=True, help='Show what would be installed without installing')
-@click.option('-v', '--voice-mode-version', default=None, help='Specific VoiceMode version to install')
+@click.option('-v', '--voice-mode-version', default=None, help='Specific Yakk version to install')
 @click.option('-s', '--skip-services', is_flag=True, help='Skip local service installation')
 @click.option('-y', '--yes', 'non_interactive', is_flag=True, help='Run without prompts (auto-accept all)')
 @click.option('-n', '--non-interactive', is_flag=True, help='Run without prompts (deprecated: use --yes/-y)')
 @click.option('-m', '--model', default='base', help='Whisper model to use (base, small, medium, large-v2)')
 @click.version_option(__version__, '-V', '--version')
 def main(dry_run, voice_mode_version, skip_services, non_interactive, model):
-    """VoiceMode Installer - Install VoiceMode and its system dependencies.
+    """Yakk Installer - Install Yakk and its system dependencies.
 
     This installer will:
 
@@ -220,7 +220,7 @@ def main(dry_run, voice_mode_version, skip_services, non_interactive, model):
 
       3. Install required packages (with your permission)
 
-      4. Install VoiceMode using uv
+      4. Install Yakk using uv
 
       5. Optionally install local voice services
 
@@ -271,7 +271,7 @@ def main(dry_run, voice_mode_version, skip_services, non_interactive, model):
             installed_version = get_installed_version()
             latest_version = get_latest_version()
 
-            click.echo(click.style("✓ VoiceMode is currently installed", fg='green'))
+            click.echo(click.style("✓ Yakk is currently installed", fg='green'))
 
             if installed_version:
                 click.echo(f"  Installed version: {installed_version}")
@@ -285,13 +285,13 @@ def main(dry_run, voice_mode_version, skip_services, non_interactive, model):
                 if installed_version and latest_version and installed_version != latest_version:
                     click.echo()
                     if non_interactive:
-                        print_step("Upgrading VoiceMode...")
+                        print_step("Upgrading Yakk...")
                     elif not click.confirm(f"Upgrade to version {latest_version}?", default=True):
                         click.echo("\nTo upgrade manually later, run: uv tool install --upgrade voice-mode")
                         sys.exit(0)
                 elif installed_version and latest_version and installed_version == latest_version:
                     click.echo()
-                    click.echo(click.style("✓ VoiceMode is up-to-date", fg='green'))
+                    click.echo(click.style("✓ Yakk is up-to-date", fg='green'))
                     if non_interactive:
                         click.echo("Reinstalling...")
                     elif not click.confirm("Reinstall anyway?", default=False):
@@ -300,14 +300,14 @@ def main(dry_run, voice_mode_version, skip_services, non_interactive, model):
                 else:
                     click.echo()
                     if not non_interactive:
-                        if not click.confirm("Reinstall VoiceMode?", default=False):
+                        if not click.confirm("Reinstall Yakk?", default=False):
                             click.echo("\nTo upgrade manually, run: uv tool install --upgrade voice-mode")
                             sys.exit(0)
             else:
                 click.echo("  Latest version:    (unable to check)")
                 click.echo()
                 if not non_interactive:
-                    if not click.confirm("Reinstall/upgrade VoiceMode?", default=False):
+                    if not click.confirm("Reinstall/upgrade Yakk?", default=False):
                         click.echo("\nTo upgrade manually, run: uv tool install --upgrade voice-mode")
                         sys.exit(0)
 
@@ -360,16 +360,16 @@ def main(dry_run, voice_mode_version, skip_services, non_interactive, model):
 
         click.echo()
 
-        # Install VoiceMode
-        print_step("Installing VoiceMode...")
+        # Install Yakk
+        print_step("Installing Yakk...")
         installer = PackageInstaller(platform_info, dry_run=dry_run, non_interactive=non_interactive)
 
-        if installer.install_voicemode(version=voice_mode_version):
-            print_success("VoiceMode installed successfully")
-            logger.log_install('voicemode', ['voice-mode'], True)
+        if installer.install_yakk(version=voice_mode_version):
+            print_success("Yakk installed successfully")
+            logger.log_install('yakk', ['voice-mode'], True)
         else:
-            print_error("Failed to install VoiceMode")
-            logger.log_install('voicemode', ['voice-mode'], False)
+            print_error("Failed to install Yakk")
+            logger.log_install('yakk', ['voice-mode'], False)
             if not dry_run:
                 sys.exit(1)
 
@@ -378,26 +378,26 @@ def main(dry_run, voice_mode_version, skip_services, non_interactive, model):
         # Health check
         if not dry_run:
             print_step("Verifying installation...")
-            voicemode_path = shutil.which('voicemode')
-            if voicemode_path:
-                print_success(f"VoiceMode command found: {voicemode_path}")
+            yakk_path = shutil.which('yakk')
+            if yakk_path:
+                print_success(f"Yakk command found: {yakk_path}")
 
                 # Test that it works
                 try:
                     result = subprocess.run(
-                        ['voicemode', '--version'],
+                        ['yakk', '--version'],
                         capture_output=True,
                         text=True,
                         timeout=5
                     )
                     if result.returncode == 0:
-                        print_success(f"VoiceMode version: {result.stdout.strip()}")
+                        print_success(f"Yakk version: {result.stdout.strip()}")
                     else:
-                        print_warning("VoiceMode command exists but may not be working correctly")
+                        print_warning("Yakk command exists but may not be working correctly")
                 except Exception as e:
-                    print_warning(f"Could not verify VoiceMode: {e}")
+                    print_warning(f"Could not verify Yakk: {e}")
             else:
-                print_warning("VoiceMode command not immediately available in PATH")
+                print_warning("Yakk command not immediately available in PATH")
                 click.echo("You may need to restart your shell or run:")
                 click.echo("  source ~/.bashrc  # or your shell's rc file")
 
@@ -431,7 +431,7 @@ def main(dry_run, voice_mode_version, skip_services, non_interactive, model):
                     # Install Whisper
                     click.echo()
                     print_step(f"Installing Whisper STT service (model: {model})...")
-                    whisper_cmd = ['voicemode', 'service', 'install', 'whisper']
+                    whisper_cmd = ['yakk', 'service', 'install', 'whisper']
                     if model != 'base':
                         whisper_cmd.extend(['--model', model])
                     try:
@@ -446,13 +446,13 @@ def main(dry_run, voice_mode_version, skip_services, non_interactive, model):
                         print_error(f"Whisper installation failed: {e}")
                         logger.log_install('whisper', ['whisper'], False)
                     except FileNotFoundError:
-                        print_error("VoiceMode command not found. Cannot install Whisper.")
+                        print_error("Yakk command not found. Cannot install Whisper.")
                         logger.log_install('whisper', ['whisper'], False)
 
                     # Install Kokoro
                     click.echo()
                     print_step("Installing Kokoro TTS service...")
-                    kokoro_cmd = ['voicemode', 'service', 'install', 'kokoro']
+                    kokoro_cmd = ['yakk', 'service', 'install', 'kokoro']
                     try:
                         result = subprocess.run(kokoro_cmd, check=True)
                         if result.returncode == 0:
@@ -465,14 +465,14 @@ def main(dry_run, voice_mode_version, skip_services, non_interactive, model):
                         print_error(f"Kokoro installation failed: {e}")
                         logger.log_install('kokoro', ['kokoro'], False)
                     except FileNotFoundError:
-                        print_error("VoiceMode command not found. Cannot install Kokoro.")
+                        print_error("Yakk command not found. Cannot install Kokoro.")
                         logger.log_install('kokoro', ['kokoro'], False)
             else:
                 click.echo("Cloud services recommended for your system configuration.")
                 click.echo("Local services can still be installed if desired:")
                 model_flag = f" --model {model}" if model != 'base' else ''
-                click.echo(f"  voicemode whisper install{model_flag}")
-                click.echo("  voicemode kokoro install")
+                click.echo(f"  yakk whisper install{model_flag}")
+                click.echo("  yakk kokoro install")
 
         # Completion summary
         click.echo()
@@ -481,18 +481,18 @@ def main(dry_run, voice_mode_version, skip_services, non_interactive, model):
         click.echo("━" * 70)
         click.echo()
 
-        logger.log_complete(success=True, voicemode_installed=True)
+        logger.log_complete(success=True, yakk_installed=True)
 
         if dry_run:
             click.echo("DRY RUN: No changes were made to your system")
         else:
-            click.echo("VoiceMode has been successfully installed!")
+            click.echo("Yakk has been successfully installed!")
             click.echo()
             click.echo("Next steps:")
             click.echo("  1. Restart your terminal (or source your shell rc file)")
-            click.echo("  2. Run: voicemode --help")
+            click.echo("  2. Run: yakk --help")
             click.echo("  3. Configure with Claude Code:")
-            click.echo("     claude mcp add --scope user voicemode -- uvx voice-mode")
+            click.echo("     claude mcp add --scope user yakk -- uvx voice-mode")
             click.echo()
             click.echo(f"Installation log: {logger.get_log_path()}")
 

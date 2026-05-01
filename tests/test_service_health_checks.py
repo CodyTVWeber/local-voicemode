@@ -60,9 +60,9 @@ def test_startup_script_content():
     whisper_script = templates_dir / "start-whisper-server.sh"
     content = whisper_script.read_text()
     assert "#!/usr/bin/env bash" in content
-    assert "source" in content  # Sources voicemode.env
-    assert "VOICEMODE_WHISPER_MODEL" in content  # Reads model config
-    assert "VOICEMODE_WHISPER_PORT" in content  # Reads port config
+    assert "source" in content  # Sources yakk.env
+    assert "YAKK_WHISPER_MODEL" in content  # Reads model config
+    assert "YAKK_WHISPER_PORT" in content  # Reads port config
 
     # Kokoro doesn't have a unified startup script to test here
     # Its scripts (start-gpu_mac.sh, start-gpu.sh, start-cpu.sh) come with the installation
@@ -72,7 +72,7 @@ def test_template_placeholders():
     """Test that templates use consistent placeholders.
 
     Note: As of v1.2.0, templates were simplified to only need START_SCRIPT.
-    Port, directory, and log configs are handled by start scripts via voicemode.env.
+    Port, directory, and log configs are handled by start scripts via yakk.env.
     """
     from unittest.mock import patch
 

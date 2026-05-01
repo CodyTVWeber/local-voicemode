@@ -12,8 +12,8 @@ set -o nounset -o pipefail -o errexit
 # Test configuration
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 WORKTREE_DIR="$(dirname "$SCRIPT_DIR")"
-MPV_DJ="${WORKTREE_DIR}/skills/voicemode/bin/mpv-dj"
-PLUGIN_MFP_DIR="${WORKTREE_DIR}/skills/voicemode/mfp"
+MPV_DJ="${WORKTREE_DIR}/skills/yakk/bin/mpv-dj"
+PLUGIN_MFP_DIR="${WORKTREE_DIR}/skills/yakk/mfp"
 
 # Test directory setup
 TEST_TMP_DIR=""
@@ -203,7 +203,7 @@ test_sync_adds_new_files() {
     # Create temp test environment
     local test_bin="${TEST_TMP_DIR}/bin"
     local test_mfp="${TEST_TMP_DIR}/mfp"
-    local user_mfp="${TEST_TMP_DIR}/.voicemode/music-for-programming"
+    local user_mfp="${TEST_TMP_DIR}/.yakk/music-for-programming"
     mkdir -p "$test_bin" "$test_mfp" "$user_mfp"
 
     # Copy mpv-dj and plugin files
@@ -242,7 +242,7 @@ test_sync_detects_unchanged() {
     # Create temp test environment
     local test_bin="${TEST_TMP_DIR}/bin"
     local test_mfp="${TEST_TMP_DIR}/mfp"
-    local user_mfp="${TEST_TMP_DIR}/.voicemode/music-for-programming"
+    local user_mfp="${TEST_TMP_DIR}/.yakk/music-for-programming"
     mkdir -p "$test_bin" "$test_mfp" "$user_mfp"
 
     # Copy mpv-dj and plugin files
@@ -276,7 +276,7 @@ test_sync_creates_user_backup() {
     # Create temp test environment
     local test_bin="${TEST_TMP_DIR}/bin"
     local test_mfp="${TEST_TMP_DIR}/mfp"
-    local user_mfp="${TEST_TMP_DIR}/.voicemode/music-for-programming"
+    local user_mfp="${TEST_TMP_DIR}/.yakk/music-for-programming"
     mkdir -p "$test_bin" "$test_mfp" "$user_mfp"
 
     # Copy mpv-dj and plugin files
@@ -324,7 +324,7 @@ test_sync_force_flag() {
     # Create temp test environment
     local test_bin="${TEST_TMP_DIR}/bin"
     local test_mfp="${TEST_TMP_DIR}/mfp"
-    local user_mfp="${TEST_TMP_DIR}/.voicemode/music-for-programming"
+    local user_mfp="${TEST_TMP_DIR}/.yakk/music-for-programming"
     mkdir -p "$test_bin" "$test_mfp" "$user_mfp"
 
     # Copy mpv-dj and plugin files

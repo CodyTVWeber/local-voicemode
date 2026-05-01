@@ -85,11 +85,11 @@ fi
 
 # Configuration for OpenAI (left pane)
 # Forces OpenAI endpoints for both TTS and STT
-OPENAI_CMD="VOICEMODE_TTS_BASE_URLS=https://api.openai.com/v1 VOICEMODE_STT_BASE_URLS=https://api.openai.com/v1 voicemode converse --transport local --message '$OPENAI_MESSAGE'"
+OPENAI_CMD="YAKK_TTS_BASE_URLS=https://api.openai.com/v1 YAKK_STT_BASE_URLS=https://api.openai.com/v1 yakk converse --transport local --message '$OPENAI_MESSAGE'"
 
 # Configuration for Local (right pane)
 # Uses local endpoints (defaults to Kokoro TTS + Whisper STT)
-LOCAL_CMD="VOICEMODE_VOICES=af_sky voicemode converse --transport local --message '$LOCAL_MESSAGE'"
+LOCAL_CMD="YAKK_VOICES=af_sky yakk converse --transport local --message '$LOCAL_MESSAGE'"
 
 echo "⏳ Preparing both voice modes for simultaneous start..."
 # Send commands to both panes without executing yet

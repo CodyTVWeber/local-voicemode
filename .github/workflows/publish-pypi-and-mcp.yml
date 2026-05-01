@@ -120,4 +120,4 @@ jobs:
       if: (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')) || (github.event_name == 'workflow_dispatch' && inputs.target == 'pypi')
       run: |
         echo "Verifying publication..."
-        curl -s https://registry.modelcontextprotocol.io/servers/com.failmode/voicemode | jq '.'
+        curl -s https://registry.modelcontextprotocol.io/servers/com.failmode/yakk | jq '.'

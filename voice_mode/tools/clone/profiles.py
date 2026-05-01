@@ -1,6 +1,6 @@
 """Voice profile CRUD operations for clone-based TTS.
 
-Manages voice profiles in ~/.voicemode/voices.json. Each profile maps a voice
+Manages voice profiles in ~/.yakk/voices.json. Each profile maps a voice
 name to a reference audio file and transcript, used by the clone TTS service.
 
 This module handles writes (add/remove). The read-only voice_profiles.py module
@@ -17,7 +17,7 @@ from typing import Any, Dict, List, Optional, Union
 
 from voice_mode.config import BASE_DIR, CLONE_MODEL
 
-logger = logging.getLogger("voicemode")
+logger = logging.getLogger("yakk")
 
 VOICES_DIR = BASE_DIR / "voices"
 VOICES_JSON = BASE_DIR / "voices.json"
@@ -141,7 +141,7 @@ async def clone_add(
 ) -> Dict[str, Any]:
     """Add a new voice profile from a reference audio clip.
 
-    Copies the audio file to ~/.voicemode/voices/<name>.wav and
+    Copies the audio file to ~/.yakk/voices/<name>.wav and
     auto-transcribes it via the local Whisper STT service unless
     ref_text is provided explicitly.
 
@@ -176,7 +176,7 @@ async def clone_add(
             "error": f"Voice profile '{name}' already exists. Remove it first or choose a different name.",
         }
 
-    # Copy audio to ~/.voicemode/voices/<name>.wav
+    # Copy audio to ~/.yakk/voices/<name>.wav
     VOICES_DIR.mkdir(parents=True, exist_ok=True)
     dest_path = VOICES_DIR / f"{name}.wav"
     try:
@@ -196,7 +196,7 @@ async def clone_add(
             return {
                 "success": False,
                 "error": str(e),
-                "hint": "Start Whisper with: voicemode whisper service install",
+                "hint": "Start Whisper with: yakk whisper service install",
             }
         except RuntimeError as e:
             dest_path.unlink(missing_ok=True)
@@ -264,7 +264,7 @@ async def clone_remove(
 ) -> Dict[str, Any]:
     """Remove a voice profile from voices.json.
 
-    Optionally removes the reference audio file from ~/.voicemode/voices/.
+    Optionally removes the reference audio file from ~/.yakk/voices/.
 
     Args:
         name: Name of the voice profile to remove.

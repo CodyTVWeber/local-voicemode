@@ -1,4 +1,4 @@
-"""Bash completion scripts bundled with the voicemode package."""
+"""Bash completion scripts bundled with the yakk package."""
 
 from importlib.resources import files
 

@@ -3,13 +3,13 @@ site_url: https://voice-mode.readthedocs.io
 site_description: Natural voice conversations for AI assistants
 site_author: Voice Mode Team
 
-repo_name: mbailey/voicemode
-repo_url: https://github.com/mbailey/voicemode
+repo_name: mbailey/yakk
+repo_url: https://github.com/mbailey/yakk
 edit_uri: edit/main/docs/
 
 theme:
   name: material
-  logo: assets/images/voicemode-logo.png
+  logo: assets/images/yakk-logo.png
   palette:
     # Palette toggle for light mode
     - media: "(prefers-color-scheme: light)"
@@ -85,7 +85,7 @@ nav:
     - Claude Code Plugin: guides/claude-code-plugin.md
     - Selective Tool Loading: guides/selective-tool-loading.md
     - Remote Access (serve): guides/serve-configuration.md
-  - VoiceMode Connect:
+  - Yakk Connect:
     - Overview: connect/README.md
     - Architecture: connect/architecture.md
     - Setup:
@@ -109,12 +109,12 @@ nav:
 extra:
   social:
     - icon: fontawesome/brands/github
-      link: https://github.com/mbailey/voicemode
+      link: https://github.com/mbailey/yakk
     - icon: fontawesome/brands/x-twitter
-      link: https://twitter.com/getvoicemode
+      link: https://twitter.com/getyakk
     - icon: fontawesome/brands/discord
       link: https://discord.gg/Hm7dF3uCfG
     - icon: fontawesome/brands/youtube
-      link: https://youtube.com/@getvoicemode
+      link: https://youtube.com/@getyakk
 
 copyright: Copyright &copy; 2025 Voice Mode - A Failmode Project

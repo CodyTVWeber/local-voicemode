@@ -1,12 +1,12 @@
 {
-  "description": "VoiceMode Stop hook - audio feedback when Claude stops responding",
+  "description": "Yakk Stop hook - audio feedback when Claude stops responding",
   "hooks": {
     "Stop": [
       {
         "hooks": [
           {
             "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/.claude/scripts/voicemode-hook-receiver || true"
+            "command": "${CLAUDE_PLUGIN_ROOT}/.claude/scripts/yakk-hook-receiver || true"
           }
         ]
       }

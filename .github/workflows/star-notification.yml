@@ -51,7 +51,7 @@ jobs:
       - name: Send ntfy notification
         run: |
           # Build notification body with profile info
-          BODY="🎉 ${{ github.actor }} just starred voicemode!
+          BODY="🎉 ${{ github.actor }} just starred yakk!
 
           👥 Followers: ${{ steps.profile.outputs.followers }}
           📦 Repos: ${{ steps.profile.outputs.public_repos }}"
@@ -77,7 +77,7 @@ jobs:
 
           ⭐ Total: ${{ github.event.repository.stargazers_count }}"
 
-          curl -H "Title: VoiceMode ⭐ New Star!" \
+          curl -H "Title: Yakk ⭐ New Star!" \
                -H "Priority: ${{ steps.profile.outputs.priority }}" \
                -H "Tags: ${{ steps.profile.outputs.tags }}" \
                -H "Click: https://github.com/${{ github.actor }}" \

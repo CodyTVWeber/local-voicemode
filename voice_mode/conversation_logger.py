@@ -27,7 +27,7 @@ class ConversationLogger:
         """Initialize the conversation logger.
         
         Args:
-            base_dir: Base directory for logs. Defaults to ~/.voicemode/logs/conversations/
+            base_dir: Base directory for logs. Defaults to ~/.yakk/logs/conversations/
         """
         self.base_dir = base_dir or Path(BASE_DIR) / "logs" / "conversations"
         self.base_dir.mkdir(parents=True, exist_ok=True)

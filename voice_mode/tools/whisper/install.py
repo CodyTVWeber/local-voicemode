@@ -27,12 +27,12 @@ from voice_mode.utils.version_helpers import (
 from voice_mode.utils.migration_helpers import auto_migrate_if_needed
 from voice_mode.utils.gpu_detection import detect_gpu
 
-logger = logging.getLogger("voicemode")
+logger = logging.getLogger("yakk")
 
 
 async def update_whisper_service_files(
     install_dir: str,
-    voicemode_dir: str,
+    yakk_dir: str,
     auto_enable: Optional[bool] = None
 ) -> Dict[str, Any]:
     """Update service files (plist/systemd) for whisper service.
@@ -73,15 +73,15 @@ async def update_whisper_service_files(
 
 # Whisper Service Startup Script
 # This script is used by both macOS (launchd) and Linux (systemd) to start the whisper service
-# It sources the voicemode.env file to get configuration, especially VOICEMODE_WHISPER_MODEL
+# It sources the yakk.env file to get configuration, especially YAKK_WHISPER_MODEL
 
 # Determine whisper directory (script is in bin/, whisper root is parent)
 SCRIPT_DIR="$(cd "$(dirname "${{BASH_SOURCE[0]}}")" && pwd)"
 WHISPER_DIR="$(dirname "$SCRIPT_DIR")"
 
-# Voicemode configuration directory
-VOICEMODE_DIR="$HOME/.voicemode"
-LOG_DIR="$VOICEMODE_DIR/logs/whisper"
+# Yakk configuration directory
+YAKK_DIR="$HOME/.yakk"
+LOG_DIR="$YAKK_DIR/logs/whisper"
 
 # Create log directory if it doesn't exist
 mkdir -p "$LOG_DIR"
@@ -89,16 +89,16 @@ mkdir -p "$LOG_DIR"
 # Log file for this script (separate from whisper server logs)
 STARTUP_LOG="$LOG_DIR/startup.log"
 
-# Source voicemode configuration if it exists
-if [ -f "$VOICEMODE_DIR/voicemode.env" ]; then
-    echo "[$(date '+%Y-%m-%d %H:%M:%S')] Sourcing voicemode.env" >> "$STARTUP_LOG"
-    source "$VOICEMODE_DIR/voicemode.env"
+# Source yakk configuration if it exists
+if [ -f "$YAKK_DIR/yakk.env" ]; then
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] Sourcing yakk.env" >> "$STARTUP_LOG"
+    source "$YAKK_DIR/yakk.env"
 else
-    echo "[$(date '+%Y-%m-%d %H:%M:%S')] Warning: voicemode.env not found" >> "$STARTUP_LOG"
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] Warning: yakk.env not found" >> "$STARTUP_LOG"
 fi
 
 # Model selection with environment variable support
-MODEL_NAME="${{VOICEMODE_WHISPER_MODEL:-base}}"
+MODEL_NAME="${{YAKK_WHISPER_MODEL:-base}}"
 MODEL_PATH="$WHISPER_DIR/models/ggml-$MODEL_NAME.bin"
 
 echo "[$(date '+%Y-%m-%d %H:%M:%S')] Starting whisper-server with model: $MODEL_NAME" >> "$STARTUP_LOG"
@@ -121,7 +121,7 @@ if [ ! -f "$MODEL_PATH" ]; then
 fi
 
 # Port configuration (with environment variable support)
-WHISPER_PORT="${{VOICEMODE_WHISPER_PORT:-2022}}"
+WHISPER_PORT="${{YAKK_WHISPER_PORT:-2022}}"
 
 # Determine server binary location
 # Check new CMake build location first, then legacy location
@@ -163,25 +163,25 @@ exec "$SERVER_BIN" \\
         os.makedirs(launchagents_dir, exist_ok=True)
         
         # Create log directory
-        log_dir = os.path.join(voicemode_dir, 'logs', 'whisper')
+        log_dir = os.path.join(yakk_dir, 'logs', 'whisper')
         os.makedirs(log_dir, exist_ok=True)
         
-        plist_name = "com.voicemode.whisper.plist"
+        plist_name = "com.yakk.whisper.plist"
         plist_path = os.path.join(launchagents_dir, plist_name)
         
         # Load plist template
-        source_template = Path(__file__).parent.parent.parent.parent / "templates" / "launchd" / "com.voicemode.whisper.plist"
+        source_template = Path(__file__).parent.parent.parent.parent / "templates" / "launchd" / "com.yakk.whisper.plist"
         if source_template.exists():
             logger.info(f"Loading plist template from source: {source_template}")
             plist_content = source_template.read_text()
         else:
-            template_resource = files("voice_mode.templates.launchd").joinpath("com.voicemode.whisper.plist")
+            template_resource = files("voice_mode.templates.launchd").joinpath("com.yakk.whisper.plist")
             plist_content = template_resource.read_text()
             logger.info("Loaded plist template from package resources")
         
         # Replace placeholders with expanded paths
         plist_content = plist_content.replace("{START_SCRIPT_PATH}", start_script_path)
-        plist_content = plist_content.replace("{LOG_DIR}", os.path.join(voicemode_dir, 'logs'))
+        plist_content = plist_content.replace("{LOG_DIR}", os.path.join(yakk_dir, 'logs'))
         plist_content = plist_content.replace("{INSTALL_DIR}", install_dir)
         
         # Unload if already loaded (ignore errors)
@@ -219,26 +219,26 @@ exec "$SERVER_BIN" \\
         os.makedirs(systemd_user_dir, exist_ok=True)
 
         # Create log directory
-        log_dir = os.path.join(voicemode_dir, 'logs', 'whisper')
+        log_dir = os.path.join(yakk_dir, 'logs', 'whisper')
         os.makedirs(log_dir, exist_ok=True)
 
-        service_name = "voicemode-whisper.service"
+        service_name = "yakk-whisper.service"
         service_path = os.path.join(systemd_user_dir, service_name)
 
         # Load systemd service template
-        source_template = Path(__file__).parent.parent.parent.parent / "templates" / "systemd" / "voicemode-whisper.service"
+        source_template = Path(__file__).parent.parent.parent.parent / "templates" / "systemd" / "yakk-whisper.service"
         if source_template.exists():
             logger.info(f"Loading systemd template from source: {source_template}")
             service_content = source_template.read_text()
         else:
             try:
-                template_resource = files("voice_mode.templates.systemd").joinpath("voicemode-whisper.service")
+                template_resource = files("voice_mode.templates.systemd").joinpath("yakk-whisper.service")
                 service_content = template_resource.read_text()
                 logger.info("Loaded systemd template from package resources")
             except Exception as e:
                 logger.warning(f"Failed to load template: {e}. Using fallback inline template.")
                 # Fallback inline template if loading fails
-                service_content = f"""# voicemode-whisper.service v1.1.0
+                service_content = f"""# yakk-whisper.service v1.1.0
 # Last updated: 2025-11-12
 # Uses unified startup script for dynamic model selection
 
@@ -264,7 +264,7 @@ WantedBy=default.target
 
         # Replace placeholders with expanded paths
         service_content = service_content.replace("{START_SCRIPT_PATH}", start_script_path)
-        service_content = service_content.replace("{LOG_DIR}", os.path.join(voicemode_dir, 'logs'))
+        service_content = service_content.replace("{LOG_DIR}", os.path.join(yakk_dir, 'logs'))
         service_content = service_content.replace("{INSTALL_DIR}", install_dir)
         service_content = service_content.replace("{WHISPER_PORT}", str(WHISPER_PORT))
 
@@ -327,14 +327,14 @@ async def whisper_install(
     for 2-3x better performance (no Python dependencies or Xcode required!).
 
     Args:
-        install_dir: Directory to install whisper.cpp (default: ~/.voicemode/whisper.cpp)
+        install_dir: Directory to install whisper.cpp (default: ~/.yakk/whisper.cpp)
         model: Whisper model to download (tiny, base, small, medium, large-v2, large-v3, etc.)
                Default is base for good balance of speed and accuracy (142MB).
                On Apple Silicon, also downloads pre-built Core ML model.
         no_model: Skip model download entirely (default: False)
         use_gpu: Enable GPU support if available (default: auto-detect)
         force_reinstall: Force reinstallation even if already installed
-        auto_enable: Enable service after install. If None, uses VOICEMODE_SERVICE_AUTO_ENABLE config.
+        auto_enable: Enable service after install. If None, uses YAKK_SERVICE_AUTO_ENABLE config.
         version: Version to install (default: "latest" for latest stable release)
         skip_core_ml: Skip Core ML model download on Apple Silicon (default: False)
         skip_deps: Skip dependency checks (for advanced users, default: False)
@@ -370,12 +370,12 @@ async def whisper_install(
         else:
             logger.info("Skipping dependency checks (--skip-deps specified)")
 
-        # Set default install directory under ~/.voicemode
-        voicemode_dir = os.path.expanduser("~/.voicemode")
-        os.makedirs(voicemode_dir, exist_ok=True)
+        # Set default install directory under ~/.yakk
+        yakk_dir = os.path.expanduser("~/.yakk")
+        os.makedirs(yakk_dir, exist_ok=True)
         
         if install_dir is None:
-            install_dir = os.path.join(voicemode_dir, "services", "whisper")
+            install_dir = os.path.join(yakk_dir, "services", "whisper")
         else:
             install_dir = os.path.expanduser(install_dir)
         
@@ -406,7 +406,7 @@ async def whisper_install(
                     logger.info("Whisper is already installed, updating service files...")
                     service_update_result = await update_whisper_service_files(
                         install_dir=install_dir,
-                        voicemode_dir=voicemode_dir,
+                        yakk_dir=yakk_dir,
                         auto_enable=auto_enable
                     )
                     
@@ -582,7 +582,7 @@ async def whisper_install(
         cpu_count = os.cpu_count() or 4
         
         # Determine if we should show build output
-        debug_mode = os.environ.get("VOICEMODE_DEBUG", "").lower() in ("true", "1", "yes")
+        debug_mode = os.environ.get("YAKK_DEBUG", "").lower() in ("true", "1", "yes")
         
         # Configure with CMake
         logger.info("Configuring whisper.cpp build...")
@@ -637,7 +637,7 @@ async def whisper_install(
 
             if not download_result["success"]:
                 logger.warning(f"Failed to download model: {download_result.get('error', 'Unknown error')}")
-                logger.info("You can download models later using 'voicemode whisper model install'")
+                logger.info("You can download models later using 'yakk whisper model install'")
                 model_path = None
                 model_error = download_result.get('error', 'Unknown error')
             else:
@@ -673,7 +673,7 @@ async def whisper_install(
         logger.info("Installing/updating service files...")
         service_update_result = await update_whisper_service_files(
             install_dir=install_dir,
-            voicemode_dir=voicemode_dir,
+            yakk_dir=yakk_dir,
             auto_enable=auto_enable
         )
         

@@ -1,12 +1,12 @@
 {
-  "description": "VoiceMode PostToolUse hook - audio feedback after tool execution",
+  "description": "Yakk PostToolUse hook - audio feedback after tool execution",
   "hooks": {
     "PostToolUse": [
       {
         "hooks": [
           {
             "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/.claude/scripts/voicemode-hook-receiver || true"
+            "command": "${CLAUDE_PLUGIN_ROOT}/.claude/scripts/yakk-hook-receiver || true"
           }
         ]
       }

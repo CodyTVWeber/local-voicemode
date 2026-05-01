@@ -19,12 +19,12 @@ from voice_mode.utils.version_helpers import (
 )
 from voice_mode.utils.migration_helpers import auto_migrate_if_needed
 
-logger = logging.getLogger("voicemode")
+logger = logging.getLogger("yakk")
 
 
 async def update_kokoro_service_files(
     install_dir: str,
-    voicemode_dir: str,
+    yakk_dir: str,
     port: int,
     start_script_path: str,
     auto_enable: Optional[bool] = None
@@ -106,24 +106,24 @@ async def kokoro_install(
     """
     Install and setup ai-cora/Kokoro-FastAPI TTS service using the simple 3-step approach.
 
-    1. Clones the repository to ~/.voicemode/services/kokoro
+    1. Clones the repository to ~/.yakk/services/kokoro
     2. Uses the appropriate start script (start-gpu_mac.sh on macOS)
     3. Installs a launchagent on macOS for automatic startup
 
-    Note: voicemode installs from a fork of remsky/Kokoro-FastAPI because the
+    Note: yakk installs from a fork of remsky/Kokoro-FastAPI because the
     upstream has been unmaintained since 2026-01-04 (no commits, no PR review,
     134 open issues). The fork tracks upstream master with one critical patch
     cherry-picked from upstream PR #448: a fix for OGG/Opus tail truncation
     that causes the last 1-2 seconds of audio to be silently dropped.
 
     Args:
-        install_dir: Directory to install kokoro-fastapi (default: ~/.voicemode/services/kokoro)
-        models_dir: Directory for Kokoro models (default: ~/.voicemode/kokoro-models) - not currently used
+        install_dir: Directory to install kokoro-fastapi (default: ~/.yakk/services/kokoro)
+        models_dir: Directory for Kokoro models (default: ~/.yakk/kokoro-models) - not currently used
         port: Port to configure for the service (default: 8880)
         auto_start: Start the service after installation (ignored on macOS, uses launchd instead)
         install_models: Download Kokoro models (not used - handled by start script)
         force_reinstall: Force reinstallation even if already installed
-        auto_enable: Enable service after install. If None, uses VOICEMODE_SERVICE_AUTO_ENABLE config.
+        auto_enable: Enable service after install. If None, uses YAKK_SERVICE_AUTO_ENABLE config.
         version: Version to install (default: "latest" for latest stable release)
         skip_deps: Skip dependency checks (for advanced users, default: False)
 
@@ -166,17 +166,17 @@ async def kokoro_install(
         else:
             logger.info("Skipping dependency checks (--skip-deps specified)")
 
-        # Set default directories under ~/.voicemode
-        voicemode_dir = os.path.expanduser("~/.voicemode")
-        os.makedirs(voicemode_dir, exist_ok=True)
+        # Set default directories under ~/.yakk
+        yakk_dir = os.path.expanduser("~/.yakk")
+        os.makedirs(yakk_dir, exist_ok=True)
         
         if install_dir is None:
-            install_dir = os.path.join(voicemode_dir, "services", "kokoro")
+            install_dir = os.path.join(yakk_dir, "services", "kokoro")
         else:
             install_dir = os.path.expanduser(install_dir)
             
         if models_dir is None:
-            models_dir = os.path.join(voicemode_dir, "kokoro-models")
+            models_dir = os.path.join(yakk_dir, "kokoro-models")
         else:
             models_dir = os.path.expanduser(models_dir)
         
@@ -229,7 +229,7 @@ async def kokoro_install(
                     logger.info("Kokoro is already installed, updating service files...")
                     service_update_result = await update_kokoro_service_files(
                         install_dir=install_dir,
-                        voicemode_dir=voicemode_dir,
+                        yakk_dir=yakk_dir,
                         port=port,
                         start_script_path=start_script_path,
                         auto_enable=auto_enable
@@ -372,7 +372,7 @@ async def kokoro_install(
         # This uses templates from service.py for consistency
         service_update_result = await update_kokoro_service_files(
             install_dir=install_dir,
-            voicemode_dir=voicemode_dir,
+            yakk_dir=yakk_dir,
             port=port,
             start_script_path=start_script_path,
             auto_enable=auto_enable

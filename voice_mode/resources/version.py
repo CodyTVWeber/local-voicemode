@@ -41,7 +41,7 @@ async def get_version_info() -> str:
     lines.append(f"Platform: {platform.system()} {platform.release()}")
     
     # Add base directory
-    base_dir = os.environ.get("VOICEMODE_BASE_DIR", "~/.voicemode")
+    base_dir = os.environ.get("YAKK_BASE_DIR", "~/.yakk")
     lines.append(f"Base Directory: {os.path.expanduser(base_dir)}")
     
     return "\n".join(lines)

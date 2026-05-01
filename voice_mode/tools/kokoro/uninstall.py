@@ -12,7 +12,7 @@ from voice_mode.server import mcp
 from voice_mode.config import BASE_DIR
 from voice_mode.utils.services.common import find_process_by_port
 
-logger = logging.getLogger("voicemode")
+logger = logging.getLogger("yakk")
 
 
 @mcp.tool()
@@ -56,7 +56,7 @@ async def kokoro_uninstall(
         # 2. Remove service configurations
         if system == "Darwin":
             # Remove launchd plist
-            plist_path = Path.home() / "Library" / "LaunchAgents" / "com.voicemode.kokoro.plist"
+            plist_path = Path.home() / "Library" / "LaunchAgents" / "com.yakk.kokoro.plist"
             if plist_path.exists():
                 try:
                     # Unload if loaded
@@ -79,7 +79,7 @@ async def kokoro_uninstall(
             )
             if launchctl_result.returncode == 0:
                 for line in launchctl_result.stdout.splitlines():
-                    if "com.voicemode.kokoro-" in line:
+                    if "com.yakk.kokoro-" in line:
                         parts = line.split()
                         if len(parts) >= 3:
                             service_name = parts[2]
@@ -94,16 +94,16 @@ async def kokoro_uninstall(
         
         elif system == "Linux":
             # Remove systemd service
-            service_path = Path.home() / ".config" / "systemd" / "user" / "voicemode-kokoro.service"
+            service_path = Path.home() / ".config" / "systemd" / "user" / "yakk-kokoro.service"
             if service_path.exists():
                 try:
                     # Stop and disable service
                     subprocess.run(
-                        ["systemctl", "--user", "stop", "voicemode-kokoro.service"],
+                        ["systemctl", "--user", "stop", "yakk-kokoro.service"],
                         capture_output=True
                     )
                     subprocess.run(
-                        ["systemctl", "--user", "disable", "voicemode-kokoro.service"],
+                        ["systemctl", "--user", "disable", "yakk-kokoro.service"],
                         capture_output=True
                     )
                     # Remove file

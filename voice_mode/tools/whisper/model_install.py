@@ -13,7 +13,7 @@ from voice_mode.server import mcp
 from voice_mode.config import logger, MODELS_DIR, DEFAULT_WHISPER_MODEL
 from voice_mode.utils.services.whisper_helpers import download_whisper_model, get_available_models
 
-logger = logging.getLogger("voicemode")
+logger = logging.getLogger("yakk")
 
 
 @mcp.tool()
@@ -68,8 +68,8 @@ async def whisper_model_install(
         models_dir = MODELS_DIR / "whisper"
         
         # Check both possible whisper installation locations
-        whisper_install_dir = Path.home() / ".voicemode" / "services" / "whisper"
-        legacy_install_dir = Path.home() / ".voicemode" / "whisper.cpp"
+        whisper_install_dir = Path.home() / ".yakk" / "services" / "whisper"
+        legacy_install_dir = Path.home() / ".yakk" / "whisper.cpp"
         
         if whisper_install_dir.exists():
             actual_models_dir = whisper_install_dir / "models"

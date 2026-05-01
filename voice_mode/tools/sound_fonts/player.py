@@ -14,8 +14,8 @@ from typing import Dict, Any, Optional
 
 
 class AudioPlayer:
-    def __init__(self, voicemode_home: str = None):
-        self.voicemode_home = Path(voicemode_home or os.path.expanduser("~/.voicemode"))
+    def __init__(self, yakk_home: str = None):
+        self.yakk_home = Path(yakk_home or os.path.expanduser("~/.yakk"))
         
     def play_audio_slice(self, file_path: str, start: float = 0.0, end: Optional[float] = None, volume: float = 1.0):
         """
@@ -60,17 +60,17 @@ class AudioPlayer:
     def load_sound_font(self, font_name: str = None) -> Optional[Dict[str, Any]]:
         """Load Sound Font configuration"""
         if font_name:
-            config_path = self.voicemode_home / "sound-fonts" / font_name / "config.json"
+            config_path = self.yakk_home / "sound-fonts" / font_name / "config.json"
         else:
             # Try to find active sound font from settings
-            settings_path = self.voicemode_home / "settings.json"
+            settings_path = self.yakk_home / "settings.json"
             if settings_path.exists():
                 try:
                     with open(settings_path) as f:
                         settings = json.load(f)
                     font_name = settings.get("sound_font")
                     if font_name:
-                        config_path = self.voicemode_home / "sound-fonts" / font_name / "config.json"
+                        config_path = self.yakk_home / "sound-fonts" / font_name / "config.json"
                     else:
                         return None
                 except:
@@ -90,7 +90,7 @@ class AudioPlayer:
             
     def resolve_audio_path(self, config: Dict[str, Any], file_name: str) -> str:
         """Resolve audio file path relative to sound font directory"""
-        font_dir = Path(config.get("base_path", self.voicemode_home / "sound-fonts" / config["name"]))
+        font_dir = Path(config.get("base_path", self.yakk_home / "sound-fonts" / config["name"]))
         return str(font_dir / file_name)
         
     def play_sound_for_event(self, tool_name: str, action: str, subagent_type: str = None, metadata: Dict[str, Any] = None):
@@ -149,7 +149,7 @@ class AudioPlayer:
         return self.play_audio_slice(file_path, start, end, volume)
         
     def log_sound_event(self, tool_name: str, action: str, subagent_type: str = None, sound_config: Dict[str, Any] = None):
-        """Log sound events in VoiceMode format"""
+        """Log sound events in Yakk format"""
         import time
         
         timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
@@ -166,8 +166,8 @@ class AudioPlayer:
             "volume": sound_config.get("volume") if sound_config else None
         }
         
-        # Write to VoiceMode logs directory
-        log_file = self.voicemode_home / "logs" / "sound-fonts.log"
+        # Write to Yakk logs directory
+        log_file = self.yakk_home / "logs" / "sound-fonts.log"
         log_file.parent.mkdir(exist_ok=True)
         
         with open(log_file, "a") as f:

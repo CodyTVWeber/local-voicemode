@@ -30,7 +30,7 @@ from .utils import (
 )
 from .audio_player import NonBlockingAudioPlayer
 
-logger = logging.getLogger("voicemode")
+logger = logging.getLogger("yakk")
 
 
 def get_audio_path(filename: str, base_dir: Path, timestamp: Optional[datetime] = None) -> Path:

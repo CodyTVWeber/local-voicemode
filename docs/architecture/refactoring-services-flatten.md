@@ -97,7 +97,7 @@ elif file in {any_subdir}/:
 
 #### 1.1 Create Feature Branch
 ```bash
-cd /Users/admin/Code/github.com/mbailey/voicemode
+cd /Users/admin/Code/github.com/mbailey/yakk
 git checkout master
 git pull origin master  # Ensure up to date
 git checkout -b refactor/flatten-services-directory
@@ -106,7 +106,7 @@ git checkout -b refactor/flatten-services-directory
 #### 1.2 Initial Commit - Document the Plan
 ```bash
 # Copy this README to the codebase for documentation
-cp /Users/admin/tasks/voicemode/refactor_flatten-services-directory/README.md \
+cp /Users/admin/tasks/yakk/refactor_flatten-services-directory/README.md \
    docs/architecture/refactoring-services-flatten.md
 git add docs/architecture/refactoring-services-flatten.md
 git commit -m "docs: Add refactoring plan for flattening services directory
@@ -303,15 +303,15 @@ uv run pytest tests/ -v --tb=short
 #### 7.2 Test MCP Server
 ```bash
 # Test that MCP server starts and loads tools correctly
-voicemode server --debug 2>&1 | head -50
+yakk server --debug 2>&1 | head -50
 ```
 
 #### 7.3 Test Individual Service Commands
 ```bash
 # Test CLI commands still work
-voicemode whisper models
-voicemode kokoro --help
-voicemode livekit --help
+yakk whisper models
+yakk kokoro --help
+yakk livekit --help
 ```
 
 #### 7.4 Fix Any Issues

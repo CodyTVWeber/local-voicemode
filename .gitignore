@@ -8,7 +8,7 @@
 # Environment configuration
 .env.local
 .env
-.voicemode.env
+.yakk.env
 
 # Python
 __pycache__/
@@ -82,7 +82,7 @@ docs/_build/
 docs/promote/
 
 # Strategic/Private documents
-docs/voicemode-brand/
+docs/yakk-brand/
 
 # Node modules (for livekit frontend)
 node_modules/
@@ -100,7 +100,7 @@ node_modules/
 *.bak
 *.orig
 social
-recover-voicemode-promote/
+recover-yakk-promote/
 
 # Documentation build output
 site/
@@ -123,4 +123,4 @@ models/
 
 # Coverage reports (duplicates removed - already in Python section)
 coverage.xml
-voicemode-install-feedback.md
+yakk-install-feedback.md

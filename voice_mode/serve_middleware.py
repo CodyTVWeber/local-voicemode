@@ -1,6 +1,6 @@
-"""Middleware for VoiceMode HTTP/SSE server.
+"""Middleware for Yakk HTTP/SSE server.
 
-This module provides middleware to restrict access to the VoiceMode server:
+This module provides middleware to restrict access to the Yakk server:
 
 1. IPAllowlistMiddleware - Restrict access based on client IP addresses.
    Supports CIDR notation for flexible IP range configuration and handles
@@ -41,7 +41,7 @@ from starlette.requests import Request
 from starlette.responses import Response
 from starlette.types import ASGIApp, Receive, Scope, Send
 
-logger = logging.getLogger("voicemode")
+logger = logging.getLogger("yakk")
 
 
 # Anthropic's outbound IP ranges for Claude Code connections

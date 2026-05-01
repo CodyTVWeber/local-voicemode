@@ -1,10 +1,10 @@
-# Running VoiceMode with MacBook Lid Closed
+# Running Yakk with MacBook Lid Closed
 
-This guide covers how to keep VoiceMode running on your MacBook when you close the lid - essential for portable voice conversations when you're on the go.
+This guide covers how to keep Yakk running on your MacBook when you close the lid - essential for portable voice conversations when you're on the go.
 
 ## The Problem
 
-By default, macOS suspends your MacBook when you close the lid, which interrupts VoiceMode sessions. Apple's official "clamshell mode" requires an external display connected, but there are workarounds for headless operation.
+By default, macOS suspends your MacBook when you close the lid, which interrupts Yakk sessions. Apple's official "clamshell mode" requires an external display connected, but there are workarounds for headless operation.
 
 ## Quick Solution: pmset
 
@@ -41,15 +41,15 @@ For a more user-friendly approach, [Amphetamine](https://apps.apple.com/app/amph
 
 If you're using a MacBook Air (M1, M2, M3, or M4), note that it's fanless and uses the keyboard area for cooling. Running with the lid closed limits heat dissipation.
 
-**For VoiceMode use**: Audio processing is lightweight, so thermal throttling is unlikely. You should be fine for voice conversations.
+**For Yakk use**: Audio processing is lightweight, so thermal throttling is unlikely. You should be fine for voice conversations.
 
 **For intensive workloads**: Expect up to 50% performance reduction after extended closed-lid operation. Consider using a MacBook Pro for heavy workloads in clamshell mode.
 
-## Using VoiceMode on the Go
+## Using Yakk on the Go
 
 ### Recommended Workflow
 
-1. **Before leaving**: Start your Claude Code session with VoiceMode
+1. **Before leaving**: Start your Claude Code session with Yakk
 2. **Enable closed-lid mode**: `sudo pmset -a disablesleep 1`
 3. **Close the lid and go**: Put your MacBook in your bag
 4. **Converse**: Use your AirPods or headphones for voice interaction
@@ -66,12 +66,12 @@ If you're using a MacBook Air (M1, M2, M3, or M4), note that it's fanless and us
 
 The `caffeinate` command prevents idle sleep but does **not** prevent lid-close sleep. Use `pmset disablesleep` instead.
 
-## Verifying VoiceMode Works
+## Verifying Yakk Works
 
 Test your setup before relying on it:
 
 1. Enable closed-lid mode: `sudo pmset -a disablesleep 1`
-2. Start a VoiceMode conversation
+2. Start a Yakk conversation
 3. Close the lid while still talking
 4. Confirm audio continues through your wireless headphones
 
@@ -98,6 +98,6 @@ Test your setup before relying on it:
 
 ## See Also
 
-- [Configuration Guide](configuration.md) - VoiceMode settings
+- [Configuration Guide](configuration.md) - Yakk settings
 - [Selecting Voices](selecting-voices.md) - Voice configuration
-- [Troubleshooting](../troubleshooting/index.md) - General VoiceMode issues
+- [Troubleshooting](../troubleshooting/index.md) - General Yakk issues

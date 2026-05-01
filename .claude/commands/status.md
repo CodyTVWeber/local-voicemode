@@ -1,24 +1,24 @@
 ---
-description: Check the status of VoiceMode services
+description: Check the status of Yakk services
 ---
 
-# /voicemode:status
+# /yakk:status
 
-Check the status of VoiceMode services.
+Check the status of Yakk services.
 
 ## Usage
 
 ```
-/voicemode:status
+/yakk:status
 ```
 
 ## Description
 
-Shows the current status of VoiceMode services including Whisper (STT), Kokoro (TTS), and LiveKit (if used).
+Shows the current status of Yakk services including Whisper (STT), Kokoro (TTS), and LiveKit (if used).
 
 ## Implementation
 
-Use the `mcp__voicemode__service` tool:
+Use the `mcp__yakk__service` tool:
 
 ```json
 {
@@ -31,13 +31,13 @@ Check all services:
 
 ```bash
 # Check Whisper (STT)
-mcp__voicemode__service service_name=whisper action=status
+mcp__yakk__service service_name=whisper action=status
 
 # Check Kokoro (TTS)
-mcp__voicemode__service service_name=kokoro action=status
+mcp__yakk__service service_name=kokoro action=status
 
 # Check LiveKit (optional)
-mcp__voicemode__service service_name=livekit action=status
+mcp__yakk__service service_name=livekit action=status
 ```
 
 ## Output

@@ -5,7 +5,7 @@ import socket
 from typing import Optional, Tuple
 import logging
 
-logger = logging.getLogger("voicemode")
+logger = logging.getLogger("yakk")
 
 
 def find_process_by_port(port: int) -> Optional[psutil.Process]:

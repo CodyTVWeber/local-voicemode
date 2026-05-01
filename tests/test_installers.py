@@ -93,8 +93,8 @@ class TestWhisperCppInstaller:
         async def mock_install(**kwargs):
             return {
                 "success": True,
-                "install_path": os.path.expanduser("~/.voicemode/services/whisper"),
-                "model_path": os.path.expanduser("~/.voicemode/services/whisper/models/ggml-large-v2.bin"),
+                "install_path": os.path.expanduser("~/.yakk/services/whisper"),
+                "model_path": os.path.expanduser("~/.yakk/services/whisper/models/ggml-large-v2.bin"),
                 "message": "Whisper.cpp installed successfully",
                 "gpu_enabled": True,
                 "gpu_type": "metal"
@@ -104,7 +104,7 @@ class TestWhisperCppInstaller:
             result = await install_whisper_cpp()
 
             assert result["success"] == True
-            assert result["install_path"] == os.path.expanduser("~/.voicemode/services/whisper")
+            assert result["install_path"] == os.path.expanduser("~/.yakk/services/whisper")
     
     @pytest.mark.asyncio
     async def test_custom_installation_path(self):
@@ -133,7 +133,7 @@ class TestWhisperCppInstaller:
                 "success": True,
                 "already_installed": True,
                 "message": "Whisper.cpp is already installed",
-                "install_path": os.path.expanduser("~/.voicemode/services/whisper")
+                "install_path": os.path.expanduser("~/.yakk/services/whisper")
             }
 
         with patch('tests.test_installers.install_whisper_cpp', mock_install):
@@ -154,7 +154,7 @@ class TestWhisperCppInstaller:
                 reinstall_called = True
             return {
                 "success": True,
-                "install_path": os.path.expanduser("~/.voicemode/services/whisper"),
+                "install_path": os.path.expanduser("~/.yakk/services/whisper"),
                 "model_path": "/path/to/model.bin",
                 "message": "Model downloaded",
                 "reinstalled": True
@@ -268,7 +268,7 @@ class TestWhisperCppInstaller:
                 mock_run.return_value = MagicMock(returncode=0)
                 mock_download.return_value = {
                     "success": True,
-                    "path": f"/Users/admin/.voicemode/whisper.cpp/models/ggml-{model}.bin",
+                    "path": f"/Users/admin/.yakk/whisper.cpp/models/ggml-{model}.bin",
                     "message": f"Model {model} downloaded successfully"
                 }
                 
@@ -311,7 +311,7 @@ class TestKokoroFastAPIInstaller:
         async def mock_install(**kwargs):
             return {
                 "success": True,
-                "install_path": os.path.expanduser("~/.voicemode/services/kokoro"),
+                "install_path": os.path.expanduser("~/.yakk/services/kokoro"),
                 "service_url": "http://127.0.0.1:8880",
                 "message": "Kokoro installed successfully"
             }
@@ -320,7 +320,7 @@ class TestKokoroFastAPIInstaller:
             result = await install_kokoro_fastapi()
 
             assert result["success"] is True
-            assert result["install_path"] == os.path.expanduser("~/.voicemode/services/kokoro")
+            assert result["install_path"] == os.path.expanduser("~/.yakk/services/kokoro")
             # Note: models_path is not returned by the installer anymore
     
     @pytest.mark.asyncio
@@ -363,7 +363,7 @@ class TestKokoroFastAPIInstaller:
             uv_installed = True
             return {
                 "success": True,
-                "install_path": os.path.expanduser("~/.voicemode/services/kokoro"),
+                "install_path": os.path.expanduser("~/.yakk/services/kokoro"),
                 "message": "UV was installed",
                 "uv_installed": True
             }
@@ -381,7 +381,7 @@ class TestKokoroFastAPIInstaller:
         async def mock_install(**kwargs):
             return {
                 "success": True,
-                "install_path": os.path.expanduser("~/.voicemode/services/kokoro"),
+                "install_path": os.path.expanduser("~/.yakk/services/kokoro"),
                 "models_installed": kwargs.get('install_models', False),
                 "message": "Models handled by start script"
             }
@@ -399,7 +399,7 @@ class TestKokoroFastAPIInstaller:
         async def mock_install(**kwargs):
             return {
                 "success": True,
-                "install_path": os.path.expanduser("~/.voicemode/services/kokoro"),
+                "install_path": os.path.expanduser("~/.yakk/services/kokoro"),
                 "models_installed": kwargs.get('install_models', True),
                 "message": "Installed without models"
             }
@@ -417,9 +417,9 @@ class TestKokoroFastAPIInstaller:
         async def mock_install(**kwargs):
             return {
                 "success": True,
-                "install_path": os.path.expanduser("~/.voicemode/services/kokoro"),
+                "install_path": os.path.expanduser("~/.yakk/services/kokoro"),
                 "service_status": "managed_by_systemd",
-                "systemd_service": "/etc/systemd/user/voicemode-kokoro.service",
+                "systemd_service": "/etc/systemd/user/yakk-kokoro.service",
                 "systemd_enabled": True,
                 "auto_started": kwargs.get('auto_start', False),
                 "message": "Service started with systemd"
@@ -434,7 +434,7 @@ class TestKokoroFastAPIInstaller:
             # On Linux, it should have systemd service info
             assert result["service_status"] == "managed_by_systemd"
             assert "systemd_service" in result
-            assert result["systemd_service"].endswith("voicemode-kokoro.service")
+            assert result["systemd_service"].endswith("yakk-kokoro.service")
             assert result["systemd_enabled"] is True
     
     @pytest.mark.asyncio
@@ -446,7 +446,7 @@ class TestKokoroFastAPIInstaller:
             port = kwargs.get('port', 8880)
             return {
                 "success": True,
-                "install_path": os.path.expanduser("~/.voicemode/services/kokoro"),
+                "install_path": os.path.expanduser("~/.yakk/services/kokoro"),
                 "service_url": f"http://127.0.0.1:{port}",
                 "port": port,
                 "message": "Installed with custom port"
@@ -465,8 +465,8 @@ class TestKokoroFastAPIInstaller:
         async def mock_install(**kwargs):
             return {
                 "success": True,
-                "install_path": os.path.expanduser("~/.voicemode/services/kokoro"),
-                "systemd_service": "/etc/systemd/user/voicemode-kokoro.service",
+                "install_path": os.path.expanduser("~/.yakk/services/kokoro"),
+                "systemd_service": "/etc/systemd/user/yakk-kokoro.service",
                 "systemd_enabled": True,
                 "systemctl_commands_run": 3,  # daemon-reload, enable, start
                 "message": "Systemd service created"
@@ -492,7 +492,7 @@ class TestKokoroFastAPIInstaller:
                 reinstall_called = True
             return {
                 "success": True,
-                "install_path": os.path.expanduser("~/.voicemode/services/kokoro"),
+                "install_path": os.path.expanduser("~/.yakk/services/kokoro"),
                 "reinstalled": True,
                 "message": "Force reinstalled"
             }

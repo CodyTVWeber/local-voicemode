@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to VoiceMode (formerly voice-mcp) will be documented in this file.
+All notable changes to Yakk (formerly voice-mcp) will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
@@ -11,45 +11,45 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- **Tmux auto-focus no longer steals pane focus** -- When `VOICEMODE_AUTO_FOCUS_PANE` is enabled, converse now only raises the agent's tmux window without changing which pane has focus. Previously, `select-pane` was called alongside `select-window`, which would yank the cursor away from whatever pane the user was working in — especially disruptive in multi-pane layouts.
+- **Tmux auto-focus no longer steals pane focus** -- When `YAKK_AUTO_FOCUS_PANE` is enabled, converse now only raises the agent's tmux window without changing which pane has focus. Previously, `select-pane` was called alongside `select-window`, which would yank the cursor away from whatever pane the user was working in — especially disruptive in multi-pane layouts.
 
 ## [8.6.0] - 2026-04-16
 
 ### Added
 
-- **Auto-focus tmux pane on converse** (VM-922) -- Set `VOICEMODE_AUTO_FOCUS_PANE=true` to automatically focus the agent's tmux pane when converse acquires the conch. Supports multi-session setups via `switch-client`, and respects a `focus-hold` sentinel so other tools (e.g. show-me) can temporarily suppress focus changes. New `VOICEMODE_FOCUS_HOLD_SECONDS` setting. See the Multi-Agent Voice section in the configuration guide.
-- **Restored `voicemode connect auth` CLI commands** (VM-992) -- `voicemode connect auth login`, `logout`, and `status` are back after the VM-958 legacy cleanup. `login` opens an Auth0 browser flow (or prints the URL with `--no-browser`); `status` shows account, token expiry, and refresh state.
+- **Auto-focus tmux pane on converse** (VM-922) -- Set `YAKK_AUTO_FOCUS_PANE=true` to automatically focus the agent's tmux pane when converse acquires the conch. Supports multi-session setups via `switch-client`, and respects a `focus-hold` sentinel so other tools (e.g. show-me) can temporarily suppress focus changes. New `YAKK_FOCUS_HOLD_SECONDS` setting. See the Multi-Agent Voice section in the configuration guide.
+- **Restored `yakk connect auth` CLI commands** (VM-992) -- `yakk connect auth login`, `logout`, and `status` are back after the VM-958 legacy cleanup. `login` opens an Auth0 browser flow (or prints the URL with `--no-browser`); `status` shows account, token expiry, and refresh state.
 
 ### Fixed
 
-- **ESC during converse no longer kills the MCP server** (VM-1026, [#337](https://github.com/mbailey/voicemode/issues/337), [#339](https://github.com/mbailey/voicemode/pull/339)) -- Pressing ESC while a `converse` call was in flight used to take the entire voicemode MCP server offline, requiring `/mcp` reconnect. The tool now catches `CancelledError`, cleans up audio state, and returns control to Claude without bringing the server down.
+- **ESC during converse no longer kills the MCP server** (VM-1026, [#337](https://github.com/mbailey/yakk/issues/337), [#339](https://github.com/mbailey/yakk/pull/339)) -- Pressing ESC while a `converse` call was in flight used to take the entire yakk MCP server offline, requiring `/mcp` reconnect. The tool now catches `CancelledError`, cleans up audio state, and returns control to Claude without bringing the server down.
 - **Circular import in changelog/release_notes under pytest 9** -- Deferred `voice_mode.resources.changelog` import inside `release_notes_prompt` so `tests/test_changelog_resource.py` collects cleanly under pytest 9's stricter import rules. No behavioural change; the resource is still registered at import time.
 - **Star notification failures on multiline bios** -- GitHub user bios containing newlines no longer break the star notification script.
 
 ### Changed
 
-- **Channel server extracted to its own plugin** -- The bundled `channel/` TypeScript server has been removed from this repo and now lives at [mbailey/voicemode-channel](https://github.com/mbailey/voicemode-channel). Install with `claude plugin install voicemode-channel@mbailey` to receive inbound voice calls from phone or web app clients.
+- **Channel server extracted to its own plugin** -- The bundled `channel/` TypeScript server has been removed from this repo and now lives at [mbailey/yakk-channel](https://github.com/mbailey/yakk-channel). Install with `claude plugin install yakk-channel@mbailey` to receive inbound voice calls from phone or web app clients.
 
 ### Removed
 
-- **Legacy VoiceMode Connect Python integration** (VM-958) -- Removed the Python-based WebSocket client, agent registry, inbox symlinks, and filesystem message delivery that pre-dated the Claude Code channel system. Superseded by the `voicemode-channel` plugin.
+- **Legacy Yakk Connect Python integration** (VM-958) -- Removed the Python-based WebSocket client, agent registry, inbox symlinks, and filesystem message delivery that pre-dated the Claude Code channel system. Superseded by the `yakk-channel` plugin.
   - Deleted: `voice_mode/connect/`, `voice_mode/connect_registry.py`, `voice_mode/tools/connect_status.py`, 10 Connect hook scripts + JSON configs, 11 Connect test files, `docs/connect/`, Connect service templates.
-  - Cleaned: `config.py` (`CONNECT_ENABLED`, `CONNECT_WS_URL`, `CONNECT_USERS`, etc.), `cli.py` (`voicemode connect` command group — `connect auth` subcommands restored separately by VM-992), `server.py` (Connect WebSocket lifespan handler), `service.py` (`connect` service entry).
+  - Cleaned: `config.py` (`CONNECT_ENABLED`, `CONNECT_WS_URL`, `CONNECT_USERS`, etc.), `cli.py` (`yakk connect` command group — `connect auth` subcommands restored separately by VM-992), `server.py` (Connect WebSocket lifespan handler), `service.py` (`connect` service entry).
 - **Stale Connect hook references from `plugin.json`** (VM-958) -- Cleaned up dangling hook entries left behind by the legacy Connect removal.
 
 ## [8.5.1] - 2026-03-14
 
 ### Added
 
-- **Show-me plugin in marketplace** - Added show-me as an external plugin (source: mbailey/show-me) to the VoiceMode plugin marketplace
+- **Show-me plugin in marketplace** - Added show-me as an external plugin (source: mbailey/show-me) to the Yakk plugin marketplace
 
 ### Fixed
 
-- **Pass WHISPER_LANGUAGE config to STT API** ([#253](https://github.com/mbailey/voicemode/pull/253) by @htrex) - The `VOICEMODE_WHISPER_LANGUAGE` config existed but was never passed to the transcription API. Local whisper.cpp defaults to English when no language parameter is given, producing incorrect transcriptions for non-English audio. Now passes `language="auto"` explicitly to whisper.cpp and handles the OpenAI API difference (omit parameter for auto-detect)
+- **Pass WHISPER_LANGUAGE config to STT API** ([#253](https://github.com/mbailey/yakk/pull/253) by @htrex) - The `YAKK_WHISPER_LANGUAGE` config existed but was never passed to the transcription API. Local whisper.cpp defaults to English when no language parameter is given, producing incorrect transcriptions for non-English audio. Now passes `language="auto"` explicitly to whisper.cpp and handles the OpenAI API difference (omit parameter for auto-detect)
 
 ### Changed
 
-- **Parallel tool calls guidance** - VoiceMode skill now documents the "speak + act in parallel" pattern for zero dead air during voice conversations, with examples of when to use parallel vs sequential tool calls
+- **Parallel tool calls guidance** - Yakk skill now documents the "speak + act in parallel" pattern for zero dead air during voice conversations, with examples of when to use parallel vs sequential tool calls
 
 ## [8.5.0] - 2026-03-08
 
@@ -62,7 +62,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 #### Mute Converse Sounds (VM-898)
 
-- **Auto-mute voicemode converse tool sounds** - PreToolUse/PostToolUse sounds are automatically suppressed for the voicemode converse tool (both local and Connect variants), since voice conversations provide their own audio feedback. Other tool use sounds still play during voice conversations, making them more meaningful — they indicate something is happening that you wouldn't otherwise hear
+- **Auto-mute yakk converse tool sounds** - PreToolUse/PostToolUse sounds are automatically suppressed for the yakk converse tool (both local and Connect variants), since voice conversations provide their own audio feedback. Other tool use sounds still play during voice conversations, making them more meaningful — they indicate something is happening that you wouldn't otherwise hear
 
 ## [8.4.0] - 2026-03-04
 
@@ -70,9 +70,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 #### Soundfont Toggle (VM-312)
 
-- **`voicemode soundfonts on/off/status` CLI commands** - Session-scoped soundfont toggle using a sentinel file for zero-overhead checking. Disable tool-use sounds without editing config files
-- **`--config` flag for persistent toggle** - `soundfonts on/off --config` also updates `voicemode.env` so the setting persists across restarts
-- **Environment variable awareness** - Status shows the effective state from both sentinel file and `VOICEMODE_SOUNDFONTS_ENABLED` env var, warning when they conflict
+- **`yakk soundfonts on/off/status` CLI commands** - Session-scoped soundfont toggle using a sentinel file for zero-overhead checking. Disable tool-use sounds without editing config files
+- **`--config` flag for persistent toggle** - `soundfonts on/off --config` also updates `yakk.env` so the setting persists across restarts
+- **Environment variable awareness** - Status shows the effective state from both sentinel file and `YAKK_SOUNDFONTS_ENABLED` env var, warning when they conflict
 - **Hooks installation status** - `soundfonts status` now shows whether hooks are installed, replacing a static tip message
 
 #### Connect Lifecycle Hooks (VM-816, VM-820)
@@ -88,40 +88,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **Soundfonts guide** - New `docs/guides/soundfonts.md` covering usage, directory structure, sound lookup order, customization, and troubleshooting
 - **CLI reference updates** - Added soundfonts and claude hooks commands to `docs/reference/cli.md`
-- **Environment reference updates** - Added `VOICEMODE_SOUNDFONTS_ENABLED` and `VOICEMODE_HOOK_DEBUG` to `docs/reference/environment.md`
+- **Environment reference updates** - Added `YAKK_SOUNDFONTS_ENABLED` and `YAKK_HOOK_DEBUG` to `docs/reference/environment.md`
 
 ### Changed
 
-- **Connect status queries gateway** (VM-826) - `voicemode connect status` now opens a short-lived WebSocket to the gateway for real-time presence state instead of reading stale local files. Falls back to local state when gateway is unreachable
-- **Agent-only presence model** (VM-822, VM-824) - Presence is now entirely agent-driven via the `connect_status` MCP tool. Removed standalone daemon model (`connect up/down`), filesystem user scanning, and fallback to scanning `~/.voicemode/connect/users/`
+- **Connect status queries gateway** (VM-826) - `yakk connect status` now opens a short-lived WebSocket to the gateway for real-time presence state instead of reading stale local files. Falls back to local state when gateway is unreachable
+- **Agent-only presence model** (VM-822, VM-824) - Presence is now entirely agent-driven via the `connect_status` MCP tool. Removed standalone daemon model (`connect up/down`), filesystem user scanning, and fallback to scanning `~/.yakk/connect/users/`
 - **Idempotent soundfont config updates** - `soundfonts on/off --config` skips writes when the value is already correct
-- **Config env sync** - `voicemode.env` updates now also sync `os.environ`, eliminating stale environment warnings
+- **Config env sync** - `yakk.env` updates now also sync `os.environ`, eliminating stale environment warnings
 
 ### Fixed
 
 - **Hibernation-friendly keepalive** - Send literal `"ping"` text instead of JSON `{ type: "heartbeat" }` for WebSocket keepalive. The Durable Object's auto-response handles `"ping"→"pong"` during hibernation without waking the DO, eliminating ~2 storage reads per 25-second heartbeat cycle
-- **Ghost contacts on dashboard** (VM-822) - Stopped the Connect client from announcing all users found in `~/.voicemode/connect/users/` on WebSocket connect. Each agent now only announces its own registered identity
+- **Ghost contacts on dashboard** (VM-822) - Stopped the Connect client from announcing all users found in `~/.yakk/connect/users/` on WebSocket connect. Each agent now only announces its own registered identity
 - **Stale inbox-live symlink routing** (VM-816) - Concurrent sessions no longer risk routing messages to the wrong agent's team inbox
 
 ### Removed
 
-- **`voicemode agent` CLI command group** (VM-828) - Legacy tmux-based agent management (~900 lines) that predated the plugin-based agent system. Noted as removed in 8.3.0 but code remained
-- **`voicemode history` commands** (VM-830) - Broken load/search/play commands that overlapped with exchanges
-- **`voicemode version` command** (VM-830) - Redundant with `--version` flag
-- **`voicemode update` command** (VM-830) - Over-complex; users should use `uv`/`pip` directly
-- **`voicemode diag dependencies`** (VM-830) - Redundant with `voicemode deps`
-- **`voicemode connect up/down` commands** (VM-824) - Replaced by agent-driven presence via `connect_status` MCP tool
+- **`yakk agent` CLI command group** (VM-828) - Legacy tmux-based agent management (~900 lines) that predated the plugin-based agent system. Noted as removed in 8.3.0 but code remained
+- **`yakk history` commands** (VM-830) - Broken load/search/play commands that overlapped with exchanges
+- **`yakk version` command** (VM-830) - Redundant with `--version` flag
+- **`yakk update` command** (VM-830) - Over-complex; users should use `uv`/`pip` directly
+- **`yakk diag dependencies`** (VM-830) - Redundant with `yakk deps`
+- **`yakk connect up/down` commands** (VM-824) - Replaced by agent-driven presence via `connect_status` MCP tool
 
 ## [8.3.0] - 2026-02-24 - Happy 1st Birthday, Claude Code!
 
 _February 24, 2026 — One year since Claude Code launched. This release celebrates with
-VoiceMode Connect: make inbound voice calls to your Claude Code agents from anywhere._
+Yakk Connect: make inbound voice calls to your Claude Code agents from anywhere._
 
 ### Added
 
-#### VoiceMode Connect — Inbound Voice Calls
+#### Yakk Connect — Inbound Voice Calls
 
-- **connect_status MCP tool** (VM-770) - Manage agent presence directly from Claude Code conversations; always-on visibility on the voicemode.dev dashboard
+- **connect_status MCP tool** (VM-770) - Manage agent presence directly from Claude Code conversations; always-on visibility on the yakk.dev dashboard
 - **Auto-connect on startup** (VM-766) - WebSocket connection established automatically when the MCP server starts, so agents appear online without manual steps
 - **Deterministic device ID and scoped capabilities** (VM-768) - Stable device identity across restarts with fine-grained capability declarations
 - **User-based mailbox system** (VM-724) - Modular Connect architecture with per-user message routing, replacing the previous monolithic approach
@@ -141,13 +141,13 @@ VoiceMode Connect: make inbound voice calls to your Claude Code agents from anyw
 - **Wake-from-idle** (Phase 5) - TeamCreate hook and session store enable agents to wake from idle state when receiving inbound calls
 - **Automatic away presence** - Agents downgrade to "away" status when wake-from-idle is not available, giving callers accurate availability info
 - **Lazy WebSocket connections** - WebSocket only connects when needed, removing the Teams feature dependency
-- **Connect hooks as VoiceMode plugin** - All Connect hooks ship as part of the VoiceMode plugin, no manual settings.json editing required
+- **Connect hooks as Yakk plugin** - All Connect hooks ship as part of the Yakk plugin, no manual settings.json editing required
 
 ### Changed
 
 - **Default VAD aggressiveness raised to 3** (GH-248) - Level 2 caused ~93% false positive speech detection on MacBook Pro mics, preventing silence detection from triggering. Level 3 eliminates false positives while maintaining good speech detection
 - **Default Kokoro voice changed to af_river** - Replaced af_nicole with af_river in recommended voice lists for a more natural sound
-- **Auth commands moved to `connect auth` subgroup** (VM-744) - `voicemode connect auth login/logout` for clearer command organization
+- **Auth commands moved to `connect auth` subgroup** (VM-744) - `yakk connect auth login/logout` for clearer command organization
 - **Kokoro memory leak mitigation** (VM-358) - Default `KOKORO_MAX_REQUEST=25` and `UVICORN_LIMIT_MAX_REQUESTS` in service templates to auto-restart workers before memory grows unbounded
 - **Auth token moved to Authorization header** (VM-784) - WebSocket authentication uses standard Authorization header instead of URL parameter for improved security
 - **Connect wire protocol aligned with gateway spec** (VMD-124) - Python client updated to match the VMD-124 gateway wire protocol for reliable cross-platform messaging
@@ -166,9 +166,9 @@ VoiceMode Connect: make inbound voice calls to your Claude Code agents from anyw
 - **WebSocket connection state in connect_status** - Properly await WebSocket connection before checking state, preventing false "disconnected" reports
 - **Session ID discovery** - Falls back to session file scanning when CLAUDE_SESSION_ID is not available in the MCP environment
 - **Username auto-discovery** - Automatically discovers username from session files instead of prompting users in hooks
-- **Consistent auth login guidance** - All Connect error messages now include clear instructions for running `voicemode connect auth login`
+- **Consistent auth login guidance** - All Connect error messages now include clear instructions for running `yakk connect auth login`
 - **Input sanitization and lifespan error handling** - Improved robustness of the MCP server startup and shutdown lifecycle
-- **VOICEMODE_CONNECT_ENABLED guard** - Hook scripts now check the feature flag before executing, preventing unexpected Connect behavior when disabled
+- **YAKK_CONNECT_ENABLED guard** - Hook scripts now check the feature flag before executing, preventing unexpected Connect behavior when disabled
 
 ### Removed
 
@@ -181,40 +181,40 @@ VoiceMode Connect: make inbound voice calls to your Claude Code agents from anyw
 
 ### Added
 
-- **STT Prompt for Vocabulary Biasing** - Set `VOICEMODE_STT_PROMPT` to hint Whisper on frequently misrecognized words (e.g., proper nouns, technical terms)
-- **Claude Code Hooks CLI** (VM-618) - `voicemode claude hooks add/remove/status` to manage soundfont hooks without manual JSON editing
-- **VoiceMode Connect Device Visibility** (VM-633) - WebSocket connection shows your device on the voicemode.dev dashboard with online/offline status
-- **Latest Audio Symlinks** (VM-614) - `~/.voicemode/audio/latest-tts.*` and `latest-stt.*` symlinks for quick access to most recent recordings
-- **VoiceMode Marketplace** - `claude install voicemode@voicemode` plugin distribution via marketplace
-- **VoiceMode Connect Skill** (VM-595) - Bundled skill and documentation for remote voice via mobile/web clients
+- **STT Prompt for Vocabulary Biasing** - Set `YAKK_STT_PROMPT` to hint Whisper on frequently misrecognized words (e.g., proper nouns, technical terms)
+- **Claude Code Hooks CLI** (VM-618) - `yakk claude hooks add/remove/status` to manage soundfont hooks without manual JSON editing
+- **Yakk Connect Device Visibility** (VM-633) - WebSocket connection shows your device on the yakk.dev dashboard with online/offline status
+- **Latest Audio Symlinks** (VM-614) - `~/.yakk/audio/latest-tts.*` and `latest-stt.*` symlinks for quick access to most recent recordings
+- **Yakk Marketplace** - `claude install yakk@yakk` plugin distribution via marketplace
+- **Yakk Connect Skill** (VM-595) - Bundled skill and documentation for remote voice via mobile/web clients
 
 ### Fixed
 
-- **Soundfonts silently disabled for all users** - Hook receiver returned false when `VOICEMODE_SOUNDFONTS_ENABLED` was commented out (the default) instead of falling through to enabled
+- **Soundfonts silently disabled for all users** - Hook receiver returned false when `YAKK_SOUNDFONTS_ENABLED` was commented out (the default) instead of falling through to enabled
 - **Whisper CoreML hang on M1 Max** (VM-640) - Startup timeout (120s) with auto-fallback to Metal-only when CoreML compilation hangs on incompatible hardware
 - **webrtcvad broken with setuptools>=81** - Switched to `webrtcvad-wheels` fork which uses `importlib.metadata` instead of removed `pkg_resources`
-- **Hook receiver not installed** (VM-621) - `voicemode claude hooks add` now installs the bash hook receiver and symlinks it correctly
+- **Hook receiver not installed** (VM-621) - `yakk claude hooks add` now installs the bash hook receiver and symlinks it correctly
 - **Connect auto-enabled by default** (VM-633) - Changed `CONNECT_AUTO_ENABLED` to default false so devices don't appear on dashboard without opt-in
 
 ## [8.1.0] - 2026-02-02
 
 ### Added
 
-- **VoiceMode Connect** (VM-549, VM-561)
-  - Remote voice control via voicemode.dev mobile and web apps
-  - `voicemode connect login` - OAuth authentication with PKCE flow
-  - `voicemode connect logout` - Clear stored credentials
-  - `voicemode connect status` - Check connection and auth status
-  - `voicemode connect standby` - Wait for remote wake commands
-  - Connect service for launchd - run at startup with `voicemode service connect enable`
+- **Yakk Connect** (VM-549, VM-561)
+  - Remote voice control via yakk.dev mobile and web apps
+  - `yakk connect login` - OAuth authentication with PKCE flow
+  - `yakk connect logout` - Clear stored credentials
+  - `yakk connect status` - Check connection and auth status
+  - `yakk connect standby` - Wait for remote wake commands
+  - Connect service for launchd - run at startup with `yakk service connect enable`
   - Heartbeat thread keeps connection alive during standby
 
 - **Agent Management** (VM-559, VM-589)
   - Multi-agent support with dedicated config directories per agent
-  - `voicemode agent start <name>` - Start a named agent in tmux
-  - `voicemode agent stop <name>` - Gracefully stop an agent
-  - `voicemode agent status <name>` - Check agent state
-  - `voicemode agent send <name> <message>` - Send message with auto-start
+  - `yakk agent start <name>` - Start a named agent in tmux
+  - `yakk agent stop <name>` - Gracefully stop an agent
+  - `yakk agent status <name>` - Check agent state
+  - `yakk agent send <name> <message>` - Send message with auto-start
   - `--agent` option for standby to target specific agent on wake
   - `--wake-message` option for custom initial messages
 
@@ -264,7 +264,7 @@ _Note: Fix files not committed - use 8.0.6_
 ### Changed
 
 - **Soundfonts Directory Renamed** (GH-223, GH-224)
-  - Package-managed soundfonts directory renamed from `default` to `voicemode`
+  - Package-managed soundfonts directory renamed from `default` to `yakk`
   - Soundfonts now sync from package on every init (auto-updates with new releases)
   - Migration from old `default` directory handled automatically
   - User customizations via `current` symlink are preserved
@@ -279,7 +279,7 @@ _Note: Fix files not committed - use 8.0.6_
 ### Added
 
 - **DJ Status Line Output** (VM-219)
-  - `voicemode dj status --line` (or `-l`) for compact tmux status bar format
+  - `yakk dj status --line` (or `-l`) for compact tmux status bar format
   - Shows track/chapter, position, and remaining time with color warnings
   - Replaces need for external tmux-mpv-status script
   - [Documentation](docs/reference/dj/tmux-status.md)
@@ -302,27 +302,27 @@ _Note: Fix files not committed - use 8.0.6_
 
 ### Added
 
-- **VoiceMode DJ** (VM-406, VM-457, VM-377)
+- **Yakk DJ** (VM-406, VM-457, VM-377)
   - Background music playback for voice sessions with track-level control
-  - `voicemode dj play/stop/pause/resume/status` for core playback
-  - `voicemode dj next/prev/volume` for navigation and volume control
-  - `voicemode dj find` and `voicemode dj library scan/stats` for music library
+  - `yakk dj play/stop/pause/resume/status` for core playback
+  - `yakk dj next/prev/volume` for navigation and volume control
+  - `yakk dj find` and `yakk dj library scan/stats` for music library
   - Automatic audio ducking during TTS - lowers music volume when speaking
-  - Configurable default volume via `VOICEMODE_DJ_VOLUME` environment variable
-  - Configurable duck amount via `VOICEMODE_DJ_DUCK_AMOUNT` (default: 20%)
+  - Configurable default volume via `YAKK_DJ_VOLUME` environment variable
+  - Configurable duck amount via `YAKK_DJ_DUCK_AMOUNT` (default: 20%)
 
 - **Music For Programming Playback** (VM-369, VM-386, VM-400, VM-480, VM-481)
   - [Music For Programming](https://musicforprogramming.net) is a curated series of mixes for coding
-  - `voicemode dj mfp list` shows available episodes with local chapter status
-  - `voicemode dj mfp play <episode>` plays an episode with chapter navigation
-  - `voicemode dj next/prev` skips between tracks within an episode
+  - `yakk dj mfp list` shows available episodes with local chapter status
+  - `yakk dj mfp play <episode>` plays an episode with chapter navigation
+  - `yakk dj next/prev` skips between tracks within an episode
   - Chapter files bundled in package with automatic distribution on first play
   - Three-tier chapter lookup: local cache → bundled package → GitHub repository
-  - `voicemode dj mfp sync` for checksum-based sync (preserves user modifications)
+  - `yakk dj mfp sync` for checksum-based sync (preserves user modifications)
 
 - **Support for All Claude Products** (VM-434, VM-458, VM-462)
-  - VoiceMode now works with Claude.ai, Claude Desktop, Claude Cowork, and Claude Mobile
-  - New `voicemode serve` command exposes VoiceMode as HTTP MCP server
+  - Yakk now works with Claude.ai, Claude Desktop, Claude Cowork, and Claude Mobile
+  - New `yakk serve` command exposes Yakk as HTTP MCP server
   - **Transport options:**
     - `--transport` / `-t` to select protocol: `streamable-http` (default) or `sse`
     - `streamable-http` uses `/mcp` endpoint (recommended)
@@ -337,11 +337,11 @@ _Note: Fix files not committed - use 8.0.6_
     - Defense in depth: IP allowlist and token auth can be combined
   - **Operational features:**
     - Access logging with X-Forwarded-For header support for proxy deployments
-    - Environment variable configuration via `voicemode.env`
-    - `VOICEMODE_SERVE_TRANSPORT`, `VOICEMODE_ALLOW_TAILSCALE` env vars
+    - Environment variable configuration via `yakk.env`
+    - `YAKK_SERVE_TRANSPORT`, `YAKK_ALLOW_TAILSCALE` env vars
 
 - **Multi-Agent Voice Coordination** (VM-399, VM-404, VM-405)
-  - Conch lock file at `~/.voicemode/conch` signals when voice conversation is active
+  - Conch lock file at `~/.yakk/conch` signals when voice conversation is active
   - `wait_for_conch` parameter allows agents to wait for their turn to speak
   - Sound effect hooks automatically mute during voice exchanges
   - Atomic try_acquire with stale lock detection for crash recovery
@@ -384,7 +384,7 @@ _Note: Fix files not committed - use 8.0.6_
 
 - **Soundfonts enabled by default** (VM-329)
   - Audio feedback during tool calls now works out of the box
-  - Disable with `VOICEMODE_SOUNDFONTS_ENABLED=false` in `~/.voicemode/voicemode.env`
+  - Disable with `YAKK_SOUNDFONTS_ENABLED=false` in `~/.yakk/yakk.env`
 
 - **Plugin directory structure** (VM-329)
   - Hook receiver moved to `scripts/` per Claude Code plugin conventions
@@ -399,7 +399,7 @@ _Note: Fix files not committed - use 8.0.6_
 ### Added
 
 - **Unified Status Command** (VM-304)
-  - New `voicemode status` command shows status of all VoiceMode services at once
+  - New `yakk status` command shows status of all Yakk services at once
   - Displays Whisper, Kokoro, and LiveKit service states in a single view
 
 - **Kokoro Model Download Progress**
@@ -427,7 +427,7 @@ _Note: Fix files not committed - use 8.0.6_
 ### Documentation
 
 - **MacBook Portable Mode Guide**
-  - Added guide for running VoiceMode with MacBook lid closed
+  - Added guide for running Yakk with MacBook lid closed
   - Covers clamshell mode configuration and external display setup
 
 - **Improved Troubleshooting**
@@ -440,7 +440,7 @@ _Note: Fix files not committed - use 8.0.6_
 - **STT Timeout Increased to 60s** (VM-325)
   - Whisper sometimes takes longer than 30s for complex or longer audio
   - Increased default STT timeout from 30s to 60s to prevent transcription failures
-  - A future release will make this configurable via `voicemode.env`
+  - A future release will make this configurable via `yakk.env`
 
 - **Test Isolation for LaunchAgents** (VM-310)
   - Tests no longer write plist files to real `~/Library/LaunchAgents` directory
@@ -449,12 +449,12 @@ _Note: Fix files not committed - use 8.0.6_
 ### Changed
 
 - **CLI Simplification** (VM-305, VM-306)
-  - Removed deprecated `voicemode claude` command group (use Claude Code hooks instead)
-  - Removed deprecated `voicemode audio` command group
-  - Moved `transcribe` command to top-level: `voicemode transcribe` (was `voicemode audio transcribe`)
+  - Removed deprecated `yakk claude` command group (use Claude Code hooks instead)
+  - Removed deprecated `yakk audio` command group
+  - Moved `transcribe` command to top-level: `yakk transcribe` (was `yakk audio transcribe`)
 
 - **Plugin Structure**
-  - Moved skill file to `skills/voicemode/SKILL.md` for better organization
+  - Moved skill file to `skills/yakk/SKILL.md` for better organization
   - Updated plugin packaging and configuration
 
 ### Added
@@ -470,7 +470,7 @@ _Note: Fix files not committed - use 8.0.6_
 ### Documentation
 
 - **Plugin Skill Improvements** (VM-266)
-  - Enhanced VoiceMode plugin skill with installation guidance
+  - Enhanced Yakk plugin skill with installation guidance
   - Better onboarding experience for new users
 
 ## [7.1.2] - 2025-12-27
@@ -490,7 +490,7 @@ _Note: Fix files not committed - use 8.0.6_
 - **Whisper Thread Configuration**
   - Fixed Whisper decode failures on VMs with fewer than 8 CPU cores
   - Replace hardcoded 8 threads with dynamic CPU detection (sysctl on macOS, nproc on Linux)
-  - Added `VOICEMODE_WHISPER_THREADS` environment variable for manual override
+  - Added `YAKK_WHISPER_THREADS` environment variable for manual override
   - Added missing `--convert` flag to whisper-server startup for automatic audio format conversion
 
 ### Changed
@@ -502,17 +502,17 @@ _Note: Fix files not committed - use 8.0.6_
 ### Documentation
 
 - **Installer Testing Guide** (VM-276)
-  - Added comprehensive guide for testing VoiceMode installer on Tart VMs
+  - Added comprehensive guide for testing Yakk installer on Tart VMs
   - Fixed installer test script for local VM testing
 
 ## [7.1.0] - 2025-12-25
 
 ### Added
 
-- **VoiceMode Plugin for Claude Code** (VM-227)
-  - Install via: `/plugin marketplace add mbailey/voicemode` then `/plugin install voicemode`
+- **Yakk Plugin for Claude Code** (VM-227)
+  - Install via: `/plugin marketplace add mbailey/yakk` then `/plugin install yakk`
   - Includes MCP server integration, slash commands, skill, and hooks
-  - Commands: `/voicemode:install`, `/voicemode:converse`, `/voicemode:status`, `/voicemode:start`, `/voicemode:stop`
+  - Commands: `/yakk:install`, `/yakk:converse`, `/yakk:status`, `/yakk:start`, `/yakk:stop`
   - Self-contained hook receiver for soundfont support out of the box
   - No manual configuration needed - hooks work automatically
 
@@ -525,14 +525,14 @@ _Note: Fix files not committed - use 8.0.6_
   - Enables Claude Code automation and CI/CD pipeline installation
 
 - **Fast Hook Receiver with Enhanced Soundfont Support** (VM-258)
-  - New voicemode-hook-receiver script for improved performance
+  - New yakk-hook-receiver script for improved performance
   - Enhanced soundfont structure support
   - Optimized hook handling for faster responses
 
 - **Audio Compression Improvements** (VM-240, VM-245)
   - Compress STT audio uploads to reduce bandwidth usage
   - Skip audio compression for local STT endpoints (no need for compression on localhost)
-  - Configurable STT save format via `VOICEMODE_STT_SAVE_FORMAT` environment variable
+  - Configurable STT save format via `YAKK_STT_SAVE_FORMAT` environment variable
   - Save full-quality WAV files while using compressed upload for remote endpoints
 
 - **Detailed Timing Metrics** (VM-244)
@@ -543,8 +543,8 @@ _Note: Fix files not committed - use 8.0.6_
 ### Fixed
 
 - **Multiline Environment Variable Corruption** (VM-268)
-  - Fixed `voicemode whisper model` command corrupting multiline values in voicemode.env
-  - Preserves VOICEMODE_PRONOUNCE and other multiline quoted variables correctly
+  - Fixed `yakk whisper model` command corrupting multiline values in yakk.env
+  - Preserves YAKK_PRONOUNCE and other multiline quoted variables correctly
   - Prevents whisper server from falling back to wrong model after config update
 
 - **Benchmark Script** (VM-258)
@@ -586,10 +586,10 @@ _Note: Fix files not committed - use 8.0.6_
 
 - **Pronunciation System Replaced** (VM-183)
   - Old YAML-based pronunciation files are no longer loaded
-  - Rules now defined via environment variables (VOICEMODE_PRONOUNCE)
+  - Rules now defined via environment variables (YAKK_PRONOUNCE)
   - New compact one-line format: `DIRECTION pattern replacement # description`
   - Default rules included for JSON, YAML, and API
-  - **Migration**: Convert YAML rules to env var format in voicemode.env (or other files)
+  - **Migration**: Convert YAML rules to env var format in yakk.env (or other files)
 
 ### Fixed
 
@@ -612,7 +612,7 @@ _Note: Fix files not committed - use 8.0.6_
 ### Added
 
 - **Python 3.14 Support** (VM-217)
-  - VoiceMode now supports Python 3.14
+  - Yakk now supports Python 3.14
   - LiveKit dependencies made optional to avoid compatibility issues
   - LiveKit functionality requires manual installation of livekit package
 
@@ -674,7 +674,7 @@ _Note: Fix files not committed - use 8.0.6_
 
 #### **Voice Control Commands - "Repeat" and "Wait"** (VM-199)
 
-VoiceMode now understands natural voice commands during conversations:
+Yakk now understands natural voice commands during conversations:
 
 - **"Repeat" Command**: Say phrases like "could you repeat that?" or "say that again" to replay the last message
 - **"Wait" Command**: Say "wait a minute" or "hold on" to pause the conversation for 60 seconds
@@ -693,9 +693,9 @@ VoiceMode now understands natural voice commands during conversations:
   - Fallback to TTS if audio files unavailable
   - Audio stored in `voice_mode/data/soundfonts/default/system-messages/`
 
-- **Claude Code Skill for VoiceMode** (VM-210)
+- **Claude Code Skill for Yakk** (VM-210)
   - New SKILL.md with comprehensive voice interaction instructions
-  - Triggers on "voice mode" or "voicemode" mentions
+  - Triggers on "voice mode" or "yakk" mentions
   - Includes parallel operation guidelines for natural conversations
   - Documents all CLI commands and MCP tool usage
 
@@ -703,7 +703,7 @@ VoiceMode now understands natural voice commands during conversations:
 
 - **Concurrent Audio Playback** (VM-208)
   - Replaced blocking audio calls with queue-based NonBlockingAudioPlayer
-  - Multiple VoiceMode instances can now play audio simultaneously
+  - Multiple Yakk instances can now play audio simultaneously
   - System audio mixer properly handles concurrent streams
   - Fixed chime audio normalization (int16 to float32 conversion)
   - Works seamlessly with Core Audio (macOS) and PulseAudio (Linux)
@@ -775,11 +775,11 @@ VoiceMode now understands natural voice commands during conversations:
 ### Fixed
 
 - **CLI Defaults** - Fixed CLI not respecting environment variable configuration (#75)
-  - `voicemode converse` now uses DEFAULT_LISTEN_DURATION (120s) instead of hardcoded 30s
-  - `voicemode converse` now uses MIN_RECORDING_DURATION from config for min-duration
+  - `yakk converse` now uses DEFAULT_LISTEN_DURATION (120s) instead of hardcoded 30s
+  - `yakk converse` now uses MIN_RECORDING_DURATION from config for min-duration
   - CLI defaults now properly align with environment variable values
 - **CLI Logging** - Restored INFO logging for converse command
-  - `voicemode converse` now shows detailed progress output
+  - `yakk converse` now shows detailed progress output
   - Fixed regression caused by logger name standardization
 
 ## [6.0.2] - 2025-10-27
@@ -792,7 +792,7 @@ VoiceMode now understands natural voice commands during conversations:
 
 ### Changed
 
-- **Logger Names** - Standardized logger names to use "voicemode" without hyphen
+- **Logger Names** - Standardized logger names to use "yakk" without hyphen
   - Consistent logging namespace across all modules
   - Improved log filtering and debugging experience
 
@@ -819,9 +819,9 @@ VoiceMode now understands natural voice commands during conversations:
   - Only `converse` and `service` tools loaded by default (2.6k tokens vs previous 26k tokens)
   - **90% reduction in MCP tool token usage** from ~26,000 to ~2,600 tokens
   - New configuration options for controlling tool loading:
-    - `VOICEMODE_TOOLS_ENABLED` - Whitelist specific tools (e.g., "converse,service")
-    - `VOICEMODE_TOOLS_DISABLED` - Blacklist specific tools (loads all except those listed)
-  - Default: `VOICEMODE_TOOLS_ENABLED=converse,service` for minimal token footprint
+    - `YAKK_TOOLS_ENABLED` - Whitelist specific tools (e.g., "converse,service")
+    - `YAKK_TOOLS_DISABLED` - Blacklist specific tools (loads all except those listed)
+  - Default: `YAKK_TOOLS_ENABLED=converse,service` for minimal token footprint
   - Users who need additional tools can enable them via configuration
 
 - **Converse Tool Parameter Renames** - Clarified listen duration parameter names
@@ -830,13 +830,13 @@ VoiceMode now understands natural voice commands during conversations:
   - Paired max/min suffixes make parameter relationship clearer
 
 - **Audio Feedback Configuration Variable Renames** - Renamed for clarity
-  - `VOICEMODE_PIP_LEADING_SILENCE` → `VOICEMODE_CHIME_LEADING_SILENCE`
-  - `VOICEMODE_PIP_TRAILING_SILENCE` → `VOICEMODE_CHIME_TRAILING_SILENCE`
+  - `YAKK_PIP_LEADING_SILENCE` → `YAKK_CHIME_LEADING_SILENCE`
+  - `YAKK_PIP_TRAILING_SILENCE` → `YAKK_CHIME_TRAILING_SILENCE`
   - Users with custom configurations must update their environment variables
 
 ### Added
 
-- **Comprehensive Configuration Template** - Expanded default voicemode.env template with 37 additional variables
+- **Comprehensive Configuration Template** - Expanded default yakk.env template with 37 additional variables
   - Recording & VAD configuration (listen duration, silence detection, VAD aggressiveness)
   - Audio format configuration (global and per-operation format settings, bitrate controls)
   - Streaming configuration (chunk size, buffering, playback controls)
@@ -849,9 +849,9 @@ VoiceMode now understands natural voice commands during conversations:
 
 - **Tool Loading Configuration System**
   - Fine-grained control over which MCP tools are loaded
-  - Whitelist mode (`VOICEMODE_TOOLS_ENABLED`) for explicit tool selection
-  - Blacklist mode (`VOICEMODE_TOOLS_DISABLED`) for excluding specific tools
-  - Configuration examples in default voicemode.env template
+  - Whitelist mode (`YAKK_TOOLS_ENABLED`) for explicit tool selection
+  - Blacklist mode (`YAKK_TOOLS_DISABLED`) for excluding specific tools
+  - Configuration examples in default yakk.env template
   - Documentation in tool loading architecture reference
 
 ### Changed
@@ -869,7 +869,7 @@ VoiceMode now understands natural voice commands during conversations:
 
 ### Fixed
 
-- **Whisper model size display** - Fixed incorrect size calculation in `voicemode whisper model --all`
+- **Whisper model size display** - Fixed incorrect size calculation in `yakk whisper model --all`
   - Totals were showing millions of GB instead of reasonable values
   - Changed calculation to use MB values directly from registry
   - Fixes issue #81
@@ -900,7 +900,7 @@ VoiceMode now understands natural voice commands during conversations:
 
 ### Documentation
 
-- **Code Reading Guide** - Added comprehensive guide for understanding voicemode converse command
+- **Code Reading Guide** - Added comprehensive guide for understanding yakk converse command
 
 ## [5.1.5] - 2025-10-12
 
@@ -908,7 +908,7 @@ VoiceMode now understands natural voice commands during conversations:
 
 ### Added
 
-- **voice-mode-install Package** - Standalone installer package for simplified VoiceMode setup
+- **voice-mode-install Package** - Standalone installer package for simplified Yakk setup
   - New PyPI package `voice-mode-install` provides `voice-mode-install` command
   - Handles system dependency detection and installation before main package
   - Cross-platform support for macOS, Ubuntu/Debian, and Fedora
@@ -916,18 +916,18 @@ VoiceMode now understands natural voice commands during conversations:
   - Detects OS, distribution, and architecture automatically
   - Shows concise summary of missing system packages
   - Installs system dependencies using native package managers (brew/apt/dnf)
-  - Automatically installs VoiceMode after dependencies are ready
+  - Automatically installs Yakk after dependencies are ready
   - Makefile targets for building, testing, and publishing installer package
   - Improved command existence checking using shutil.which
 
 ### Fixed
 
 - **Installer Package Naming Consistency**
-  - Fixed wheel filename pattern in Makefile from `voicemode_install` to `voice_mode_install`
-  - Corrected package name from `voicemode-install` to `voice-mode-install` in all documentation
+  - Fixed wheel filename pattern in Makefile from `yakk_install` to `voice_mode_install`
+  - Corrected package name from `yakk-install` to `voice-mode-install` in all documentation
   - Updated README.md, CLI examples, and test scripts to use correct hyphenated name
-  - PyPI package naming now consistent: `voice-mode-install` (package) → `voice_mode_install` (wheel) → `voicemode_install` (module)
-  - Synchronized installer version (5.1.4) with voicemode for simpler version management
+  - PyPI package naming now consistent: `voice-mode-install` (package) → `voice_mode_install` (wheel) → `yakk_install` (module)
+  - Synchronized installer version (5.1.4) with yakk for simpler version management
 
 ## [5.1.3] - 2025-10-12
 
@@ -945,18 +945,18 @@ VoiceMode now understands natural voice commands during conversations:
 ### Fixed
 
 - **Kokoro Rust Dependency Detection**
-  - Fixed `voicemode kokoro install` failing with "can't find Rust compiler" on Fedora
+  - Fixed `yakk kokoro install` failing with "can't find Rust compiler" on Fedora
   - Marked Rust (cargo and rustc) as required dependencies for kokoro on Fedora
   - Previously marked as optional (ARM64 only), but sudachipy requires Rust on all architectures
   - Dependency chain: kokoro-fastapi → misaki[ja] → pyopenjtalk-plus → sudachipy
-  - `voicemode deps --component kokoro` now correctly checks for Rust compiler
+  - `yakk deps --component kokoro` now correctly checks for Rust compiler
 
 ### Changed
 
 - **Service Auto-Enable Default**
   - Changed `SERVICE_AUTO_ENABLE` default from `False` to `True`
   - Services now automatically enable and start after installation by default
-  - Users can override with `VOICEMODE_SERVICE_AUTO_ENABLE=false` if desired
+  - Users can override with `YAKK_SERVICE_AUTO_ENABLE=false` if desired
   - Improves out-of-box experience - services "just work" after installation
 
 ## [5.1.1] - 2025-10-12
@@ -965,7 +965,7 @@ VoiceMode now understands natural voice commands during conversations:
 
 - **Progress Indicator for Dependency Installation**
   - Animated braille spinner shows installation activity by default
-  - New `--verbose/-v` flag for `voicemode deps` to show full package manager output
+  - New `--verbose/-v` flag for `yakk deps` to show full package manager output
   - Friendly progress messages with emoji (📦, ✅, ❌)
   - Spinner runs in daemon thread for clean shutdown
   - Addresses user feedback about installation appearing to hang with no progress indication
@@ -987,7 +987,7 @@ VoiceMode now understands natural voice commands during conversations:
   - Automatic detection and installation of system dependencies on-demand
   - Lazy dependency checking that happens when needed (core deps on converse, build deps on service install)
   - Single source of truth in `voice_mode/dependencies.yaml` for all platform dependencies
-  - CLI command `voicemode deps` to check and install dependencies interactively
+  - CLI command `yakk deps` to check and install dependencies interactively
   - Non-interactive mode with `--yes` flag for automation
   - Component-specific checking with `--component` flag (whisper, kokoro, core)
   - Cross-platform support for Fedora, Ubuntu/Debian, and macOS
@@ -1055,7 +1055,7 @@ VoiceMode now understands natural voice commands during conversations:
 
 ### Changed
 
-- **Version Display** - Now shows "VoiceMode" name and git status
+- **Version Display** - Now shows "Yakk" name and git status
 - **CLI Structure** - Reorganized whisper commands for better UX
 - **Installation** - Automatic Core ML support without manual configuration
 
@@ -1194,12 +1194,12 @@ VoiceMode now understands natural voice commands during conversations:
   - Include transcription details and provider info in logs
 
 - **Configuration Management**
-  - Add `voicemode config edit` command for easy configuration file editing
+  - Add `yakk config edit` command for easy configuration file editing
   - Support custom editor selection via --editor flag
   - Automatically open configuration file in default editor
 
 - **Tool Environment Variables**
-  - Replace VOICEMODE_TOOLS with VOICEMODE_TOOLS_ENABLED and VOICEMODE_TOOLS_DISABLED
+  - Replace YAKK_TOOLS with YAKK_TOOLS_ENABLED and YAKK_TOOLS_DISABLED
   - Allow fine-grained control over tool availability
   - Support comma-separated lists for enabling/disabling specific tools
 
@@ -1215,7 +1215,7 @@ VoiceMode now understands natural voice commands during conversations:
 ### Fixed
 
 - Disable OpenAI client retries for local endpoints to avoid delays
-- Fix logger name consistency (voicemode vs voice-mode) for STT logging
+- Fix logger name consistency (yakk vs voice-mode) for STT logging
 - Prevent test_installers from killing running voice services during tests
 - Update tests to work with refactored provider system
 - Resolve test failures related to new environment variables
@@ -1228,9 +1228,9 @@ VoiceMode now understands natural voice commands during conversations:
   - Add server.json configuration for MCP registry publication
   - Add mcp-name field to README for PyPI package validation
   - Integrate MCP registry publishing into CI/CD workflow
-  - Support DNS-based namespace authentication (com.failmode/voicemode)
+  - Support DNS-based namespace authentication (com.failmode/yakk)
   - Update Makefile to sync server.json version during releases
-- **Cloudflare Worker for voicemode.sh**
+- **Cloudflare Worker for yakk.sh**
   - Serve install script via custom domain
   - Smart user-agent detection for CLI vs browser
   - Cached script delivery with fallback
@@ -1303,7 +1303,7 @@ VoiceMode now understands natural voice commands during conversations:
   - MP3 support added for 90% file size reduction over WAV
   - Recursive directory copying for complete sound font structure
   - Three Bears sound fonts for baby-bear, mama-bear, and papa-bear agents
-  - Sound fonts disabled by default (VOICEMODE_SOUNDFONTS_ENABLED=false)
+  - Sound fonts disabled by default (YAKK_SOUNDFONTS_ENABLED=false)
 
 - **🎭 Claude Code Deep Integration**
   - Extract and analyze Claude's conversation logs in real-time
@@ -1361,12 +1361,12 @@ VoiceMode now understands natural voice commands during conversations:
 ### BREAKING CHANGES
 
 - **Unified voice configuration system**
-  - **BREAKING**: Replaced `.voices.txt` files with unified `.voicemode.env` configuration
-  - Changed environment variable from `VOICEMODE_TTS_VOICES` to `VOICEMODE_VOICES` for simplicity
+  - **BREAKING**: Replaced `.voices.txt` files with unified `.yakk.env` configuration
+  - Changed environment variable from `YAKK_TTS_VOICES` to `YAKK_VOICES` for simplicity
   - Implemented cascading configuration: env vars > project configs > global config
   - Added directory tree walking for project-specific configuration discovery
   - Supports runtime configuration reloading via MCP tools
-  - **Migration Required**: Users must migrate from `.voices.txt` to `.voicemode.env` with `VOICEMODE_VOICES=voice1,voice2` format
+  - **Migration Required**: Users must migrate from `.voices.txt` to `.yakk.env` with `YAKK_VOICES=voice1,voice2` format
 
 ### Added
 
@@ -1409,7 +1409,7 @@ VoiceMode now understands natural voice commands during conversations:
 ### Fixed
 
 - **Whisper service enable command**
-  - Fixed `voicemode whisper enable` using incorrect template variable names
+  - Fixed `yakk whisper enable` using incorrect template variable names
   - Changed from WHISPER_BIN/MODEL_FILE to START_SCRIPT_PATH/INSTALL_DIR to match plist template
   - Correctly locates start-whisper-server.sh script in whisper install directory
   - Fixes KeyError 'START_SCRIPT_PATH' when enabling whisper service after installation
@@ -1418,7 +1418,7 @@ VoiceMode now understands natural voice commands during conversations:
 
 - **Installer reliability**
   - Added `--force` flag to `uv tool install --upgrade` command
-  - Ensures voicemode is fully reinstalled even if already present
+  - Ensures yakk is fully reinstalled even if already present
   - Prevents stale installations when package structure changes
   - Improves update reliability when running install.sh multiple times
 
@@ -1433,7 +1433,7 @@ VoiceMode now understands natural voice commands during conversations:
   - Added Homebrew zsh completion directory support on macOS
   - Implemented XDG-compliant paths for bash completions
   - Removed fish shell support to simplify maintenance (bash/zsh only)
-  - Zsh completions now correctly use underscore prefix (\_voicemode)
+  - Zsh completions now correctly use underscore prefix (\_yakk)
   - MCP configuration now uses plain `voice-mode` command for better performance
 
 ### Fixed
@@ -1473,7 +1473,7 @@ VoiceMode now understands natural voice commands during conversations:
 
 - **Whisper service LaunchAgent fixes**
   - Fixed LaunchAgent plist to call start-whisper-server.sh script instead of binary directly
-  - Script provides dynamic model selection via VOICEMODE_WHISPER_MODEL environment variable
+  - Script provides dynamic model selection via YAKK_WHISPER_MODEL environment variable
   - Added proper command-line arguments (--inference-path, --threads) missing from direct binary call
   - Resolved Signal 15 (SIGTERM) restart loop caused by missing parameters
 
@@ -1497,14 +1497,14 @@ VoiceMode now understands natural voice commands during conversations:
 
 - **Whisper service improvements**
   - Implemented unified Whisper startup script for Mac and Linux
-  - Fixed Whisper service to respect VOICEMODE_WHISPER_MODEL setting properly
+  - Fixed Whisper service to respect YAKK_WHISPER_MODEL setting properly
   - Changed default Whisper model from large-v2 to base for faster initial setup
 
 - **Installer script stability**
   - Fixed script exit after Whisper installation when CoreML setup CLI check fails
   - Properly handle check_voice_mode_cli failures in setup_coreml_acceleration
   - Installer now continues with Kokoro and LiveKit even if CoreML setup encounters issues
-  - Fixed installer exit issue after Whisper when checking for voicemode CLI
+  - Fixed installer exit issue after Whisper when checking for yakk CLI
 
 - **Documentation corrections**
   - Removed mention of response_duration from converse prompt to avoid confusion
@@ -1516,10 +1516,10 @@ VoiceMode now understands natural voice commands during conversations:
   - Clarified OpenAI API key is optional and serves as backup when local services unavailable
   - Added comprehensive list of what the installer automatically configures
   - Changed example to use `claude converse` instead of interactive prompt
-  - Updated README to use `/voicemode:converse` for consistent voice usage
+  - Updated README to use `/yakk:converse` for consistent voice usage
 
 - **Configuration updates**
-  - Added voicemode MCP to Claude Code configuration for easier integration
+  - Added yakk MCP to Claude Code configuration for easier integration
 
 ## [2.32.0] - 2025-08-25
 
@@ -1527,7 +1527,7 @@ VoiceMode now understands natural voice commands during conversations:
 
 - **Safe shell completions in installer**
   - Re-enabled shell completion setup with runtime command availability checks
-  - Completions only activate if `voicemode` command is found in PATH
+  - Completions only activate if `yakk` command is found in PATH
   - Prevents shell startup errors when command is not available
   - Supports bash, zsh, and fish shells with safe fallback behavior
 
@@ -1539,8 +1539,8 @@ VoiceMode now understands natural voice commands during conversations:
 ### Changed
 
 - **CLI consistency improvements**
-  - Replaced all user-facing "voice-mode" references with "voicemode"
-  - Updated shell completion environment variables from `_VOICE_MODE_COMPLETE` to `_VOICEMODE_COMPLETE`
+  - Replaced all user-facing "voice-mode" references with "yakk"
+  - Updated shell completion environment variables from `_VOICE_MODE_COMPLETE` to `_YAKK_COMPLETE`
   - Removed redundant `completion` command, keeping only the superior `completions` command
   - Simplified command help text and examples for consistency
   - Logger name remains "voice-mode" for backward compatibility
@@ -1615,7 +1615,7 @@ VoiceMode now understands natural voice commands during conversations:
 ### Added
 
 - **Configurable audio feedback pip delays**
-  - Added VOICEMODE_PIP_LEADING_SILENCE and VOICEMODE_PIP_TRAILING_SILENCE environment variables
+  - Added YAKK_PIP_LEADING_SILENCE and YAKK_PIP_TRAILING_SILENCE environment variables
   - Allows customization of silence before and after audio feedback chimes
   - Configurable via converse tool parameters pip_leading_silence and pip_trailing_silence
   - Helps prevent audio cutoff on Bluetooth devices and other audio systems with delay
@@ -1631,10 +1631,10 @@ VoiceMode now understands natural voice commands during conversations:
 
 ### Added
 
-- **Standardized project naming as VoiceMode MCP**
+- **Standardized project naming as Yakk MCP**
   - Consistent branding across all documentation and code
   - Updated project descriptions and metadata
-  - Renamed internal references from "voice-mode" to "VoiceMode MCP"
+  - Renamed internal references from "voice-mode" to "Yakk MCP"
   - Maintains backward compatibility with existing installations
 
 ### Fixed
@@ -1685,7 +1685,7 @@ VoiceMode now understands natural voice commands during conversations:
 ### Fixed
 
 - **MCP server configuration**
-  - Fixed .mcp.json to use `uv run voicemode` for local development
+  - Fixed .mcp.json to use `uv run yakk` for local development
   - Removed hardcoded paths for better portability
   - Works correctly with project-local development version
 - **Whisper model management**
@@ -1740,7 +1740,7 @@ VoiceMode now understands natural voice commands during conversations:
 ### Changed
 
 - **Configuration file naming**
-  - Renamed `.voicemode.env` to `voicemode.env` (removed leading dot)
+  - Renamed `.yakk.env` to `yakk.env` (removed leading dot)
   - Added backwards compatibility to check for old filename
   - Shows deprecation warning when old filename is used
   - Updated all documentation to reference new filename
@@ -1759,8 +1759,8 @@ VoiceMode now understands natural voice commands during conversations:
   - Skip sudo prompts on macOS to prevent installation issues
 - **Test suite fixes**
   - Fixed deprecation warning appearing in help output
-  - Renamed deprecated `.voicemode.env` to `voicemode.env` to fix test failures
-- Whisper model management now properly uses voicemode.env configuration file
+  - Renamed deprecated `.yakk.env` to `yakk.env` to fix test failures
+- Whisper model management now properly uses yakk.env configuration file
 - Test suite updated for all API changes and return value structures
 - Resolved all CI test failures related to service status and diagnostics
 
@@ -1828,7 +1828,7 @@ VoiceMode now understands natural voice commands during conversations:
   - Returns "No speech detected" message instead of processing silence
   - Significantly improves user experience for voice interactions
 - **VAD debugging mode** - Comprehensive debugging for Voice Activity Detection
-  - New `VOICEMODE_VAD_DEBUG` environment variable enables detailed VAD logging
+  - New `YAKK_VAD_DEBUG` environment variable enables detailed VAD logging
   - Shows real-time speech detection decisions, state transitions, and timing
   - Helps diagnose issues where recording stops before speech or cuts off early
   - Added test script `scripts/test-vad-enhancement.py` for VAD testing
@@ -1839,12 +1839,12 @@ VoiceMode now understands natural voice commands during conversations:
 ### Added
 
 - **`skip_tts` parameter** - Dynamic control over text-to-speech in converse tool
-  - Add optional `skip_tts` parameter to override global `VOICEMODE_SKIP_TTS` setting
+  - Add optional `skip_tts` parameter to override global `YAKK_SKIP_TTS` setting
   - When `True`: Skip TTS for faster text-only responses
   - When `False`: Always use TTS regardless of environment setting
-  - When `None` (default): Follow `VOICEMODE_SKIP_TTS` environment variable
+  - When `None` (default): Follow `YAKK_SKIP_TTS` environment variable
   - Enables LLM to intelligently choose between voice and text-only responses
-- **`VOICEMODE_SKIP_TTS` environment variable** - Global TTS skip configuration
+- **`YAKK_SKIP_TTS` environment variable** - Global TTS skip configuration
   - Set to `true` for permanent text-only mode (faster responses)
   - Can be overridden per-call with `skip_tts` parameter
   - Useful for rapid development iterations or when voice isn't needed
@@ -1868,7 +1868,7 @@ VoiceMode now understands natural voice commands during conversations:
   - Removed unnecessary build step that was causing errors
 - **Build output verbosity** - Suppress cmake/make output unless debugging
   - Build output is now captured and only shown on errors
-  - Use VOICEMODE_DEBUG=true to see full build output
+  - Use YAKK_DEBUG=true to see full build output
   - Significantly cleaner installation experience
 
 ## [2.22.2] - 2025-08-16
@@ -1877,7 +1877,7 @@ VoiceMode now understands natural voice commands during conversations:
 
 - **CLI deprecation warnings** - Suppress known warnings for cleaner output
   - Hide audioop, pkg_resources, and psutil deprecation warnings by default
-  - Warnings can be shown with `VOICEMODE_DEBUG=true` or `--debug` flag
+  - Warnings can be shown with `YAKK_DEBUG=true` or `--debug` flag
   - Improves user experience when running CLI commands and MCP server
   - Applies to both direct CLI usage and MCP server invocations
 
@@ -1973,7 +1973,7 @@ VoiceMode now understands natural voice commands during conversations:
   - New `vad_aggressiveness` parameter in converse tool for controlling Voice Activity Detection sensitivity (0-3)
   - 0 = least aggressive filtering (more permissive), 3 = most aggressive (strict)
   - Allows adapting to different environments: quiet rooms (0-1) vs noisy environments (2-3)
-  - Also configurable via VOICEMODE_VAD_AGGRESSIVENESS environment variable
+  - Also configurable via YAKK_VAD_AGGRESSIVENESS environment variable
 
 ### Changed
 
@@ -2020,7 +2020,7 @@ VoiceMode now understands natural voice commands during conversations:
 ### Fixed
 
 - **STT audio saving with simple failover**
-  - Fixed critical bug where STT audio files were not being saved when VOICEMODE_SIMPLE_FAILOVER=true
+  - Fixed critical bug where STT audio files were not being saved when YAKK_SIMPLE_FAILOVER=true
   - Simple failover now properly saves audio recordings before processing
   - Ensures consistent audio archival behavior across all failover modes
 
@@ -2037,7 +2037,7 @@ VoiceMode now understands natural voice commands during conversations:
 ### Added
 
 - **Universal installer script** for automatic setup
-  - Single command installation: `curl -O https://getvoicemode.com/install.sh && bash install.sh`
+  - Single command installation: `curl -O https://getyakk.com/install.sh && bash install.sh`
   - Cross-platform support: Linux (Ubuntu/Fedora), macOS, and Windows WSL
   - Automatic dependency installation (Node.js, audio libraries, etc.)
   - Claude Code installation and Voice Mode MCP configuration
@@ -2068,7 +2068,7 @@ VoiceMode now understands natural voice commands during conversations:
 ### Fixed
 
 - **Configuration directory creation**
-  - Removed redundant `config/` directory creation (config stored in `voicemode.env`)
+  - Removed redundant `config/` directory creation (config stored in `yakk.env`)
   - Fixed issue where services created unexpected directory structures
 - **Claude Code compatibility**
   - Fixed `claude mcp list` and `claude mcp add` for versions without `--scope` support
@@ -2094,7 +2094,7 @@ VoiceMode now understands natural voice commands during conversations:
 ### Added
 
 - **Automatic configuration file loading**
-  - Voice Mode now creates `~/.voicemode/voicemode.env` on first run
+  - Voice Mode now creates `~/.yakk/yakk.env` on first run
   - Template file includes all available settings with documentation
   - Environment variables always take precedence over file settings
   - Secure file permissions (0600) automatically set
@@ -2114,7 +2114,7 @@ VoiceMode now understands natural voice commands during conversations:
 - Enhanced service management with unified `service` tool
 - Auto-installation of cmake dependency for whisper.cpp on macOS
 - Simple failover mode for provider selection
-  - New `VOICEMODE_SIMPLE_FAILOVER` environment variable (default: true)
+  - New `YAKK_SIMPLE_FAILOVER` environment variable (default: true)
   - Try each endpoint in order without health checks
   - Immediate failover on connection refused errors
   - No performance penalty as connection failures are instant
@@ -2130,7 +2130,7 @@ VoiceMode now understands natural voice commands during conversations:
     - `insights/` → `docs/development/insights/`
   - Moved test files from root to `tests/` directory
   - Merged `config-examples/` into `docs/integrations/`
-  - Removed directories moved to shadow repository: `assets/`, `notebooks/`, `npm-voicemode/`
+  - Removed directories moved to shadow repository: `assets/`, `notebooks/`, `npm-yakk/`
   - Cleaned up root directory following Python best practices
   - Moved `testing/` to `docs/testing/` for manual testing procedures
   - Removed backup files (`.mcp.json-20250728`) and temporary files (`COMMIT-MESSAGE.txt`)
@@ -2141,11 +2141,11 @@ VoiceMode now understands natural voice commands during conversations:
 - Separated MCP templates and data from resources
 - **Improved configuration documentation**
   - Added comprehensive configuration reference guide
-  - Documented auto-generation of `~/.voicemode/voicemode.env`
+  - Documented auto-generation of `~/.yakk/yakk.env`
   - Clarified that environment variables take precedence over file settings
 - **Configuration management now uses user-level config only**
-  - Removed project-level `voicemode.env` support for security
-  - All configuration stored in `~/.voicemode/voicemode.env`
+  - Removed project-level `yakk.env` support for security
+  - All configuration stored in `~/.yakk/yakk.env`
 
 ### Fixed
 
@@ -2161,7 +2161,7 @@ VoiceMode now understands natural voice commands during conversations:
 - Removed unnecessary soundfile dependency from simple failover
 - Fixed various import issues with TTS_VOICES and TTS_MODELS
 - **Fixed whisper model download tool**
-  - Now correctly checks `~/.voicemode/services/whisper/` installation path
+  - Now correctly checks `~/.yakk/services/whisper/` installation path
   - Support for both new and legacy whisper installation locations
   - Fixed model type validation
 
@@ -2205,7 +2205,7 @@ VoiceMode now understands natural voice commands during conversations:
 
 ### Added
 
-- New `VOICEMODE_DEFAULT_LISTEN_DURATION` environment variable to customize default listening time (defaults to 120s)
+- New `YAKK_DEFAULT_LISTEN_DURATION` environment variable to customize default listening time (defaults to 120s)
 
 ### Changed
 
@@ -2218,7 +2218,7 @@ VoiceMode now understands natural voice commands during conversations:
   - Provides more generous time for users giving longer responses
 - **BREAKING**: Voice preference files renamed from `voices.txt` to `.voices.txt`
   - Now uses hidden files to avoid cluttering project directories
-  - Affects both standalone files and those in `.voicemode` directories
+  - Affects both standalone files and those in `.yakk` directories
 
 ### Fixed
 
@@ -2231,7 +2231,7 @@ VoiceMode now understands natural voice commands during conversations:
 ### Added
 
 - Unified CLI system with shared exchanges library
-  - New `voicemode` command with multiple subcommands (`show`, `tell`, `diagnose`, etc.)
+  - New `yakk` command with multiple subcommands (`show`, `tell`, `diagnose`, etc.)
   - Centralized exchange processing library for consistent behavior across scripts
   - Modular command architecture for easy extension
 - Enhanced exchange logging capabilities:
@@ -2243,7 +2243,7 @@ VoiceMode now understands natural voice commands during conversations:
 ### Changed
 
 - Migrated all standalone scripts to use the unified CLI system
-  - Scripts now accessible as subcommands of the main `voicemode` command
+  - Scripts now accessible as subcommands of the main `yakk` command
   - Consistent argument parsing and help documentation across all commands
   - Improved code reuse through shared libraries
 
@@ -2297,10 +2297,10 @@ VoiceMode now understands natural voice commands during conversations:
   - Support for international English speakers
   - Automatically available when Kokoro TTS service is running
 - Voice preference files support for project and user-level voice settings
-  - Supports both standalone `voices.txt` and `.voicemode/voices.txt` files
+  - Supports both standalone `voices.txt` and `.yakk/voices.txt` files
   - Automatic discovery by walking up directory tree from current working directory
-  - User-level fallback to `~/voices.txt` or `~/.voicemode/voices.txt`
-  - Standalone files take precedence over .voicemode directory files
+  - User-level fallback to `~/voices.txt` or `~/.yakk/voices.txt`
+  - Standalone files take precedence over .yakk directory files
   - Simple text format with one voice name per line
   - Comments and empty lines supported
   - Preferences take priority over environment variables
@@ -2402,10 +2402,10 @@ VoiceMode now understands natural voice commands during conversations:
   - Automatically stops recording after configurable silence threshold (default: 1000ms)
   - Significantly reduces latency for short responses (e.g., "yes" now takes ~1s instead of 20s)
   - Configurable via environment variables:
-    - `VOICEMODE_ENABLE_SILENCE_DETECTION` - Enable/disable feature (default: true)
-    - `VOICEMODE_VAD_AGGRESSIVENESS` - VAD sensitivity 0-3 (default: 2)
-    - `VOICEMODE_SILENCE_THRESHOLD_MS` - Silence duration before stopping (default: 1000)
-    - `VOICEMODE_MIN_RECORDING_DURATION` - Minimum recording time (default: 0.5s)
+    - `YAKK_ENABLE_SILENCE_DETECTION` - Enable/disable feature (default: true)
+    - `YAKK_VAD_AGGRESSIVENESS` - VAD sensitivity 0-3 (default: 2)
+    - `YAKK_SILENCE_THRESHOLD_MS` - Silence duration before stopping (default: 1000)
+    - `YAKK_MIN_RECORDING_DURATION` - Minimum recording time (default: 0.5s)
   - Added `disable_vad` parameter to converse() for per-interaction control
   - Automatic fallback to fixed-duration recording if VAD unavailable or errors occur
   - Comprehensive test suite and manual testing tools
@@ -2417,13 +2417,13 @@ VoiceMode now understands natural voice commands during conversations:
   - Improved model selection to respect provider capabilities
   - Comprehensive test coverage for voice-first selection logic
 - Configurable initial silence grace period
-  - New `VOICEMODE_INITIAL_SILENCE_GRACE_PERIOD` environment variable (default: 4.0s)
+  - New `YAKK_INITIAL_SILENCE_GRACE_PERIOD` environment variable (default: 4.0s)
   - Prevents premature cutoff when users need time to think before speaking
   - Gives users more time to start speaking before VAD stops recording
 - Trace-level debug logging
-  - Enabled with `VOICEMODE_DEBUG=trace` environment variable
+  - Enabled with `YAKK_DEBUG=trace` environment variable
   - Includes httpx and openai library debug output
-  - Writes to `~/.voicemode/logs/debug/voicemode_debug_YYYY-MM-DD.log`
+  - Writes to `~/.yakk/logs/debug/yakk_debug_YYYY-MM-DD.log`
   - Helps diagnose provider connection issues
 
 ### Fixed
@@ -2486,7 +2486,7 @@ VoiceMode now understands natural voice commands during conversations:
   - Automatic daily log rotation
   - Thread-safe async file writing
   - Session-based event grouping
-  - Configurable via `VOICEMODE_EVENT_LOG_ENABLED` and `VOICEMODE_EVENT_LOG_DIR`
+  - Configurable via `YAKK_EVENT_LOG_ENABLED` and `YAKK_EVENT_LOG_DIR`
 - Event types tracked:
   - TTS events: request, start, first audio, playback start/end, errors
   - Recording events: start, end, saved
@@ -2563,22 +2563,22 @@ VoiceMode now understands natural voice commands during conversations:
 
 - Configurable audio format support with PCM as the default for TTS streaming
 - Environment variables for audio format configuration:
-  - `VOICEMODE_AUDIO_FORMAT` - Primary format (default: pcm)
-  - `VOICEMODE_TTS_AUDIO_FORMAT` - TTS-specific override (default: pcm)
-  - `VOICEMODE_STT_AUDIO_FORMAT` - STT-specific override
+  - `YAKK_AUDIO_FORMAT` - Primary format (default: pcm)
+  - `YAKK_TTS_AUDIO_FORMAT` - TTS-specific override (default: pcm)
+  - `YAKK_STT_AUDIO_FORMAT` - STT-specific override
 - Support for multiple audio formats: pcm, mp3, wav, flac, aac, opus
 - Format-specific quality settings:
-  - `VOICEMODE_OPUS_BITRATE` (default: 32000)
-  - `VOICEMODE_MP3_BITRATE` (default: 64k)
-  - `VOICEMODE_AAC_BITRATE` (default: 64k)
+  - `YAKK_OPUS_BITRATE` (default: 32000)
+  - `YAKK_MP3_BITRATE` (default: 64k)
+  - `YAKK_AAC_BITRATE` (default: 64k)
 - Automatic format validation based on provider capabilities
 - Provider-aware format fallback logic
 - Test suite for audio format configuration
 - Streaming audio playback infrastructure:
-  - `VOICEMODE_STREAMING_ENABLED` (default: true)
-  - `VOICEMODE_STREAM_CHUNK_SIZE` (default: 4096)
-  - `VOICEMODE_STREAM_BUFFER_MS` (default: 150)
-  - `VOICEMODE_STREAM_MAX_BUFFER` (default: 2.0)
+  - `YAKK_STREAMING_ENABLED` (default: true)
+  - `YAKK_STREAM_CHUNK_SIZE` (default: 4096)
+  - `YAKK_STREAM_BUFFER_MS` (default: 150)
+  - `YAKK_STREAM_MAX_BUFFER` (default: 2.0)
 - TTFA (Time To First Audio) metric in timing output
 - Per-request audio format override via `audio_format` parameter in conversation tools
 - **Live Statistics Dashboard**: Comprehensive conversation performance tracking
@@ -2592,26 +2592,26 @@ VoiceMode now understands natural voice commands during conversations:
 
 ### Changed
 
-- **BREAKING**: All `VOICE_MODE_` environment variables renamed to `VOICEMODE_`
-  - `VOICE_MODE_DEBUG` → `VOICEMODE_DEBUG`
-  - `VOICE_MODE_SAVE_AUDIO` → `VOICEMODE_SAVE_AUDIO`
-  - `VOICE_MODE_AUDIO_FEEDBACK` → `VOICEMODE_AUDIO_FEEDBACK`
-  - `VOICE_MODE_FEEDBACK_VOICE` → `VOICEMODE_FEEDBACK_VOICE`
-  - `VOICE_MODE_FEEDBACK_MODEL` → `VOICEMODE_FEEDBACK_MODEL`
-  - `VOICE_MODE_FEEDBACK_STYLE` → `VOICEMODE_FEEDBACK_STYLE`
-  - `VOICE_MODE_PREFER_LOCAL` → `VOICEMODE_PREFER_LOCAL`
-  - `VOICE_MODE_AUTO_START_KOKORO` → `VOICEMODE_AUTO_START_KOKORO`
-- Also renamed non-prefixed variables to use `VOICEMODE_` prefix:
-  - `VOICE_ALLOW_EMOTIONS` → `VOICEMODE_ALLOW_EMOTIONS`
-  - `VOICE_EMOTION_AUTO_UPGRADE` → `VOICEMODE_EMOTION_AUTO_UPGRADE`
+- **BREAKING**: All `VOICE_MODE_` environment variables renamed to `YAKK_`
+  - `VOICE_MODE_DEBUG` → `YAKK_DEBUG`
+  - `VOICE_MODE_SAVE_AUDIO` → `YAKK_SAVE_AUDIO`
+  - `VOICE_MODE_AUDIO_FEEDBACK` → `YAKK_AUDIO_FEEDBACK`
+  - `VOICE_MODE_FEEDBACK_VOICE` → `YAKK_FEEDBACK_VOICE`
+  - `VOICE_MODE_FEEDBACK_MODEL` → `YAKK_FEEDBACK_MODEL`
+  - `VOICE_MODE_FEEDBACK_STYLE` → `YAKK_FEEDBACK_STYLE`
+  - `VOICE_MODE_PREFER_LOCAL` → `YAKK_PREFER_LOCAL`
+  - `VOICE_MODE_AUTO_START_KOKORO` → `YAKK_AUTO_START_KOKORO`
+- Also renamed non-prefixed variables to use `YAKK_` prefix:
+  - `VOICE_ALLOW_EMOTIONS` → `YAKK_ALLOW_EMOTIONS`
+  - `VOICE_EMOTION_AUTO_UPGRADE` → `YAKK_EMOTION_AUTO_UPGRADE`
 - Default audio format changed from MP3 to PCM for zero-latency TTS streaming
 - Audio format is now validated against provider capabilities before use
 - Dynamic audio loading based on format instead of hardcoded MP3
 - Centralized all configuration in `voice_mcp/config.py` to eliminate duplication
-- Logger names updated from "voice-mcp" to "voicemode"
+- Logger names updated from "voice-mcp" to "yakk"
 - Debug directory paths updated:
-  - `~/voice-mcp_recordings/` → `~/voicemode_recordings/`
-  - `~/voice-mcp_audio/` → `~/voicemode_audio/`
+  - `~/voice-mcp_recordings/` → `~/yakk_recordings/`
+  - `~/voice-mcp_audio/` → `~/yakk_audio/`
 
 ### Benefits
 
@@ -2663,7 +2663,7 @@ VoiceMode now understands natural voice commands during conversations:
 ### Changed
 
 - Consolidated package structure from three to two pyproject.toml files
-- Removed unpublishable `voicemode` package configuration
+- Removed unpublishable `yakk` package configuration
 - Made `voice-mode` the primary package (in pyproject.toml)
 - Moved `voice-mcp` to secondary configuration (pyproject-voice-mcp.toml)
 
@@ -2673,22 +2673,22 @@ VoiceMode now understands natural voice commands during conversations:
 
 ## [2.0.0] - 2025-06-20
 
-### 🎉 Major Project Rebrand: VoiceMCP → VoiceMode
+### 🎉 Major Project Rebrand: VoiceMCP → Yakk
 
-We're excited to announce that **voice-mcp** has been rebranded to **VoiceMode**!
+We're excited to announce that **voice-mcp** has been rebranded to **Yakk**!
 
-This change reflects our vision for the project's future. While MCP (Model Context Protocol) describes the underlying technology, VoiceMode better captures what this tool actually delivers - a seamless voice interaction mode for AI assistants.
+This change reflects our vision for the project's future. While MCP (Model Context Protocol) describes the underlying technology, Yakk better captures what this tool actually delivers - a seamless voice interaction mode for AI assistants.
 
 #### Why the Change?
 
-- **Clarity**: VoiceMode immediately communicates the tool's purpose
+- **Clarity**: Yakk immediately communicates the tool's purpose
 - **Timelessness**: The name isn't tied to a specific protocol that may evolve
 - **Simplicity**: Easier to remember and more intuitive for users
 
 #### What's Changed?
 
-- Primary command renamed from `voice-mcp` to `voicemode`
-- GitHub repository moved to `mbailey/voicemode`
+- Primary command renamed from `voice-mcp` to `yakk`
+- GitHub repository moved to `mbailey/yakk`
 - Primary PyPI package is now `voice-mode` (hyphenated due to naming restrictions)
 - Legacy `voice-mcp` package maintained for backward compatibility
 - Documentation and branding updated throughout
@@ -2698,12 +2698,12 @@ This change reflects our vision for the project's future. While MCP (Model Conte
 
 - The `voice-mcp` command remains available for existing users
 - Both `voice-mode` and `voice-mcp` packages available on PyPI
-- All packages provide the `voicemode` command
+- All packages provide the `yakk` command
 
 ### Changed
 
 - Consolidated package configuration to two pyproject.toml files
-- Made `voice-mode` the primary package with VoiceMode branding
+- Made `voice-mode` the primary package with Yakk branding
 - Updated package descriptions to reflect the rebrand
 
 ### Added
