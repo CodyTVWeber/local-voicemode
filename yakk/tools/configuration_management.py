@@ -1,4 +1,4 @@
-"""Configuration management tools for voice-mode."""
+"""Configuration management tools for yakk."""
 
 import os
 import re
@@ -401,7 +401,7 @@ async def show_config_files() -> str:
     try:
         config_files = find_yakk_env_files()
         
-        lines = ["📋 Voice Mode Configuration Files", "=" * 40, ""]
+        lines = ["📋 Yakk Configuration Files", "=" * 40, ""]
         lines.append(f"🗂️  Current directory: {Path.cwd()}")
         lines.append("")
         

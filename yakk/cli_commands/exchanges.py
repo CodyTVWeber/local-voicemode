@@ -1,5 +1,5 @@
 """
-Exchanges command group for voice-mode CLI.
+Exchanges command group for yakk CLI.
 """
 
 import sys

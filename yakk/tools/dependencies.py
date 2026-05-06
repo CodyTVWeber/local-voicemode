@@ -22,7 +22,7 @@ async def check_audio_dependencies() -> Dict[str, Any]:
     for missing dependencies based on your platform.
     
     Useful when:
-    - Voice mode fails with audio errors
+    - Yakk fails with audio errors
     - Setting up on a new system
     - Troubleshooting WSL audio issues
     

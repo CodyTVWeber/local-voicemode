@@ -1,4 +1,4 @@
-"""Unified service management tool for voice mode services."""
+"""Unified service management tool for yakk services."""
 
 import asyncio
 import logging
@@ -883,7 +883,7 @@ async def service(
     action: Literal["status", "start", "stop", "restart", "enable", "disable", "logs"] = "status",
     lines: Optional[Union[int, str]] = None
 ) -> str:
-    """Unified service management tool for voice mode services.
+    """Unified service management tool for yakk services.
 
     Manage Whisper (STT), Kokoro (TTS), and Yakk (HTTP MCP server) services.
 

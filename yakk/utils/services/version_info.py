@@ -196,7 +196,7 @@ async def service_version(
     if service_name is None or service_name == "kokoro":
         result["kokoro"] = get_kokoro_version()
 
-    # Add voice-mode version info
+    # Add yakk version info
     result["yakk"] = {
         "version": "2.15.0",  # This should ideally come from package metadata
         "config_dir": str(BASE_DIR),

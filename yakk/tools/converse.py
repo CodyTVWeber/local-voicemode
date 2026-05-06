@@ -368,7 +368,7 @@ async def startup_initialization():
     await provider_registry.initialize()
     
     # Check if we should auto-start Kokoro
-    auto_start_kokoro = os.getenv("VOICE_MODE_AUTO_START_KOKORO", "").lower() in ("true", "1", "yes", "on")
+    auto_start_kokoro = os.getenv("YAKK_AUTO_START_KOKORO", "").lower() in ("true", "1", "yes", "on")
     if auto_start_kokoro:
         try:
             # Check if Kokoro is already running

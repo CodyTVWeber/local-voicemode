@@ -429,7 +429,7 @@ def collect_status_data() -> Dict[str, Any]:
         "version": __version__,
         "runtime": {
             "mode": "mcp",
-            "command": "uvx voice-mode"
+            "command": "uvx yakk"
         },
         "tts": {
             "active": active["tts"],

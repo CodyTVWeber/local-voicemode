@@ -5,7 +5,7 @@ from yakk.server import mcp
 
 @mcp.prompt(name="release-notes")
 def release_notes_prompt(versions: str = "5") -> str:
-    """View recent release notes from Voice Mode's CHANGELOG."""
+    """View recent release notes from Yakk's CHANGELOG."""
     # Lazy import to break a circular import:
     #
     #   yakk/resources/changelog.py

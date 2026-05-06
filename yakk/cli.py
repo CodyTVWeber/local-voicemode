@@ -1,5 +1,5 @@
 """
-CLI entry points for voice-mode package.
+CLI entry points for yakk package.
 """
 import asyncio
 import sys
@@ -56,7 +56,7 @@ if not os.environ.get('YAKK_DEBUG', '').lower() in ('true', '1', 'yes'):
 @click.option('--tools-disabled', help='Comma-separated list of tools to disable (blacklist)')
 @click.pass_context
 def yakk_main_cli(ctx, debug, tools_enabled, tools_disabled):
-    """Voice Mode - MCP server and service management.
+    """Yakk - MCP server and service management.
 
     Without arguments, starts the MCP server.
     With subcommands, executes service management operations.
@@ -1979,7 +1979,7 @@ def registry():
 @click.version_option()
 @click.help_option('-h', '--help')
 def cli():
-    """Voice Mode CLI - Manage conversations, view logs, and analyze voice interactions."""
+    """Yakk CLI - Manage conversations, view logs, and analyze voice interactions."""
     pass
 
 
@@ -2542,8 +2542,3 @@ def connect():
     """Yakk Connect -- disabled in local-only mode."""
     click.echo("Yakk Connect is disabled in local-only mode.", err=True)
     sys.exit(1)
-
-
-# DJ (Background Music) command group
-@yakk_main_cli.group()
-@click.help_option('-h', '--help', help='Show this message and exit')

@@ -7,14 +7,14 @@ import sys
 import os
 
 
-@mcp.resource("voice-mode:version")
+@mcp.resource("yakk:version")
 async def get_version_info() -> str:
-    """Get detailed version information about Voice Mode.
+    """Get detailed version information about Yakk.
     
     Shows version, git status, Python version, and platform details.
     """
     lines = []
-    lines.append(f"Voice Mode Version: {__version__}")
+    lines.append(f"Yakk Version: {__version__}")
     
     # Add git information if available
     if is_git_repository():

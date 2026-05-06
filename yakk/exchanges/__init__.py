@@ -1,7 +1,7 @@
 """
-Voice Mode Exchanges Library
+Yakk Exchanges Library
 
-A shared library for reading, parsing, and formatting voice mode exchange logs.
+A shared library for reading, parsing, and formatting yakk exchange logs.
 Used by CLI commands, web browser, and MCP tools.
 """
 

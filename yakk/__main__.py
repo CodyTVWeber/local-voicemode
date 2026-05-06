@@ -1,5 +1,5 @@
 """
-Main entry point for voice-mode when called as a module.
+Main entry point for yakk when called as a module.
 """
 
 from .cli import yakk

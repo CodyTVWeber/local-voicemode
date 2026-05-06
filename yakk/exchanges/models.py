@@ -1,5 +1,5 @@
 """
-Exchange data models for voice mode conversation logs.
+Exchange data models for yakk conversation logs.
 """
 
 import json

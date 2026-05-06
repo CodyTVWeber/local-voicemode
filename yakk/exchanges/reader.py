@@ -1,5 +1,5 @@
 """
-Exchange reader for voice mode conversation logs.
+Exchange reader for yakk conversation logs.
 """
 
 import json

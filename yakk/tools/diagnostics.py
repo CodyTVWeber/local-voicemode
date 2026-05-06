@@ -1,4 +1,4 @@
-"""Diagnostic tools for voice-mode."""
+"""Diagnostic tools for yakk."""
 
 import os
 from yakk.server import mcp
@@ -12,12 +12,12 @@ logger = logging.getLogger("yakk")
 
 @mcp.tool()
 async def yakk_info() -> str:
-    """Get diagnostic information about the voice-mode installation.
+    """Get diagnostic information about the yakk installation.
     
     Shows version, configuration, and provider status to help debug issues.
     """
     info = []
-    info.append(f"Voice Mode Diagnostics")
+    info.append(f"Yakk Diagnostics")
     info.append(f"====================")
     info.append(f"Version: {__version__}")
     info.append(f"Working Directory: {os.getcwd()}")

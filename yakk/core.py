@@ -1,7 +1,7 @@
 """
-Core functionality for voice-mode.
+Core functionality for yakk.
 
-This module contains the main functions used by the voice-mode script,
+This module contains the main functions used by the yakk script,
 extracted to allow for easier testing and reuse.
 """
 
@@ -499,7 +499,7 @@ async def text_to_speech(
                     
                     # Last resort: save to user's home directory for manual playback
                     try:
-                        fallback_path = Path.home() / f"voice-mode-audio-{datetime.now().strftime('%Y%m%d_%H%M%S')}.{validated_format}"
+                        fallback_path = Path.home() / f"yakk-audio-{datetime.now().strftime('%Y%m%d_%H%M%S')}.{validated_format}"
                         import shutil
                         shutil.copy(tmp_file.name, fallback_path)
                         logger.warning(f"Audio saved to {fallback_path} for manual playback")
@@ -777,7 +777,7 @@ async def play_system_audio(message_key: str, fallback_text: Optional[str] = Non
 
 async def cleanup(service_clients: dict):
     """Cleanup function to close HTTP clients and resources"""
-    logger.info("Shutting down Voice Mode Server...")
+    logger.info("Shutting down Yakk Server...")
     
     # Close HTTP clients
     try:

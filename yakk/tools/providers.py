@@ -1,4 +1,4 @@
-"""Provider management tools for voice-mode."""
+"""Provider management tools for yakk."""
 
 import logging
 from typing import Optional, Union, Dict, Any
